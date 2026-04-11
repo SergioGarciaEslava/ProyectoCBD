@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: ravenshop
+
+server:
+  port: 8080
+
+ravendb:
+  urls:
+    - http://localhost:8081
+  database: RavenShop
