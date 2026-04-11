@@ -7,8 +7,8 @@ El backlog original esta en `backlog_github_issues_ravendb_springboot.md`. En es
 Las issues reales ya fueron creadas en GitHub y verificadas con `gh issue list`.
 
 - Repositorio: `SergioGarciaEslava/ProyectoCBD`
-- Issues creadas: 16
-- Rango: `#1` a `#16`
+- Issues creadas: 17
+- Rango: `#1` a `#17`
 
 El script `create_github_issues.sh` se conserva como utilidad para recrear el backlog en otro repositorio o entorno. No lo ejecutes de nuevo en este repositorio salvo que quieras duplicar issues.
 

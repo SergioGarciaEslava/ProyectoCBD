@@ -41,7 +41,7 @@ Por asignar
 ### Planificacion
 
 - Milestone: `M3 - Pedidos`
-- Dependencias: Issue 2
+- Dependencias: Issues 2 y 17
 - Estimacion: 5 h
 - Clockify tag sugerida: `implementacion`
 

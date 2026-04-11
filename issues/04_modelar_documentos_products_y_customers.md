@@ -39,7 +39,7 @@ Por asignar
 ### Planificacion
 
 - Milestone: `M2 - CRUD base`
-- Dependencias: Issue 2
+- Dependencias: Issues 2 y 17
 - Estimacion: 4 h
 - Clockify tag sugerida: `implementacion`
 

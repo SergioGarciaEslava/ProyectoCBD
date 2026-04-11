@@ -2,8 +2,8 @@
 
 ## Estado
 
-- Issues preparadas en Markdown: 16
-- Issues creadas en GitHub: 16
+- Issues preparadas en Markdown: 17
+- Issues creadas en GitHub: 17
 - Repositorio remoto detectado: `git@github.com:SergioGarciaEslava/ProyectoCBD.git`
 - Repositorio GitHub verificado: `SergioGarciaEslava/ProyectoCBD`
 
@@ -38,6 +38,7 @@
 - #14 [WI-014] Crear y mantener registro de uso de IA en `docs/uso_ia.md`: <https://github.com/SergioGarciaEslava/ProyectoCBD/issues/14>
 - #15 [WI-015] Preparar capturas, figuras y contenido base para memoria y presentación: <https://github.com/SergioGarciaEslava/ProyectoCBD/issues/15>
 - #16 [WI-016] Realizar ensayo técnico de defensa y demo de 15 minutos: <https://github.com/SergioGarciaEslava/ProyectoCBD/issues/16>
+- #17 [WI-017] Definir contrato OpenAPI para enfoque API-first: <https://github.com/SergioGarciaEslava/ProyectoCBD/issues/17>
 
 ## Verificacion realizada
 
@@ -45,3 +46,5 @@
 - `./issues/create_github_issues.sh`: creo issues `#1` a `#16`.
 - `gh issue list --limit 30 --json number,title,url,labels --state open`: confirmo las 16 issues abiertas, sus labels y sus titulos `[WI-XXX]`.
 - `gh issue view 1 --json number,title,body,labels,url`: confirmo que el cuerpo de la issue #1 sigue la plantilla Work Item.
+- `gh issue view 17 --json number,title,body,labels,url`: confirmo que la issue OpenAPI existe como `#17`, con formato Work Item y labels `work-item`, `backend`, `documentation`, `setup`, `high`.
+- `gh issue view 2 --json number,title,url,body`: confirmo que una issue backend declara dependencia de `Issues 1 y 17`.

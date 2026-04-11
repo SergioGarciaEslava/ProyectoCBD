@@ -40,7 +40,7 @@ Por asignar
 ### Planificacion
 
 - Milestone: `M1 - Base técnica`
-- Dependencias: Issue 1
+- Dependencias: Issues 1 y 17
 - Estimacion: 4 h
 - Clockify tag sugerida: `implementacion`
 
