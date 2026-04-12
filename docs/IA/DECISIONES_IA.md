@@ -62,3 +62,29 @@ La creacion remota de issues requiere GitHub CLI instalado y autenticado; el com
 ### Por que
 
 La WI-001 es una tarea de base tecnica. El repositorio ya cumplia los criterios funcionales; esta sesion se enfoco en ejecutar la issue en su rama y dejar evidencia objetiva para continuar con commit/push y siguientes work-items.
+
+## 2026-04-12 - Ejecucion de WI-002 (conexion RavenDB)
+
+### Que produjo la IA
+
+- Configuracion tipada de propiedades RavenDB (`ravendb.urls`, `ravendb.database`).
+- Bean Spring `IDocumentStore` inicializado y centralizado en capa `config`.
+- Servicio de salud de RavenDB que intenta abrir sesion y consultar estadisticas.
+- Endpoint `GET /health/ravendb` para comprobacion simple de conectividad.
+- Prueba automatica MVC para el endpoint de salud de RavenDB.
+- Actualizacion de WI-002 con evidencia objetiva y bloqueo de entorno.
+
+### Que se acepto
+
+- Mantener alcance tecnico de infraestructura sin entrar en CRUD o logica de negocio.
+- Exponer conectividad como endpoint de salud para facilitar defensa y demo.
+- Reportar estado real de entorno local (`DOWN`) cuando RavenDB no esta disponible.
+
+### Que se descarto
+
+- Forzar mocks complejos del cliente RavenDB para simular conexion real en unit test.
+- Marcar como cumplida la conexion efectiva (`UP`) sin tener servidor local disponible.
+
+### Por que
+
+WI-002 busca dejar preparada la conexion y una verificacion defendible. La validacion tecnica se completo en codigo y pruebas automatizadas; la conexion efectiva depende de levantar RavenDB local en `http://localhost:8081` con base `RavenShop`.
