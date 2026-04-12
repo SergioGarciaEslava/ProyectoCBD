@@ -13,20 +13,20 @@ Poder abrir sesiones contra RavenDB desde la aplicación.
 
 ### Plan de trabajo
 
-- [ ] Añadir dependencia del cliente Java de RavenDB
-- [ ] Crear clase de configuración para `DocumentStore`
-- [ ] Parametrizar URL y nombre de base de datos
-- [ ] Comprobar conexión real
-- [ ] Crear endpoint o servicio de salud para base de datos
+- [x] Añadir dependencia del cliente Java de RavenDB
+- [x] Crear clase de configuración para `DocumentStore`
+- [x] Parametrizar URL y nombre de base de datos
+- [x] Comprobar conexión real
+- [x] Crear endpoint o servicio de salud para base de datos
 
 ### Criterios de aceptacion
 
 - [ ] La aplicación se conecta a RavenDB
 - [ ] Se puede abrir una sesión sin errores
-- [ ] Existe una comprobación simple de conectividad
-- [ ] La configuración queda centralizada y bien nombrada
-- [ ] Incluye pruebas automaticas si aplica
-- [ ] No rompe funcionalidades existentes
+- [x] Existe una comprobación simple de conectividad
+- [x] La configuración queda centralizada y bien nombrada
+- [x] Incluye pruebas automaticas si aplica
+- [x] No rompe funcionalidades existentes
 - [ ] Integrado correctamente en `trunk`
 
 ### Responsable
@@ -48,3 +48,20 @@ Por asignar
 
 - Captura de RavenDB Studio con la base creada
 - Código de configuración subido al repo
+
+### Evidencia de ejecucion (2026-04-12)
+
+- Rama creada: `featuretask/WI-002-configurar-conexion-con-ravendb`
+- Configuracion `DocumentStore`: `src/main/java/com/gr21/ravenshop/config/RavenDbConfig.java`
+- Propiedades centralizadas: `src/main/java/com/gr21/ravenshop/config/RavenDbProperties.java`
+- Chequeo de conectividad: `GET /health/ravendb` en `src/main/java/com/gr21/ravenshop/controller/RavenDbHealthController.java`
+- Servicio de salud RavenDB: `src/main/java/com/gr21/ravenshop/service/RavenDbHealthService.java`
+- Test automatico endpoint: `src/test/java/com/gr21/ravenshop/controller/RavenDbHealthControllerTest.java`
+- Verificacion build: `mvn test` (BUILD SUCCESS, 2 tests OK)
+- Verificacion runtime:
+  - `GET /health` -> `{"application":"RavenShop","status":"UP"}`
+  - `GET /health/ravendb` -> `status: DOWN` con `Connection refused` a `http://localhost:8081`
+
+### Bloqueo actual
+
+- Los criterios de conexion efectiva (`UP`) dependen de tener RavenDB local activo en `localhost:8081` y base `RavenShop` disponible.
