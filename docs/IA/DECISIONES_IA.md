@@ -38,3 +38,27 @@ Este archivo registra como se usan, revisan y aceptan las salidas de IA en Raven
 
 El objetivo de esta ejecucion es dejar una base simple y defendible para empezar el proyecto, no implementar la aplicacion completa.
 La creacion remota de issues requiere GitHub CLI instalado y autenticado; el comando local disponible devolvio `gh: command not found`.
+
+## 2026-04-12 - Ejecucion de WI-001 en rama dedicada
+
+### Que produjo la IA
+
+- Creacion de rama de trabajo `featuretask/WI-001-crear-proyecto-base-spring-boot`.
+- Verificacion tecnica de la base Spring Boot con `mvn test`.
+- Actualizacion del checklist y evidencia en `issues/01_crear_proyecto_base_spring_boot.md`.
+- Registro completo de trazabilidad en `docs/IA/`.
+
+### Que se acepto
+
+- Mantener el alcance de WI-001 sin ampliar funcionalidad.
+- Aprovechar la base ya existente en `main` y formalizar su estado en la issue.
+- No introducir dependencias nuevas ni cambios funcionales adicionales.
+
+### Que se descarto
+
+- Cambios de negocio (CRUD de productos/clientes/pedidos).
+- Refactorizaciones no requeridas por WI-001.
+
+### Por que
+
+La WI-001 es una tarea de base tecnica. El repositorio ya cumplia los criterios funcionales; esta sesion se enfoco en ejecutar la issue en su rama y dejar evidencia objetiva para continuar con commit/push y siguientes work-items.

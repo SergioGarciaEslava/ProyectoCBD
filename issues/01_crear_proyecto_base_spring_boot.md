@@ -13,22 +13,22 @@ Tener una aplicación arrancable sobre la que poder construir el resto del traba
 
 ### Plan de trabajo
 
-- [ ] Crear proyecto con Spring Boot
-- [ ] Añadir dependencias mínimas necesarias
-- [ ] Definir estructura de paquetes
-- [ ] Configurar puerto y nombre de la aplicación
-- [ ] Crear endpoint simple de prueba
-- [ ] Verificar que la app arranca sin errores
+- [x] Crear proyecto con Spring Boot
+- [x] Añadir dependencias mínimas necesarias
+- [x] Definir estructura de paquetes
+- [x] Configurar puerto y nombre de la aplicación
+- [x] Crear endpoint simple de prueba
+- [x] Verificar que la app arranca sin errores
 
 ### Criterios de aceptacion
 
-- [ ] La aplicación arranca correctamente
-- [ ] Existe una estructura base clara (`config`, `controller`, `service`, `repository`, `model`)
-- [ ] Existe al menos un endpoint o vista de prueba
-- [ ] El proyecto compila sin errores
-- [ ] Incluye pruebas automaticas si aplica
-- [ ] No rompe funcionalidades existentes
-- [ ] Integrado correctamente en `trunk`
+- [x] La aplicación arranca correctamente
+- [x] Existe una estructura base clara (`config`, `controller`, `service`, `repository`, `model`)
+- [x] Existe al menos un endpoint o vista de prueba
+- [x] El proyecto compila sin errores
+- [x] Incluye pruebas automaticas si aplica
+- [x] No rompe funcionalidades existentes
+- [x] Integrado correctamente en `trunk`
 
 ### Responsable
 
@@ -49,3 +49,10 @@ Por asignar
 
 - Captura de la app arrancando
 - Primer commit del proyecto
+
+### Evidencia de ejecucion (2026-04-12)
+
+- Rama creada: `featuretask/WI-001-crear-proyecto-base-spring-boot`
+- Endpoint de prueba: `GET /health` en `src/main/java/com/gr21/ravenshop/controller/HealthController.java`
+- Estructura validada: `config`, `controller`, `service`, `repository`, `model`, `dto`, `seed`
+- Verificacion ejecutada: `mvn test` (BUILD SUCCESS, 1 test OK)
