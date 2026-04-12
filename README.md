@@ -58,6 +58,9 @@ No incluye CRUDs, autenticacion, Docker, seed de datos ni conexion real con Rave
 |   |-- demo/
 |   |-- evidencias/
 |   `-- spec/
+|       `-- openapi/
+|           |-- README.md
+|           `-- ravenshop.openapi.yaml
 `-- issues/
 ```
 
@@ -91,6 +94,16 @@ Respuesta esperada:
 ```bash
 mvn test
 ```
+
+## Contrato API-first (OpenAPI)
+
+El contrato OpenAPI inicial del proyecto esta en:
+
+- `docs/spec/openapi/ravenshop.openapi.yaml`
+
+Guia de uso para desarrollo y pruebas:
+
+- `docs/spec/openapi/README.md`
 
 ## Que falta por implementar
 

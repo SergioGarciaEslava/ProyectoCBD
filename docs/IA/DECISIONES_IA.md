@@ -88,3 +88,28 @@ La WI-001 es una tarea de base tecnica. El repositorio ya cumplia los criterios 
 ### Por que
 
 WI-002 busca dejar preparada la conexion y una verificacion defendible. La validacion tecnica se completo en codigo y pruebas automatizadas; la conexion efectiva depende de levantar RavenDB local en `http://localhost:8081` con base `RavenShop`.
+
+## 2026-04-12 - Ejecucion de WI-017 (contrato OpenAPI API-first)
+
+### Que produjo la IA
+
+- Contrato OpenAPI inicial versionado en `docs/spec/openapi/ravenshop.openapi.yaml`.
+- Definicion de convenciones de rutas (`/api/v1`), payload JSON y errores `application/problem+json`.
+- Cobertura minima de recursos: `health`, `products`, `customers` y `orders`.
+- Guia de uso del contrato para desarrollo y pruebas en `docs/spec/openapi/README.md`.
+- Actualizacion de issue WI-017 con evidencia de ejecucion.
+
+### Que se acepto
+
+- Enfoque API-first documental sin implementar nuevos endpoints backend en esta issue.
+- Nivel de detalle minimo y defendible para alinear desarrollo de controladores futuros.
+- Mantener dependencias backend ya declaradas hacia WI-017.
+
+### Que se descarto
+
+- Generacion automatica de servidor/cliente desde OpenAPI en esta fase.
+- Cambios de logica de negocio o CRUD completos.
+
+### Por que
+
+WI-017 es una tarea de contrato y alineacion tecnica. El objetivo es fijar una referencia estable para pruebas y desarrollo incremental sin ampliar alcance funcional.
