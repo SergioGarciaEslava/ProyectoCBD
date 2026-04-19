@@ -13,20 +13,20 @@ Tener datos iniciales suficientes para probar consultas y pantallas.
 
 ### Plan de trabajo
 
-- [ ] Definir conjunto mínimo de productos
-- [ ] Definir conjunto mínimo de clientes
-- [ ] Definir conjunto mínimo de pedidos
-- [ ] Implementar clase o runner de seed
-- [ ] Evitar duplicados al relanzar la carga
+- [x] Definir conjunto mínimo de productos
+- [x] Definir conjunto mínimo de clientes
+- [x] Definir conjunto mínimo de pedidos
+- [x] Implementar clase o runner de seed
+- [x] Evitar duplicados al relanzar la carga
 
 ### Criterios de aceptacion
 
-- [ ] La base queda poblada con datos de ejemplo
-- [ ] Existen al menos productos, clientes y pedidos
-- [ ] Los pedidos contienen líneas, total e historial de estados
+- [x] La base queda poblada con datos de ejemplo
+- [x] Existen al menos productos, clientes y pedidos
+- [x] Los pedidos contienen líneas, total e historial de estados
 - [ ] Los datos pueden visualizarse en RavenDB Studio
-- [ ] Incluye pruebas automaticas si aplica
-- [ ] No rompe funcionalidades existentes
+- [x] Incluye pruebas automaticas si aplica
+- [x] No rompe funcionalidades existentes
 - [ ] Integrado correctamente en `trunk`
 
 ### Responsable
@@ -48,3 +48,9 @@ Por asignar
 
 - Capturas de documentos en RavenDB Studio
 - Commit con el seed
+
+### Evidencia de ejecucion (2026-04-19)
+
+- Seeder implementado en `src/main/java/com/gr21/ravenshop/seed/RavenDbSeedRunner.java`.
+- Test de idempotencia y carga inicial en `src/test/java/com/gr21/ravenshop/seed/RavenDbSeedRunnerTest.java`.
+- Verificacion ejecutada: `mvn test` (suite completa en verde).

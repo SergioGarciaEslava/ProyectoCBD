@@ -113,3 +113,30 @@ WI-002 busca dejar preparada la conexion y una verificacion defendible. La valid
 ### Por que
 
 WI-017 es una tarea de contrato y alineacion tecnica. El objetivo es fijar una referencia estable para pruebas y desarrollo incremental sin ampliar alcance funcional.
+
+## 2026-04-19 - Ejecucion de WI-003 (datos semilla)
+
+### Que produjo la IA
+
+- Implementacion de `RavenDbSeedRunner` para cargar datos semilla en RavenDB al arranque.
+- Insercion de documentos de ejemplo para `products`, `customers` y `orders`.
+- Modelado de pedidos de seed con lineas, total e historial de estados.
+- Mecanismo idempotente para evitar duplicados mediante documento marcador `seed-data/ravenshop-wi003`.
+- Pruebas unitarias para los casos de primera carga y recarga sin duplicados.
+- Actualizacion de configuracion y documentacion para activar/desactivar seed.
+
+### Que se acepto
+
+- Activacion condicional del seed por propiedad (`ravenshop.seed.enabled`) para no poblar entornos por defecto.
+- Uso de documentos simples y realistas para demo academica sin introducir capas adicionales.
+- Enfoque idempotente con marcador unico para evitar duplicados al reiniciar la app.
+
+### Que se descarto
+
+- Ejecutar seed siempre activo por defecto.
+- Añadir dependencias nuevas para fixtures o migraciones.
+- Forzar validacion en RavenDB Studio sin servidor local disponible en la sesion.
+
+### Por que
+
+WI-003 exige una carga inicial defendible y repetible para demo/pruebas. La opcion adoptada minimiza complejidad, evita duplicados y mantiene el alcance acotado a la tarea sin adelantar CRUDs ni funcionalidades fuera del objetivo.
