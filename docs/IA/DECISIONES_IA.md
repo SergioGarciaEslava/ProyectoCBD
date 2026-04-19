@@ -167,3 +167,30 @@ WI-003 exige una carga inicial defendible y repetible para demo/pruebas. La opci
 ### Por que
 
 WI-004 pide preparar la base del CRUD para productos y clientes. La solucion aplicada deja cimientos limpios para WI-005/WI-006, mantiene bajo acoplamiento entre capas y aporta pruebas suficientes para validar comportamiento sin ampliar alcance.
+
+## 2026-04-20 - Ejecucion de WI-005 (CRUD de productos MVC + Thymeleaf)
+
+### Que produjo la IA
+
+- Ampliacion de `ProductService` con `update` y `deactivate` (borrado logico).
+- Ampliacion de `ProductController` REST con `PUT` y `DELETE`.
+- Implementacion de `ProductViewController` para flujo MVC de demo.
+- Creacion de `ProductForm` para binding y validacion en formularios Thymeleaf.
+- Creacion de plantillas `products/list.html` y `products/form.html`.
+- Pruebas automaticas minimas en service, controller REST y controller MVC.
+
+### Que se acepto
+
+- Mantener doble interfaz para productos: API REST (`/api/v1/products`) y MVC (`/products`).
+- Borrado logico simple con `active=false` para no romper la demo.
+- Cobertura de test ajustada al alcance acordado (sin sobrecargar con casos secundarios).
+
+### Que se descarto
+
+- Añadir JavaScript frontend o estilos avanzados para esta WI.
+- Implementar filtros complejos o paginacion UI avanzada en listado MVC.
+- Reestructurar todo el modulo productos antes de WI-006.
+
+### Por que
+
+WI-005 requiere un CRUD usable para demo con Spring MVC y Thymeleaf. La solucion mantiene simplicidad, coherencia con OpenAPI ya existente y base estable para extender comportamiento en siguientes issues.

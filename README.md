@@ -124,7 +124,7 @@ Guia de uso para desarrollo y pruebas:
 
 ## Que falta por implementar
 
-- CRUD completo de productos y clientes (update/delete y filtros avanzados).
+- CRUD completo de clientes y filtros avanzados de productos.
 - Modelo y caso de uso completo de pedidos (`Order`).
 - Caso de uso de creacion de pedidos.
 - Consultas RQL y evidencias de auto-indexes.
