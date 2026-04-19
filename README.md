@@ -23,7 +23,7 @@ Este repositorio contiene solo el bootstrap inicial:
 - Documentacion operativa y trazabilidad inicial del uso de IA.
 - Backlog convertido a archivos preparados en `issues/` cuando corresponda.
 
-No incluye CRUDs, autenticacion, Docker, seed de datos ni conexion real con RavenDB. Esas tareas quedan en el backlog.
+No incluye CRUDs completos, autenticacion, Docker ni despliegue cloud. El proyecto ya incluye conexion base con RavenDB y un mecanismo de seed opcional para demo.
 
 ## Estructura del repositorio
 
@@ -95,6 +95,22 @@ Respuesta esperada:
 mvn test
 ```
 
+## Carga de datos semilla (WI-003)
+
+El seed de RavenDB se ejecuta al arrancar la aplicacion solo si se activa:
+
+```yaml
+ravenshop:
+  seed:
+    enabled: true
+```
+
+Comportamiento del seed:
+
+- Inserta documentos de ejemplo para `products`, `customers` y `orders`.
+- Los pedidos incluyen lineas, total e historial de estados.
+- Es idempotente: si ya existe el marcador `seed-data/ravenshop-wi003`, no vuelve a cargar datos.
+
 ## Contrato API-first (OpenAPI)
 
 El contrato OpenAPI inicial del proyecto esta en:
@@ -109,7 +125,6 @@ Guia de uso para desarrollo y pruebas:
 
 - Configuracion real de `DocumentStore` para RavenDB.
 - Modelos documentales `Product`, `Customer`, `Order` y, opcionalmente, `Review`.
-- Datos semilla para la demo.
 - CRUD minimo de productos y clientes.
 - Caso de uso de creacion de pedidos.
 - Consultas RQL y evidencias de auto-indexes.

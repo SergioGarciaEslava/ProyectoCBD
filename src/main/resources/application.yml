@@ -9,3 +9,7 @@ ravendb:
   urls:
     - http://localhost:8081
   database: RavenShop
+
+ravenshop:
+  seed:
+    enabled: false
