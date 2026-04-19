@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -61,5 +62,47 @@ class ProductServiceTest {
         Optional<ProductResponse> result = productService.getById("products/404-A");
 
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    void updateReturnsUpdatedProductWhenExists() {
+        Product existing = new Product();
+        existing.setId("products/1-A");
+        existing.setName("Cafe");
+        existing.setActive(true);
+
+        when(productRepository.findById("products/1-A")).thenReturn(Optional.of(existing));
+        when(productRepository.save(org.mockito.ArgumentMatchers.any(Product.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        ProductCreateRequest request = new ProductCreateRequest(
+                "Cafe Premium",
+                "Nueva descripcion",
+                "Bebidas",
+                List.of("premium"),
+                new BigDecimal("24.90"),
+                true
+        );
+
+        Optional<ProductResponse> result = productService.update("products/1-A", request);
+
+        assertThat(result).isPresent();
+        assertThat(result.get().name()).isEqualTo("Cafe Premium");
+        assertThat(result.get().unitPrice()).isEqualByComparingTo("24.90");
+    }
+
+    @Test
+    void deactivateMarksProductAsInactive() {
+        Product existing = new Product();
+        existing.setId("products/1-A");
+        existing.setActive(true);
+
+        when(productRepository.findById("products/1-A")).thenReturn(Optional.of(existing));
+        when(productRepository.save(org.mockito.ArgumentMatchers.any(Product.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        boolean result = productService.deactivate("products/1-A");
+
+        assertThat(result).isTrue();
+        assertThat(existing.isActive()).isFalse();
+        verify(productRepository).save(existing);
     }
 }
