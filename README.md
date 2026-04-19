@@ -14,11 +14,12 @@ El foco del trabajo esta en documentos, RQL, auto-indexes y evidencias de uso de
 
 ## Alcance actual
 
-Este repositorio contiene solo el bootstrap inicial:
+Este repositorio ya incluye una base funcional inicial:
 
 - Proyecto Maven/Spring Boot minimo.
 - Dependencias base para Web, Thymeleaf, Validation, RavenDB Java Client y Test.
-- Endpoint `GET /health` para comprobar que la aplicacion arranca.
+- Endpoints `GET /health` y `GET /health/ravendb` para comprobaciones de salud.
+- Base de dominio y acceso a datos para `Product` y `Customer` (capas `model`, `dto`, `repository`, `service`, `controller`).
 - Estructura de paquetes preparada para evolucionar el proyecto.
 - Documentacion operativa y trazabilidad inicial del uso de IA.
 - Backlog convertido a archivos preparados en `issues/` cuando corresponda.
@@ -123,9 +124,8 @@ Guia de uso para desarrollo y pruebas:
 
 ## Que falta por implementar
 
-- Configuracion real de `DocumentStore` para RavenDB.
-- Modelos documentales `Product`, `Customer`, `Order` y, opcionalmente, `Review`.
-- CRUD minimo de productos y clientes.
+- CRUD completo de productos y clientes (update/delete y filtros avanzados).
+- Modelo y caso de uso completo de pedidos (`Order`).
 - Caso de uso de creacion de pedidos.
 - Consultas RQL y evidencias de auto-indexes.
 - Vistas Thymeleaf basicas para la demo.
