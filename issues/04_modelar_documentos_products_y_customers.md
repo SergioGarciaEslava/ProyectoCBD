@@ -13,19 +13,19 @@ Dejar preparada la base del CRUD de productos y clientes.
 
 ### Plan de trabajo
 
-- [ ] Crear clase `Product`
-- [ ] Crear clase `Customer`
-- [ ] Crear clases auxiliares necesarias (`Address`, etc.)
-- [ ] Implementar repositorio o servicio de acceso a RavenDB
-- [ ] Probar operaciones básicas de guardar y consultar
+- [x] Crear clase `Product`
+- [x] Crear clase `Customer`
+- [x] Evaluar clases auxiliares necesarias (`Address`, etc.) y mantener alcance minimo
+- [x] Implementar repositorio o servicio de acceso a RavenDB
+- [x] Probar operaciones básicas de guardar y consultar
 
 ### Criterios de aceptacion
 
-- [ ] Se pueden persistir productos y clientes
-- [ ] Los modelos representan correctamente la estructura definida en el diseño
-- [ ] El código está organizado y es fácil de explicar
-- [ ] Incluye pruebas automaticas si aplica
-- [ ] No rompe funcionalidades existentes
+- [x] Se pueden persistir productos y clientes
+- [x] Los modelos representan correctamente la estructura definida en el diseño
+- [x] El código está organizado y es fácil de explicar
+- [x] Incluye pruebas automaticas si aplica
+- [x] No rompe funcionalidades existentes
 - [ ] Integrado correctamente en `trunk`
 
 ### Responsable
@@ -47,3 +47,12 @@ Por asignar
 
 - Código de modelos y acceso a datos
 - Captura de documentos persistidos
+
+### Evidencia de ejecucion (2026-04-19)
+
+- Capas implementadas para `Product` y `Customer`: `model`, `dto`, `repository`, `service`, `controller`.
+- Para `Customer.address` se mantiene `String` en esta WI (sin clase `Address`) para no sobredimensionar el alcance.
+- Endpoints base disponibles para ambos recursos: `create`, `getById`, `list`.
+- Verificacion automatica:
+  - `mvn -q -Dtest=ProductServiceTest,CustomerServiceTest,ProductControllerTest,CustomerControllerTest test`
+  - `mvn test` (suite completa en verde).

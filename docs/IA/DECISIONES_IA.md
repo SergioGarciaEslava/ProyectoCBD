@@ -140,3 +140,30 @@ WI-017 es una tarea de contrato y alineacion tecnica. El objetivo es fijar una r
 ### Por que
 
 WI-003 exige una carga inicial defendible y repetible para demo/pruebas. La opcion adoptada minimiza complejidad, evita duplicados y mantiene el alcance acotado a la tarea sin adelantar CRUDs ni funcionalidades fuera del objetivo.
+
+## 2026-04-19 - Ejecucion de WI-004 (modelos y acceso a datos Product/Customer)
+
+### Que produjo la IA
+
+- Implementacion de entidades de dominio `Product` y `Customer`.
+- Definicion de DTOs de entrada/salida y paginacion para products/customers.
+- Creacion de interfaces de repositorio y sus implementaciones RavenDB.
+- Creacion de servicios de aplicacion para operaciones basicas (`create`, `getById`, `list`).
+- Exposicion de controladores REST para `/api/v1/products` y `/api/v1/customers`.
+- Pruebas automaticas en capa service y controller para ambos recursos.
+
+### Que se acepto
+
+- Arquitectura por capas (`controller`, `service`, `repository`, `model`, `dto`) por claridad y defendibilidad academica.
+- Alcance minimo para WI-004: operaciones base sin cubrir CRUD completo aun.
+- Cobertura de test ajustada al alcance, evitando sobre-ingenieria.
+
+### Que se descarto
+
+- Implementar en esta WI operaciones `update/delete` o filtros avanzados.
+- Añadir librerias de mapeo automatico (MapStruct u otras) para mantener simplicidad.
+- Extender la WI hacia pedidos (`Order`), fuera del alcance acordado.
+
+### Por que
+
+WI-004 pide preparar la base del CRUD para productos y clientes. La solucion aplicada deja cimientos limpios para WI-005/WI-006, mantiene bajo acoplamiento entre capas y aporta pruebas suficientes para validar comportamiento sin ampliar alcance.
