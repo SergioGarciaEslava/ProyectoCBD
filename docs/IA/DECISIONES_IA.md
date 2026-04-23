@@ -194,3 +194,31 @@ WI-004 pide preparar la base del CRUD para productos y clientes. La solucion apl
 ### Por que
 
 WI-005 requiere un CRUD usable para demo con Spring MVC y Thymeleaf. La solucion mantiene simplicidad, coherencia con OpenAPI ya existente y base estable para extender comportamiento en siguientes issues.
+
+## 2026-04-23 - Ajuste base Spring Boot MVC
+
+### Que produjo la IA
+
+- Ajuste de compilacion del proyecto a Java 17.
+- Migracion de la configuracion principal desde `application.yml` a `application.properties`.
+- Implementacion de `HomeController` con `GET /`.
+- Creacion de `index.html` como portada simple con navegacion a productos, clientes y pedidos.
+- Prueba MVC minima para la pagina inicial.
+- Actualizacion de README y trazabilidad IA.
+
+### Que se acepto
+
+- Mantener el cambio pequeno y centrado en el arranque base solicitado.
+- Conservar las dependencias actuales porque el codigo existente ya usa validacion Jakarta.
+- Sustituir YAML por properties para alinear el repo con el requisito explicitado por el usuario.
+- Configurar RavenDB hacia `http://127.0.0.1:8085` y base `RavenShop`, sin introducir todavia nuevos casos de uso de base de datos.
+
+### Que se descarto
+
+- Rehacer o eliminar las capas y funcionalidades ya existentes en el repositorio.
+- Anadir seguridad, persistencia relacional o nuevas dependencias.
+- Implementar vistas completas de clientes o pedidos en esta sesion.
+
+### Por que
+
+El objetivo de esta sesion es dejar una base de entrada simple y defendible sin ampliar el alcance. La portada MVC y la configuracion en properties cubren el arranque pedido, mientras que conservar el resto del codigo evita refactorizaciones grandes no solicitadas.

@@ -6,7 +6,7 @@ El foco del trabajo esta en documentos, RQL, auto-indexes y evidencias de uso de
 
 ## Stack tecnologico
 
-- Backend: Java 21 + Spring Boot 3.5.13
+- Backend: Java 17 + Spring Boot 3.5.13
 - Frontend: Spring MVC + Thymeleaf
 - Base de datos: RavenDB
 - Build tool: Maven
@@ -18,6 +18,7 @@ Este repositorio ya incluye una base funcional inicial:
 
 - Proyecto Maven/Spring Boot minimo.
 - Dependencias base para Web, Thymeleaf, Validation, RavenDB Java Client y Test.
+- Portada MVC en `GET /` con navegacion base a productos, clientes y pedidos.
 - Endpoints `GET /health` y `GET /health/ravendb` para comprobaciones de salud.
 - Base de dominio y acceso a datos para `Product` y `Customer` (capas `model`, `dto`, `repository`, `service`, `controller`).
 - Estructura de paquetes preparada para evolucionar el proyecto.
@@ -46,7 +47,7 @@ No incluye CRUDs completos, autenticacion, Docker ni despliegue cloud. El proyec
 |   |   |   |-- seed/
 |   |   |   `-- service/
 |   |   `-- resources/
-|   |       |-- application.yml
+|   |       |-- application.properties
 |   |       |-- static/
 |   |       `-- templates/
 |   `-- test/java/com/gr21/ravenshop/
@@ -69,7 +70,7 @@ No incluye CRUDs completos, autenticacion, Docker ni despliegue cloud. El proyec
 
 Requisitos locales:
 
-- Java 21 o superior.
+- Java 17 o superior.
 - Maven 3.8 o superior.
 
 Arranque:
@@ -100,10 +101,8 @@ mvn test
 
 El seed de RavenDB se ejecuta al arrancar la aplicacion solo si se activa:
 
-```yaml
-ravenshop:
-  seed:
-    enabled: true
+```properties
+ravenshop.seed.enabled=true
 ```
 
 Comportamiento del seed:
