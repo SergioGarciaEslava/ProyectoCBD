@@ -13,7 +13,7 @@ public class RavenDbConfig {
     @Bean(destroyMethod = "close")
     public IDocumentStore documentStore(RavenDbProperties properties) {
         var store = new DocumentStore();
-        store.setUrls(properties.getUrls().toArray(String[]::new));
+        store.setUrls(new String[]{properties.getUrl()});
         store.setDatabase(properties.getDatabase());
         store.initialize();
         return store;

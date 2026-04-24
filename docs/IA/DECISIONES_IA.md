@@ -222,3 +222,30 @@ WI-005 requiere un CRUD usable para demo con Spring MVC y Thymeleaf. La solucion
 ### Por que
 
 El objetivo de esta sesion es dejar una base de entrada simple y defendible sin ampliar el alcance. La portada MVC y la configuracion en properties cubren el arranque pedido, mientras que conservar el resto del codigo evita refactorizaciones grandes no solicitadas.
+
+## 2026-04-24 - Ajuste de conexion inicial RavenDB
+
+### Que produjo la IA
+
+- Simplificacion de `RavenDbProperties` a `url` y `database`.
+- Ajuste de `RavenDbConfig` para crear `DocumentStore` con una sola URL.
+- Actualizacion del endpoint de salud a `GET /health-db`.
+- Actualizacion de la prueba MVC del endpoint.
+- Actualizacion de `application.properties` y README.
+
+### Que se acepto
+
+- Mantener la conexion en una configuracion corta y centralizada.
+- Conservar el servicio de salud ya existente para no tocar mas capas de las necesarias.
+- Usar propiedades en singular para que la explicacion oral sea mas simple.
+- Devolver `status`, `url`, `database` y `details` para facilitar la defensa y la demo.
+
+### Que se descarto
+
+- Crear repositorios nuevos o acceso a datos de negocio en esta sesion.
+- Reestructurar el modulo RavenDB mas alla del ajuste puntual.
+- Introducir validaciones, perfiles o abstracciones extra.
+
+### Por que
+
+El objetivo es dejar una conexion inicial defendible y facil de explicar. El cambio reduce complejidad visible, mantiene el alcance tecnico acotado y deja una comprobacion directa de conectividad con RavenDB.
