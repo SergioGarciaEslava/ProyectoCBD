@@ -50,6 +50,22 @@ public class ProductService {
         return productRepository.save(product);
     }
 
+    public Optional<Product> findProductById(String productId) {
+        return productRepository.findById(normalizeId(productId));
+    }
+
+    public Optional<Product> updateProduct(String productId, String name, String category, java.math.BigDecimal price, int stock, List<String> tags) {
+        return productRepository.findById(normalizeId(productId))
+                .map(existing -> {
+                    existing.setName(name);
+                    existing.setCategory(category);
+                    existing.setPrice(price);
+                    existing.setStock(stock);
+                    existing.setTags(tags == null ? Collections.emptyList() : tags);
+                    return productRepository.save(existing);
+                });
+    }
+
     public List<Product> listProducts() {
         return productRepository.findAll();
     }
