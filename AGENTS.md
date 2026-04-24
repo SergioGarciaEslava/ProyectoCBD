@@ -5,6 +5,10 @@
 Este repositorio contiene un proyecto académico de CBD sobre RavenDB.
 El objetivo es construir una aplicación mínima y defendible en Java + Spring Boot + Thymeleaf, con foco en modelado documental, consultas RQL y auto-indexes de RavenDB.
 
+Versión de Java del proyecto:
+- Usar Java 21.
+- Mantener `pom.xml` y la documentación operativa alineados con Java 21.
+
 ## Project scope
 
 Aplicación mínima:
@@ -82,6 +86,10 @@ Cada entrada del log debe incluir:
 - observaciones
 
 ## Build, run and test
+
+Requisitos:
+- Java 21 o superior.
+- Maven 3.8 o superior.
 
 Usa Maven wrapper si existe:
 - `./mvnw test`

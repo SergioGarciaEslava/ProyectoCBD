@@ -246,3 +246,26 @@ El objetivo de esta sesion es dejar una base de entrada simple y defendible sin 
 ### Por que
 
 El usuario pidio volver a incluir la trazabilidad eliminada, pero aclaro que no queria restaurar la issue 14. La decision conserva los registros y reglas de IA necesarios sin reintroducir ese work item.
+
+## 2026-04-24 - Cambio a Java 21
+
+### Que produjo la IA
+
+- Cambio de la propiedad Maven `java.version` de 17 a 21.
+- Actualizacion del README para exigir Java 21 o superior.
+- Actualizacion de `AGENTS.md` para fijar Java 21 como version de referencia del proyecto.
+- Registro de la sesion en la trazabilidad IA.
+
+### Que se acepto
+
+- Mantener Spring Boot 3.5.13 y las dependencias actuales.
+- No introducir nuevas dependencias ni cambios funcionales.
+
+### Que se descarto
+
+- Cambiar codigo de aplicacion sin necesidad.
+- Anadir toolchains Maven o scripts extra en esta sesion.
+
+### Por que
+
+El cambio solicitado es de version de compilacion y requisitos locales. Java 21 es una version LTS y Spring Boot 3.5.x la soporta, por lo que basta con ajustar la propiedad Maven y la documentacion activa.

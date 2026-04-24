@@ -6,7 +6,7 @@ El foco del trabajo esta en documentos, RQL, auto-indexes y evidencias de uso de
 
 ## Stack tecnologico
 
-- Backend: Java 17 + Spring Boot 3.5.13
+- Backend: Java 21 + Spring Boot 3.5.13
 - Frontend: Spring MVC + Thymeleaf
 - Base de datos: RavenDB
 - Build tool: Maven
@@ -70,7 +70,7 @@ No incluye CRUDs completos, autenticacion, Docker ni despliegue cloud. El proyec
 
 Requisitos locales:
 
-- Java 17 o superior.
+- Java 21 o superior.
 - Maven 3.8 o superior.
 
 Arranque:
