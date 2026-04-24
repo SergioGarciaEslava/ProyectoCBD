@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.time.OffsetDateTime;
 
 @Service
 public class ProductService {
@@ -36,6 +37,17 @@ public class ProductService {
 
     public Optional<ProductResponse> getById(String productId) {
         return productRepository.findById(normalizeId(productId)).map(this::toResponse);
+    }
+
+    public Product createProduct(String name, String category, java.math.BigDecimal price, int stock, List<String> tags) {
+        Product product = new Product();
+        product.setName(name);
+        product.setCategory(category);
+        product.setPrice(price);
+        product.setStock(stock);
+        product.setTags(tags == null ? Collections.emptyList() : tags);
+        product.setCreatedAt(OffsetDateTime.now());
+        return productRepository.save(product);
     }
 
     public List<Product> listProducts() {

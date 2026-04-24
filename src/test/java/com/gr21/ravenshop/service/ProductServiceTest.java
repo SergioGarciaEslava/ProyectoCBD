@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.time.OffsetDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -62,6 +63,29 @@ class ProductServiceTest {
         Optional<ProductResponse> result = productService.getById("products/404-A");
 
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    void createProductStoresCreatedAtGeneratedOnServer() {
+        when(productRepository.save(org.mockito.ArgumentMatchers.any(Product.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Product saved = productService.createProduct(
+                "Cafe",
+                "Bebidas",
+                new BigDecimal("19.90"),
+                50,
+                List.of("premium", "arabica")
+        );
+
+        ArgumentCaptor<Product> captor = ArgumentCaptor.forClass(Product.class);
+        verify(productRepository).save(captor.capture());
+
+        assertThat(captor.getValue().getCreatedAt()).isNotNull();
+        assertThat(captor.getValue().getCreatedAt()).isBeforeOrEqualTo(OffsetDateTime.now());
+        assertThat(captor.getValue().getPrice()).isEqualByComparingTo("19.90");
+        assertThat(captor.getValue().getStock()).isEqualTo(50);
+        assertThat(captor.getValue().getTags()).containsExactly("premium", "arabica");
+        assertThat(saved.getCreatedAt()).isNotNull();
     }
 
     @Test
