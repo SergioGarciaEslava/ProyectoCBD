@@ -2,8 +2,8 @@
 
 ## Estado
 
-- Issues preparadas en Markdown: 17
-- Issues creadas en GitHub: 17
+- Issues preparadas en Markdown: 16
+- Issues creadas en GitHub documentadas aqui: 16
 - Repositorio remoto detectado: `git@github.com:SergioGarciaEslava/ProyectoCBD.git`
 - Repositorio GitHub verificado: `SergioGarciaEslava/ProyectoCBD`
 
@@ -35,7 +35,6 @@
 - #11 [WI-011] Preparar consultas RQL equivalentes para la defensa: <https://github.com/SergioGarciaEslava/ProyectoCBD/issues/11>
 - #12 [WI-012] Preparar demostración de auto-index generado por RavenDB: <https://github.com/SergioGarciaEslava/ProyectoCBD/issues/12>
 - #13 [WI-013] Redactar README con instalación, ejecución y guía de uso: <https://github.com/SergioGarciaEslava/ProyectoCBD/issues/13>
-- #14 [WI-014] Crear y mantener registro de uso de IA en `docs/uso_ia.md`: <https://github.com/SergioGarciaEslava/ProyectoCBD/issues/14>
 - #15 [WI-015] Preparar capturas, figuras y contenido base para memoria y presentación: <https://github.com/SergioGarciaEslava/ProyectoCBD/issues/15>
 - #16 [WI-016] Realizar ensayo técnico de defensa y demo de 15 minutos: <https://github.com/SergioGarciaEslava/ProyectoCBD/issues/16>
 - #17 [WI-017] Definir contrato OpenAPI para enfoque API-first: <https://github.com/SergioGarciaEslava/ProyectoCBD/issues/17>
