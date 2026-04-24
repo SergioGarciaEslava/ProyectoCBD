@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle del pedido</title>
+</head>
+<body>
+<h1>Detalle del pedido</h1>
+<p><a th:href="@{/}">Volver al inicio</a></p>
+
+<section>
+    <p><strong>ID:</strong> <span th:text="${order.id}">orders/1-A</span></p>
+    <p><strong>orderedAt:</strong> <span th:text="${order.orderedAt != null ? order.orderedAt : '-'}">2026-04-19T10:00:00Z</span></p>
+    <p><strong>status:</strong> <span th:text="${order.status != null ? order.status : '-'}">PAID</span></p>
+    <p><strong>shippingAddress:</strong> <span th:text="${order.shippingAddress != null and !#strings.isEmpty(order.shippingAddress) ? order.shippingAddress : '-'}">Madrid</span></p>
+    <p><strong>total:</strong> <span th:text="${order.total != null ? order.total : '-'}">64.65</span></p>
+</section>
+
+<section>
+    <h2>customerSnapshot</h2>
+    <div th:if="${order.customerSnapshot != null}">
+        <p><strong>customerId:</strong> <span th:text="${order.customerSnapshot.customerId != null ? order.customerSnapshot.customerId : '-'}">customers/1-A</span></p>
+        <p><strong>fullName:</strong> <span th:text="${order.customerSnapshot.fullName != null ? order.customerSnapshot.fullName : '-'}">Ana Lopez</span></p>
+        <p><strong>email:</strong> <span th:text="${order.customerSnapshot.email != null ? order.customerSnapshot.email : '-'}">ana.lopez@example.com</span></p>
+        <p><strong>city:</strong> <span th:text="${order.customerSnapshot.city != null ? order.customerSnapshot.city : '-'}">Madrid</span></p>
+    </div>
+    <p th:if="${order.customerSnapshot == null}">-</p>
+</section>
+
+<section>
+    <h2>lineItems</h2>
+    <p th:if="${#lists.isEmpty(order.lineItems)}">No hay lineItems disponibles.</p>
+    <table th:if="${not #lists.isEmpty(order.lineItems)}">
+        <thead>
+        <tr>
+            <th>productId</th>
+            <th>productName</th>
+            <th>quantity</th>
+            <th>unitPrice</th>
+            <th>lineTotal</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="line : ${order.lineItems}">
+            <td th:text="${line.productId}">products/1-A</td>
+            <td th:text="${line.productName}">Cafe</td>
+            <td th:text="${line.quantity}">2</td>
+            <td th:text="${line.unitPrice}">21.90</td>
+            <td th:text="${line.lineTotal}">43.80</td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+
+<section>
+    <h2>statusHistory</h2>
+    <p th:if="${#lists.isEmpty(order.statusHistory)}">No hay statusHistory disponible.</p>
+    <table th:if="${not #lists.isEmpty(order.statusHistory)}">
+        <thead>
+        <tr>
+            <th>status</th>
+            <th>changedAt</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="entry : ${order.statusHistory}">
+            <td th:text="${entry.status}">CREATED</td>
+            <td th:text="${entry.changedAt}">2026-04-19T10:00:00Z</td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+</body>
+</html>
