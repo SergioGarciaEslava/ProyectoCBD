@@ -595,48 +595,6 @@ Issues 1 a 12
 
 ---
 
-## ISSUE 14 — Registrar uso de IA en el repositorio
-**Título**
-Crear y mantener registro de uso de IA en `docs/uso_ia.md`
-
-**Labels**
-`type:docs`, `priority:high`
-
-**Milestone**
-`M5 - Entrega final`
-
-**Descripción**
-Crear un registro trazable del uso de ChatGPT, Codex u otras herramientas, indicando objetivo, prompt, resultado y revisión realizada por el equipo.
-
-**Objetivo**
-Facilitar el cumplimiento de los requisitos de autoría y defensa del trabajo.
-
-**Tareas**
-- Crear plantilla de registro
-- Añadir entradas por cada uso relevante de IA
-- Indicar qué parte se aprovechó realmente
-- Indicar qué se revisó o corrigió manualmente
-- Mantener el documento actualizado durante el desarrollo
-
-**Criterios de aceptación**
-- Existe archivo `docs/uso_ia.md`
-- El registro es entendible y no está vacío
-- Permite rastrear decisiones relevantes del proyecto
-
-**Dependencias**
-Ninguna
-
-**Estimación**
-2 h iniciales + mantenimiento
-
-**Clockify tag**
-`ia-apoyo`
-
-**Evidencia mínima**
-- Archivo en repositorio con varias entradas reales
-
----
-
 ## ISSUE 15 — Preparar material para memoria y presentación
 **Título**
 Preparar capturas, figuras y contenido base para memoria y presentación
