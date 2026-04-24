@@ -2,17 +2,13 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${edit} ? 'Editar producto' : 'Nuevo producto'">Producto</title>
+    <title>Nuevo producto</title>
 </head>
 <body>
-<h1 th:text="${edit} ? 'Editar producto' : 'Nuevo producto'">Producto</h1>
-<form th:action="${edit} ? @{/products/{id}(id=${productId})} : @{/products}" th:object="${form}" method="post">
+<h1>Nuevo producto</h1>
+<form th:action="@{/products}" th:object="${form}" method="post">
     <label>Nombre
         <input type="text" th:field="*{name}"/>
-    </label>
-    <br/>
-    <label>Descripcion
-        <input type="text" th:field="*{description}"/>
     </label>
     <br/>
     <label>Categoria
@@ -20,11 +16,15 @@
     </label>
     <br/>
     <label>Precio
-        <input type="number" step="0.01" min="0" th:field="*{unitPrice}"/>
+        <input type="number" step="0.01" min="0" th:field="*{price}"/>
     </label>
     <br/>
-    <label>Activo
-        <input type="checkbox" th:field="*{active}"/>
+    <label>Stock
+        <input type="number" min="0" th:field="*{stock}"/>
+    </label>
+    <br/>
+    <label>Tags
+        <input type="text" th:field="*{tagsText}" placeholder="cafe, premium, arabica"/>
     </label>
     <br/>
     <button type="submit">Guardar</button>

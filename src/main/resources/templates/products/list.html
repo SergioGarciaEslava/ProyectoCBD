@@ -7,6 +7,7 @@
 <body>
 <h1>Catalogo de productos</h1>
 <p><a th:href="@{/}">Volver al inicio</a></p>
+<p><a th:href="@{/products/new}">Nuevo producto</a></p>
 
 <p th:if="${#lists.isEmpty(products)}">No hay productos disponibles todavia.</p>
 
