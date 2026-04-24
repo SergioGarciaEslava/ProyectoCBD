@@ -38,6 +38,10 @@ public class ProductService {
         return productRepository.findById(normalizeId(productId)).map(this::toResponse);
     }
 
+    public List<Product> listProducts() {
+        return productRepository.findAll();
+    }
+
     public ProductPageResponse list(int page, int size) {
         List<ProductResponse> all = productRepository.findAll().stream()
                 .filter(Product::isActive)
