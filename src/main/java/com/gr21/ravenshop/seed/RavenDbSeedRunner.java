@@ -1,5 +1,6 @@
 package com.gr21.ravenshop.seed;
 
+import com.gr21.ravenshop.model.Product;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -40,10 +41,20 @@ public class RavenDbSeedRunner implements ApplicationRunner {
     }
 
     private void storeProducts(IDocumentSession session) {
-        session.store(new ProductDoc("products/1-A", "Cafe de especialidad 1kg", "Bebidas", new BigDecimal("21.90"), 50), "products/1-A");
-        session.store(new ProductDoc("products/2-A", "Te verde organico 500g", "Bebidas", new BigDecimal("12.40"), 80), "products/2-A");
-        session.store(new ProductDoc("products/3-A", "Chocolate negro 70% 200g", "Snacks", new BigDecimal("6.95"), 120), "products/3-A");
-        session.store(new ProductDoc("products/4-A", "Muesli sin azucar 750g", "Despensa", new BigDecimal("8.50"), 65), "products/4-A");
+        session.store(product("Cafe de especialidad 1kg", "Bebidas", "21.90", 50), "products/1-A");
+        session.store(product("Te verde organico 500g", "Bebidas", "12.40", 80), "products/2-A");
+        session.store(product("Chocolate negro 70% 200g", "Snacks", "6.95", 120), "products/3-A");
+        session.store(product("Muesli sin azucar 750g", "Despensa", "8.50", 65), "products/4-A");
+    }
+
+    private Product product(String name, String category, String price, int stock) {
+        Product product = new Product();
+        product.setName(name);
+        product.setCategory(category);
+        product.setPrice(new BigDecimal(price));
+        product.setStock(stock);
+        product.setCreatedAt(OffsetDateTime.now());
+        return product;
     }
 
     private void storeCustomers(IDocumentSession session) {
@@ -111,9 +122,6 @@ public class RavenDbSeedRunner implements ApplicationRunner {
     }
 
     public record SeedMarker(String id, String seededAt) {
-    }
-
-    public record ProductDoc(String id, String name, String category, BigDecimal price, int stock) {
     }
 
     public record CustomerDoc(String id, String fullName, String email, String city) {

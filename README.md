@@ -103,6 +103,7 @@ ravenshop.seed.enabled=true
 Comportamiento del seed:
 
 - Inserta documentos de ejemplo para `products`, `customers` y `orders`.
+- Los productos del seed se guardan con el mismo modelo `Product` que usa la aplicacion, para que el listado muestre juntos los sembrados y los creados manualmente.
 - Los pedidos incluyen lineas, total e historial de estados.
 - Es idempotente: si ya existe el marcador `seed-data/ravenshop-wi003`, no vuelve a cargar datos.
 

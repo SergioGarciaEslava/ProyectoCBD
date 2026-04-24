@@ -1,13 +1,17 @@
 package com.gr21.ravenshop.seed;
 
+import com.gr21.ravenshop.model.Product;
 import net.ravendb.client.documents.IDocumentStore;
 import net.ravendb.client.documents.session.IDocumentSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.ApplicationArguments;
+
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -45,8 +49,14 @@ class RavenDbSeedRunnerTest {
 
         runner.run(args);
 
+        ArgumentCaptor<Object> storedEntities = ArgumentCaptor.forClass(Object.class);
         verify(session, times(12)).store(any(), anyString());
+        verify(session, times(12)).store(storedEntities.capture(), anyString());
         verify(session, times(1)).saveChanges();
+
+        List<Object> allStored = storedEntities.getAllValues();
+        org.assertj.core.api.Assertions.assertThat(allStored.subList(0, 4))
+                .allMatch(Product.class::isInstance);
     }
 
     @Test

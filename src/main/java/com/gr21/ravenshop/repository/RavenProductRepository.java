@@ -11,6 +11,8 @@ import java.util.Optional;
 @Repository
 public class RavenProductRepository implements ProductRepository {
 
+    private static final String PRODUCT_ID_PREFIX = "products/";
+
     private final IDocumentStore documentStore;
 
     public RavenProductRepository(IDocumentStore documentStore) {
@@ -36,7 +38,10 @@ public class RavenProductRepository implements ProductRepository {
     @Override
     public List<Product> findAll() {
         try (IDocumentSession session = documentStore.openSession(documentStore.getDatabase())) {
-            return session.query(Product.class).toList();
+            return session.advanced()
+                    .rawQuery(Product.class, "from @all_docs where startsWith(id(), $idPrefix)")
+                    .addParameter("idPrefix", PRODUCT_ID_PREFIX)
+                    .toList();
         }
     }
 
