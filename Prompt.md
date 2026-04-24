@@ -6,6 +6,7 @@
 - Demostrar modelado y consulta de documentos complejos con `Products`, `Customers`, `Orders` y `Reviews` opcional.
 - Usar Java, Spring Boot, Spring MVC, Thymeleaf, RavenDB Java Client y Maven.
 - Mantener el proyecto simple, defendible y facil de explicar por estudiantes.
+- Documentar el uso de IA de forma trazable en `docs/IA/`.
 
 ## Non-goals
 
@@ -26,6 +27,7 @@
 - No introducir dependencias nuevas sin justificarlo.
 - Evitar Lombok salvo necesidad clara.
 - Mantener nombres claros y estilo academico/profesional.
+- Registrar cada sesion de IA en `docs/IA/`.
 
 ## Deliverables
 
@@ -33,6 +35,7 @@
 - Estructura base de paquetes para configuracion, controladores, servicios, repositorios, modelos, DTOs y seed.
 - Endpoint minimo de salud para verificar arranque.
 - Documentacion base: `README.md`, `AGENTS.md`, `Prompt.md`.
+- Trazabilidad IA: `PROMPTS_LOG.md`, `DECISIONES_IA.md`, prompt de sesion y resumen de sesion.
 - Issues preparados en Markdown desde el backlog y creados en GitHub si el entorno lo permite.
 
 ## Done when
@@ -41,6 +44,7 @@
 - `mvn test` compila y ejecuta las pruebas disponibles.
 - La aplicacion puede arrancar con `mvn spring-boot:run`.
 - `GET /health` responde correctamente.
+- Los documentos de `docs/IA/` estan creados y actualizados.
 - Las issues estan preparadas en `issues/` y, si `gh` esta autenticado, creadas en GitHub.
 
 ## Demo flow esperado
@@ -51,4 +55,4 @@
 4. Mostrar documentos en RavenDB Studio.
 5. Ejecutar operaciones minimas desde la aplicacion.
 6. Mostrar consultas RQL y auto-indexes generados por RavenDB.
-7. Explicar decisiones de modelado documental.
+7. Explicar decisiones de modelado documental y trazabilidad del uso de IA.

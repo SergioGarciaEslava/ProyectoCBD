@@ -22,7 +22,7 @@ Este repositorio ya incluye una base funcional inicial:
 - Endpoints `GET /health` y `GET /health-db` para comprobaciones de salud.
 - Base de dominio y acceso a datos para `Product` y `Customer` (capas `model`, `dto`, `repository`, `service`, `controller`).
 - Estructura de paquetes preparada para evolucionar el proyecto.
-- Documentacion operativa inicial.
+- Documentacion operativa y trazabilidad inicial del uso de IA.
 - Backlog convertido a archivos preparados en `issues/` cuando corresponda.
 
 No incluye CRUDs completos, autenticacion, Docker ni despliegue cloud. El proyecto ya incluye conexion base con RavenDB y un mecanismo de seed opcional para demo.
@@ -52,6 +52,11 @@ No incluye CRUDs completos, autenticacion, Docker ni despliegue cloud. El proyec
 |   |       `-- templates/
 |   `-- test/java/com/gr21/ravenshop/
 |-- docs/
+|   |-- IA/
+|   |   |-- PROMPTS_LOG.md
+|   |   |-- DECISIONES_IA.md
+|   |   |-- prompts/
+|   |   `-- sesiones/
 |   |-- demo/
 |   |-- evidencias/
 |   `-- spec/
@@ -125,3 +130,12 @@ Guia de uso para desarrollo y pruebas:
 - Consultas RQL y evidencias de auto-indexes.
 - Vistas Thymeleaf basicas para la demo.
 - Documentacion tecnica final y guion de defensa.
+
+## Uso de IA
+
+El uso de IA debe quedar documentado siempre en `docs/IA/`.
+
+- `docs/IA/PROMPTS_LOG.md`: registro de prompts, resultados y verificaciones.
+- `docs/IA/DECISIONES_IA.md`: decisiones sobre que se acepta, modifica o descarta.
+- `docs/IA/prompts/`: prompts completos o resumenes suficientemente trazables.
+- `docs/IA/sesiones/`: resumen de cada sesion de trabajo.
