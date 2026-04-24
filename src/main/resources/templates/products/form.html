@@ -10,18 +10,22 @@
     <label>Nombre
         <input type="text" th:field="*{name}"/>
     </label>
+    <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Error nombre</p>
     <br/>
     <label>Categoria
         <input type="text" th:field="*{category}"/>
     </label>
+    <p th:if="${#fields.hasErrors('category')}" th:errors="*{category}">Error categoria</p>
     <br/>
     <label>Precio
-        <input type="number" step="0.01" min="0" th:field="*{price}"/>
+        <input type="number" step="0.01" min="0.01" th:field="*{price}"/>
     </label>
+    <p th:if="${#fields.hasErrors('price')}" th:errors="*{price}">Error precio</p>
     <br/>
     <label>Stock
         <input type="number" min="0" th:field="*{stock}"/>
     </label>
+    <p th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}">Error stock</p>
     <br/>
     <label>Tags
         <input type="text" th:field="*{tagsText}" placeholder="cafe, premium, arabica"/>

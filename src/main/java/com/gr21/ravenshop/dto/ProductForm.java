@@ -9,13 +9,14 @@ import java.math.BigDecimal;
 
 public class ProductForm {
 
-    @NotBlank
+    @NotBlank(message = "El nombre es obligatorio")
     private String name;
+    @NotBlank(message = "La categoria es obligatoria")
     private String category;
     @NotNull
-    @DecimalMin("0.0")
+    @DecimalMin(value = "0.0", inclusive = false, message = "El precio debe ser mayor que 0")
     private BigDecimal price;
-    @Min(0)
+    @Min(value = 0, message = "El stock no puede ser negativo")
     private int stock;
     private String tagsText;
 
