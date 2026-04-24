@@ -19,7 +19,7 @@ Este repositorio ya incluye una base funcional inicial:
 - Proyecto Maven/Spring Boot minimo.
 - Dependencias base para Web, Thymeleaf, Validation, RavenDB Java Client y Test.
 - Portada MVC en `GET /` con navegacion base a productos, clientes y pedidos.
-- Endpoints `GET /health` y `GET /health/ravendb` para comprobaciones de salud.
+- Endpoints `GET /health` y `GET /health-db` para comprobaciones de salud.
 - Base de dominio y acceso a datos para `Product` y `Customer` (capas `model`, `dto`, `repository`, `service`, `controller`).
 - Estructura de paquetes preparada para evolucionar el proyecto.
 - Documentacion operativa inicial.
