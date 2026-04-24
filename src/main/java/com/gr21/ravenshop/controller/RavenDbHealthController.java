@@ -17,11 +17,12 @@ public class RavenDbHealthController {
         this.ravenDbProperties = ravenDbProperties;
     }
 
-    @GetMapping("/health/ravendb")
+    @GetMapping("/health-db")
     public Map<String, String> health() {
         var health = ravenDbHealthService.checkConnection();
         return Map.of(
             "status", health.up() ? "UP" : "DOWN",
+            "url", ravenDbProperties.getUrl(),
             "database", ravenDbProperties.getDatabase(),
             "details", health.details()
         );

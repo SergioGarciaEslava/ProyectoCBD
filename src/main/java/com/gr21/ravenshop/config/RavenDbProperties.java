@@ -1,22 +1,19 @@
 package com.gr21.ravenshop.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "ravendb")
 public class RavenDbProperties {
 
-    private List<String> urls = new ArrayList<>();
+    private String url;
     private String database;
 
-    public List<String> getUrls() {
-        return urls;
+    public String getUrl() {
+        return url;
     }
 
-    public void setUrls(List<String> urls) {
-        this.urls = urls;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public String getDatabase() {

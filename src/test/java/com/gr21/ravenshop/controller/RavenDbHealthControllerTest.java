@@ -30,11 +30,13 @@ class RavenDbHealthControllerTest {
     @Test
     void returnsUpWhenRavenDbConnectionIsAvailable() throws Exception {
         given(ravenDbHealthService.checkConnection()).willReturn(new RavenDbHealth(true, "Connected"));
+        given(ravenDbProperties.getUrl()).willReturn("http://127.0.0.1:8085");
         given(ravenDbProperties.getDatabase()).willReturn("RavenShop");
 
-        mockMvc.perform(get("/health/ravendb"))
+        mockMvc.perform(get("/health-db"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.status", is("UP")))
+            .andExpect(jsonPath("$.url", is("http://127.0.0.1:8085")))
             .andExpect(jsonPath("$.database", is("RavenShop")))
             .andExpect(jsonPath("$.details", is("Connected")));
     }
