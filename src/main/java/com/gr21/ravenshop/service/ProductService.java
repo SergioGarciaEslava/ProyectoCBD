@@ -70,6 +70,10 @@ public class ProductService {
         return productRepository.findAll();
     }
 
+    public boolean deleteProduct(String productId) {
+        return productRepository.deleteById(normalizeId(productId));
+    }
+
     public ProductPageResponse list(int page, int size) {
         List<ProductResponse> all = productRepository.findAll().stream()
                 .filter(Product::isActive)

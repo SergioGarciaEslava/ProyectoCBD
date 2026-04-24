@@ -86,6 +86,12 @@ public class ProductController {
         return "redirect:/products";
     }
 
+    @PostMapping("/{id}/delete")
+    public String delete(@PathVariable String id) {
+        productService.deleteProduct(id);
+        return "redirect:/products";
+    }
+
     private List<String> toTags(String tagsText) {
         if (tagsText == null || tagsText.isBlank()) {
             return List.of();
