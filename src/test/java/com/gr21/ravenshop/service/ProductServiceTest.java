@@ -147,6 +147,16 @@ class ProductServiceTest {
     }
 
     @Test
+    void deleteProductNormalizesIdAndUsesRepository() {
+        when(productRepository.deleteById("products/1-A")).thenReturn(true);
+
+        boolean result = productService.deleteProduct("1-A");
+
+        assertThat(result).isTrue();
+        verify(productRepository).deleteById("products/1-A");
+    }
+
+    @Test
     void deactivateMarksProductAsInactive() {
         Product existing = new Product();
         existing.setId("products/1-A");

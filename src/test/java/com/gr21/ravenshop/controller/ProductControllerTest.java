@@ -181,4 +181,15 @@ class ProductControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/products"));
     }
+
+    @Test
+    void deleteFromListRedirectsToProducts() throws Exception {
+        given(productService.deleteProduct("1-A")).willReturn(true);
+
+        mockMvc.perform(post("/products/1-A/delete"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/products"));
+
+        verify(productService).deleteProduct("1-A");
+    }
 }

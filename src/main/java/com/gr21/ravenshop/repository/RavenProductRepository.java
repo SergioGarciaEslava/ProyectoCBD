@@ -39,4 +39,18 @@ public class RavenProductRepository implements ProductRepository {
             return session.query(Product.class).toList();
         }
     }
+
+    @Override
+    public boolean deleteById(String id) {
+        try (IDocumentSession session = documentStore.openSession(documentStore.getDatabase())) {
+            Product product = session.load(Product.class, id);
+            if (product == null) {
+                return false;
+            }
+
+            session.delete(product);
+            session.saveChanges();
+            return true;
+        }
+    }
 }
