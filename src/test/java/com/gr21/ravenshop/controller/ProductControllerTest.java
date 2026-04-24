@@ -137,4 +137,48 @@ class ProductControllerTest {
                 org.mockito.ArgumentMatchers.anyList()
         );
     }
+
+    @Test
+    void editFormLoadsExistingProduct() throws Exception {
+        Product product = new Product();
+        product.setId("products/1-A");
+        product.setName("Cafe");
+        product.setCategory("Bebidas");
+        product.setPrice(new BigDecimal("19.90"));
+        product.setStock(50);
+        product.setTags(List.of("premium", "arabica"));
+        given(productService.findProductById("1-A")).willReturn(java.util.Optional.of(product));
+
+        mockMvc.perform(get("/products/1-A/edit"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("products/form"))
+                .andExpect(model().attributeExists("form"))
+                .andExpect(content().string(containsString("Editar producto")))
+                .andExpect(content().string(containsString("value=\"Cafe\"")))
+                .andExpect(content().string(containsString("value=\"Bebidas\"")))
+                .andExpect(content().string(containsString("value=\"premium, arabica\"")));
+    }
+
+    @Test
+    void updateFromFormRedirectsToProductsAndPreservesEditFlow() throws Exception {
+        Product product = new Product();
+        product.setId("products/1-A");
+        given(productService.updateProduct(
+                "1-A",
+                "Cafe Editado",
+                "Bebidas",
+                new BigDecimal("21.90"),
+                40,
+                List.of("premium", "origen")
+        )).willReturn(java.util.Optional.of(product));
+
+        mockMvc.perform(post("/products/1-A")
+                        .param("name", "Cafe Editado")
+                        .param("category", "Bebidas")
+                        .param("price", "21.90")
+                        .param("stock", "40")
+                        .param("tagsText", "premium, origen"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/products"));
+    }
 }

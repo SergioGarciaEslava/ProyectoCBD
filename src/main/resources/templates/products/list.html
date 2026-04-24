@@ -19,6 +19,7 @@
         <th>Categoria</th>
         <th>Precio</th>
         <th>Stock</th>
+        <th>Acciones</th>
     </tr>
     </thead>
     <tbody>
@@ -28,6 +29,7 @@
         <td th:text="${product.category}">Bebidas</td>
         <td th:text="${product.price}">19.90</td>
         <td th:text="${product.stock}">50</td>
+        <td><a th:href="@{/products/{id}/edit(id=${#strings.substringAfter(product.id, '/')})}">Editar</a></td>
     </tr>
     </tbody>
 </table>

@@ -2,11 +2,11 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Nuevo producto</title>
+    <title th:text="${edit} ? 'Editar producto' : 'Nuevo producto'">Producto</title>
 </head>
 <body>
-<h1>Nuevo producto</h1>
-<form th:action="@{/products}" th:object="${form}" method="post">
+<h1 th:text="${edit} ? 'Editar producto' : 'Nuevo producto'">Producto</h1>
+<form th:action="${edit} ? @{/products/{id}(id=${productId})} : @{/products}" th:object="${form}" method="post">
     <label>Nombre
         <input type="text" th:field="*{name}"/>
     </label>

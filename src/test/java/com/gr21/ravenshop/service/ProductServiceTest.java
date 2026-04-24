@@ -115,6 +115,38 @@ class ProductServiceTest {
     }
 
     @Test
+    void updateProductKeepsOriginalCreatedAt() {
+        Product existing = new Product();
+        existing.setId("products/1-A");
+        existing.setName("Cafe");
+        existing.setCategory("Bebidas");
+        existing.setPrice(new BigDecimal("19.90"));
+        existing.setStock(50);
+        existing.setTags(List.of("premium"));
+        OffsetDateTime createdAt = OffsetDateTime.parse("2026-04-24T10:15:30+02:00");
+        existing.setCreatedAt(createdAt);
+
+        when(productRepository.findById("products/1-A")).thenReturn(Optional.of(existing));
+        when(productRepository.save(org.mockito.ArgumentMatchers.any(Product.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Optional<Product> result = productService.updateProduct(
+                "1-A",
+                "Cafe Editado",
+                "Bebidas",
+                new BigDecimal("21.90"),
+                40,
+                List.of("premium", "origen")
+        );
+
+        assertThat(result).isPresent();
+        assertThat(result.get().getName()).isEqualTo("Cafe Editado");
+        assertThat(result.get().getPrice()).isEqualByComparingTo("21.90");
+        assertThat(result.get().getStock()).isEqualTo(40);
+        assertThat(result.get().getTags()).containsExactly("premium", "origen");
+        assertThat(result.get().getCreatedAt()).isEqualTo(createdAt);
+    }
+
+    @Test
     void deactivateMarksProductAsInactive() {
         Product existing = new Product();
         existing.setId("products/1-A");
