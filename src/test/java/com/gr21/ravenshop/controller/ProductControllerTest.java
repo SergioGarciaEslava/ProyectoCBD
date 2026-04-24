@@ -13,6 +13,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -86,6 +87,54 @@ class ProductControllerTest {
                 new BigDecimal("19.90"),
                 50,
                 List.of("premium", "arabica", "origen")
+        );
+    }
+
+    @Test
+    void createFromFormShowsErrorsAndDoesNotSaveWhenValidationFails() throws Exception {
+        mockMvc.perform(post("/products")
+                        .param("name", "Cafe")
+                        .param("category", "")
+                        .param("price", "0")
+                        .param("stock", "-1")
+                        .param("tagsText", "premium"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("products/form"))
+                .andExpect(content().string(containsString("La categoria es obligatoria")))
+                .andExpect(content().string(containsString("El precio debe ser mayor que 0")))
+                .andExpect(content().string(containsString("El stock no puede ser negativo")))
+                .andExpect(content().string(containsString("value=\"Cafe\"")))
+                .andExpect(content().string(containsString("value=\"premium\"")));
+
+        verify(productService, never()).createProduct(
+                org.mockito.ArgumentMatchers.anyString(),
+                org.mockito.ArgumentMatchers.anyString(),
+                org.mockito.ArgumentMatchers.any(),
+                org.mockito.ArgumentMatchers.anyInt(),
+                org.mockito.ArgumentMatchers.anyList()
+        );
+    }
+
+    @Test
+    void createFromFormRequiresName() throws Exception {
+        mockMvc.perform(post("/products")
+                        .param("name", "")
+                        .param("category", "Bebidas")
+                        .param("price", "19.90")
+                        .param("stock", "5")
+                        .param("tagsText", "premium"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("products/form"))
+                .andExpect(content().string(containsString("El nombre es obligatorio")))
+                .andExpect(content().string(containsString("value=\"Bebidas\"")))
+                .andExpect(content().string(containsString("value=\"premium\"")));
+
+        verify(productService, never()).createProduct(
+                org.mockito.ArgumentMatchers.anyString(),
+                org.mockito.ArgumentMatchers.anyString(),
+                org.mockito.ArgumentMatchers.any(),
+                org.mockito.ArgumentMatchers.anyInt(),
+                org.mockito.ArgumentMatchers.anyList()
         );
     }
 }
