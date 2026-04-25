@@ -19,6 +19,7 @@
         <th>Email</th>
         <th>Ciudad</th>
         <th>Telefono</th>
+        <th>Acciones</th>
     </tr>
     </thead>
     <tbody>
@@ -28,6 +29,9 @@
         <td th:text="${customer.email}">ana.lopez@example.com</td>
         <td th:text="${customer.address != null and customer.address.city != null and !#strings.isEmpty(customer.address.city) ? customer.address.city : '-'}">Madrid</td>
         <td th:text="${customer.phone != null and !#strings.isEmpty(customer.phone) ? customer.phone : '-'}">+34 600000000</td>
+        <td>
+            <a th:href="@{/customers/{id}/edit(id=${#strings.substringAfter(customer.id, '/')})}">Editar</a>
+        </td>
     </tr>
     </tbody>
 </table>

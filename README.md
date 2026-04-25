@@ -21,7 +21,7 @@ Este repositorio ya incluye una base funcional inicial:
 - Portada MVC en `GET /` con navegacion base a productos, clientes y pedidos.
 - Endpoints `GET /health` y `GET /health-db` para comprobaciones de salud.
 - Base de dominio y acceso a datos para `Product` y `Customer` (capas `model`, `dto`, `repository`, `service`, `controller`).
-- Vista MVC `GET /customers` para listar documentos `Customer` y alta basica con `GET /customers/new` + `POST /customers`.
+- Vista MVC para listar, crear y editar documentos `Customer`.
 - Estructura de paquetes preparada para evolucionar el proyecto.
 - Documentacion operativa inicial.
 - Backlog convertido a archivos preparados en `issues/` cuando corresponda.
