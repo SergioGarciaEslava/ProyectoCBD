@@ -425,6 +425,41 @@ tr:last-child td {
     font-weight: 850;
 }
 
+.concept-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.concept-chip {
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: var(--surface-subtle);
+    color: var(--indigo-velvet);
+    padding: 4px 12px;
+    font-size: 0.78rem;
+    font-weight: 750;
+}
+
+.tools-strip {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    margin-top: 1px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-top: 0;
+    border-radius: 0 0 var(--radius) var(--radius);
+    background: var(--line);
+}
+
+.home-strip {
+    border-radius: var(--radius) var(--radius) 0 0;
+}
+
 @media (max-width: 760px) {
     .topbar-inner,
     .page-header {
@@ -445,6 +480,7 @@ tr:last-child td {
     }
 
     .home-strip,
+    .tools-strip,
     .detail-grid {
         grid-template-columns: 1fr;
     }
