@@ -47,7 +47,7 @@ public class CustomerController {
                 form.getFullName(),
                 form.getEmail(),
                 form.getPhone(),
-                form.toAddress()
+                form.getAddress()
         );
         return "redirect:/customers";
     }
