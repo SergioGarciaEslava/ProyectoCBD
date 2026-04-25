@@ -24,9 +24,15 @@
 <main class="page">
     <section class="page-header">
         <div>
-            <p class="page-kicker">RavenDB + Spring Boot</p>
+            <p class="page-kicker">Proyecto academico &middot; CBD</p>
             <h1>RavenShop</h1>
-            <p class="lead">Proyecto academico de CBD con documentos de productos, clientes y pedidos.</p>
+            <p class="lead">Aplicacion academica para demostrar modelado documental en RavenDB: documentos, subdocumentos embebidos, RQL y auto-indexes generados en tiempo de ejecucion.</p>
+            <ul class="concept-chips" aria-label="Conceptos demostrados">
+                <li class="concept-chip">Documentos</li>
+                <li class="concept-chip">Subdoc. embebidos</li>
+                <li class="concept-chip">RQL</li>
+                <li class="concept-chip">Auto-Index</li>
+            </ul>
             <div class="actions home-actions">
                 <a class="button" th:href="@{/orders/new}">Crear pedido</a>
                 <a class="button button-secondary" th:href="@{/products}">Ver productos</a>
@@ -37,15 +43,26 @@
     <section class="home-strip" aria-label="Accesos principales">
         <a class="home-link" th:href="@{/products}">
             <strong>Productos</strong>
-            <span>Catalogo, alta, edicion y borrado logico.</span>
+            <span>Catalogo con busqueda por nombre &mdash; demuestra <code>Auto/Products/ByName</code>.</span>
         </a>
         <a class="home-link" th:href="@{/customers}">
             <strong>Clientes</strong>
-            <span>Datos de contacto y direccion para la demo.</span>
+            <span>Snapshot embebido en pedidos &mdash; documento relacionado sin join.</span>
         </a>
         <a class="home-link" th:href="@{/orders/new}">
             <strong>Crear pedido</strong>
-            <span>Pedido documental con lineas y snapshot de cliente.</span>
+            <span>Documento con <code>lineItems</code>, <code>customerSnapshot</code> y <code>statusHistory</code>.</span>
+        </a>
+    </section>
+
+    <section class="tools-strip" aria-label="Herramientas de demo">
+        <a class="home-link" href="/swagger-ui.html" target="_blank" rel="noopener">
+            <strong>Swagger UI</strong>
+            <span>Explorar y probar el API REST en vivo.</span>
+        </a>
+        <a class="home-link" th:href="@{/health-db}" target="_blank" rel="noopener">
+            <strong>Estado RavenDB</strong>
+            <span>Conexion activa y latencia con la base de datos.</span>
         </a>
     </section>
 </main>
