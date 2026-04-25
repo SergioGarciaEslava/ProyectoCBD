@@ -49,8 +49,10 @@ class OrderControllerTest {
         Order.OrderLineItem line = new Order.OrderLineItem();
         line.setProductId("products/1-A");
         line.setProductName("Cafe de especialidad 1kg");
+        line.setCategory("Bebidas");
         line.setQuantity(2);
         line.setUnitPrice(new BigDecimal("21.90"));
+        line.setLineTotal(new BigDecimal("43.80"));
         order.setLineItems(List.of(line));
 
         Order.StatusHistoryEntry entry = new Order.StatusHistoryEntry();

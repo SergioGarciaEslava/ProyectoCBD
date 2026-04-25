@@ -149,6 +149,7 @@ public class Order {
 
         private String productId;
         private String productName;
+        private String category;
         private int quantity;
         private BigDecimal unitPrice;
         private BigDecimal lineTotal;
@@ -172,6 +173,14 @@ public class Order {
             this.productName = productName;
         }
 
+        public String getCategory() {
+            return category;
+        }
+
+        public void setCategory(String category) {
+            this.category = category;
+        }
+
         public int getQuantity() {
             return quantity;
         }
@@ -189,13 +198,7 @@ public class Order {
         }
 
         public BigDecimal getLineTotal() {
-            if (lineTotal != null) {
-                return lineTotal;
-            }
-            if (unitPrice == null) {
-                return null;
-            }
-            return unitPrice.multiply(BigDecimal.valueOf(quantity));
+            return lineTotal;
         }
 
         public void setLineTotal(BigDecimal lineTotal) {
