@@ -1,13 +1,15 @@
 package com.gr21.ravenshop.model;
 
+import java.time.OffsetDateTime;
+
 public class Customer {
 
     private String id;
     private String fullName;
     private String email;
     private String phone;
-    private String city;
-    private String address;
+    private Address address = new Address();
+    private OffsetDateTime createdAt = OffsetDateTime.now();
 
     public Customer() {
     }
@@ -44,19 +46,19 @@ public class Customer {
         this.phone = phone;
     }
 
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getAddress() {
+    public Address getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAddress(Address address) {
+        this.address = address == null ? new Address() : address;
+    }
+
+    public OffsetDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(OffsetDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

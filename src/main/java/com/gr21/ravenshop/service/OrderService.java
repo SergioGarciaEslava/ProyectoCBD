@@ -1,5 +1,6 @@
 package com.gr21.ravenshop.service;
 
+import com.gr21.ravenshop.model.Address;
 import com.gr21.ravenshop.model.Customer;
 import com.gr21.ravenshop.model.Order;
 import com.gr21.ravenshop.repository.CustomerRepository;
@@ -59,19 +60,38 @@ public class OrderService {
             snapshot.setCustomerId(customer.getId());
             snapshot.setFullName(customer.getFullName());
             snapshot.setEmail(customer.getEmail());
-            snapshot.setCity(customer.getCity());
+            snapshot.setCity(customerCity(customer));
             order.setCustomerSnapshot(snapshot);
         }
 
         if (isBlank(order.getShippingAddress())) {
-            if (!isBlank(customer.getAddress()) && !isBlank(customer.getCity())) {
-                order.setShippingAddress(customer.getAddress() + ", " + customer.getCity());
-            } else if (!isBlank(customer.getAddress())) {
-                order.setShippingAddress(customer.getAddress());
-            } else if (!isBlank(customer.getCity())) {
-                order.setShippingAddress(customer.getCity());
-            }
+            order.setShippingAddress(formatShippingAddress(customer.getAddress()));
         }
+    }
+
+    private String customerCity(Customer customer) {
+        Address address = customer.getAddress();
+        return address == null ? null : address.getCity();
+    }
+
+    private String formatShippingAddress(Address address) {
+        if (address == null) {
+            return null;
+        }
+
+        String street = address.getStreet();
+        String city = address.getCity();
+
+        if (!isBlank(street) && !isBlank(city)) {
+            return street + ", " + city;
+        }
+        if (!isBlank(street)) {
+            return street;
+        }
+        if (!isBlank(city)) {
+            return city;
+        }
+        return null;
     }
 
     private boolean isBlank(String value) {

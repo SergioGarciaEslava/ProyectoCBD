@@ -1,5 +1,6 @@
 package com.gr21.ravenshop.service;
 
+import com.gr21.ravenshop.model.Address;
 import com.gr21.ravenshop.model.Customer;
 import com.gr21.ravenshop.model.Order;
 import com.gr21.ravenshop.repository.CustomerRepository;
@@ -47,8 +48,7 @@ class OrderServiceTest {
         customer.setId("customers/1-A");
         customer.setFullName("Ana Lopez");
         customer.setEmail("ana.lopez@example.com");
-        customer.setCity("Madrid");
-        customer.setAddress("Calle Mayor 1");
+        customer.setAddress(new Address("Calle Mayor 1", "Madrid", null));
 
         when(orderRepository.findById("orders/1-A")).thenReturn(Optional.of(order));
         when(customerRepository.findById("customers/1-A")).thenReturn(Optional.of(customer));
