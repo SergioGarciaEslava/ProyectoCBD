@@ -452,3 +452,35 @@ Las reglas pedidas son invariantes basicas del documento `Order`: un pedido nuev
 ### Por que
 
 La WI-007 ya cuenta con modelo, calculo de totales y validaciones. Para cerrarla de forma defendible, basta con dejar una evidencia manual clara y un ejemplo documental que explique el enfoque de RavenDB sin ampliar alcance.
+
+## 2026-04-25 - Creacion de pedidos WI-008
+
+### Que produjo la IA
+
+- DTOs de formulario para crear pedidos desde Thymeleaf.
+- Persistencia de `Order` en RavenDB desde `OrderRepository`.
+- Metodo `OrderService.createOrder(...)` para construir el documento a partir de cliente, productos y cantidades.
+- Rutas MVC `GET /orders/new` y `POST /orders`.
+- Plantilla `orders/form.html` con tres lineas fijas de pedido.
+- Enlace desde la portada a la creacion de pedidos.
+- Documentacion de RavenDB con Docker en README.
+
+### Que se acepto
+
+- Mantener el flujo de pedido como MVC simple, sin JavaScript ni componentes frontend adicionales.
+- Usar clientes y productos ya existentes en RavenDB en vez de crear datos nuevos dentro del formulario.
+- Ignorar lineas sin producto y dejar que `Order.createPending(...)` rechace pedidos sin lineas validas.
+- Copiar snapshot del cliente y datos historicos del producto en el documento `Order`.
+- Recalcular `lineTotal` y `total` siempre en servidor.
+- Hacer commits pequenos por parte funcional y no hacer push.
+
+### Que se descarto
+
+- Crear un checkout completo, pagos, autenticacion o gestion avanzada de estados.
+- Anadir dependencias de frontend o validacion extra.
+- Introducir una capa especifica de comandos o validadores.
+- Modificar el seed, porque el seed existente ya aporta clientes y productos suficientes para probar la creacion.
+
+### Por que
+
+WI-008 necesita cerrar el caso de uso de creacion de pedidos de forma demostrable. La solucion mantiene el foco academico: un formulario sencillo produce un documento agregado en RavenDB con datos embebidos, snapshot historico y totales calculados por el servidor.

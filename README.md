@@ -18,15 +18,16 @@ Este repositorio ya incluye una base funcional inicial:
 
 - Proyecto Maven/Spring Boot minimo.
 - Dependencias base para Web, Thymeleaf, Validation, RavenDB Java Client y Test.
-- Portada MVC en `GET /` con navegacion base a productos, clientes y pedidos.
+- Portada MVC en `GET /` con navegacion base a productos, clientes y creacion de pedidos.
 - Endpoints `GET /health` y `GET /health-db` para comprobaciones de salud.
 - Base de dominio y acceso a datos para `Product` y `Customer` (capas `model`, `dto`, `repository`, `service`, `controller`).
 - Vista MVC para listar, crear y editar documentos `Customer`.
+- Vista MVC sencilla para crear pedidos desde clientes y productos existentes.
 - Estructura de paquetes preparada para evolucionar el proyecto.
 - Documentacion operativa y trazabilidad inicial del uso de IA.
 - Backlog convertido a archivos preparados en `issues/` cuando corresponda.
 
-No incluye CRUDs completos, autenticacion, Docker ni despliegue cloud. El proyecto ya incluye conexion base con RavenDB y un mecanismo de seed opcional para demo.
+No incluye CRUDs completos, autenticacion ni despliegue cloud. El proyecto ya incluye conexion base con RavenDB, un mecanismo de seed opcional para demo e instrucciones para levantar RavenDB con Docker en local.
 
 ## Estructura del repositorio
 
@@ -73,6 +74,28 @@ Requisitos locales:
 
 - Java 21 o superior.
 - Maven 3.8 o superior.
+- RavenDB disponible en `http://127.0.0.1:8085` con base `RavenShop`.
+
+### RavenDB local con Docker
+
+Si no tienes RavenDB instalado, puedes levantarlo con Docker:
+
+```bash
+docker run --rm --name ravendb-ravenshop \
+  -p 8085:8080 \
+  -p 38888:38888 \
+  -e RAVEN_Setup_Mode=None \
+  -e RAVEN_Security_UnsecuredAccessAllowed=PublicNetwork \
+  ravendb/ravendb:latest
+```
+
+Despues abre RavenDB Studio en:
+
+```text
+http://127.0.0.1:8085
+```
+
+Crea la base `RavenShop` si no existe. Es el nombre configurado en `src/main/resources/application.properties`.
 
 Arranque:
 
@@ -114,12 +137,35 @@ El seed de RavenDB se ejecuta al arrancar la aplicacion solo si se activa:
 ravenshop.seed.enabled=true
 ```
 
+Con Docker levantado, puedes arrancar la aplicacion con datos semilla asi:
+
+```bash
+mvn spring-boot:run -Dspring-boot.run.arguments="--ravenshop.seed.enabled=true"
+```
+
 Comportamiento del seed:
 
 - Inserta documentos de ejemplo para `products`, `customers` y `orders`.
 - Los productos del seed se guardan con el mismo modelo `Product` que usa la aplicacion, para que el listado muestre juntos los sembrados y los creados manualmente.
 - Los pedidos incluyen lineas, total e historial de estados.
 - Es idempotente: si ya existe el marcador `seed-data/ravenshop-wi003`, no vuelve a cargar datos.
+
+## Creacion de pedidos (WI-008)
+
+La creacion de pedidos esta disponible desde:
+
+```text
+http://localhost:8081/orders/new
+```
+
+Funcionamiento actual:
+
+- El formulario usa clientes y productos ya existentes en RavenDB.
+- No introduce autenticacion, pagos ni flujo avanzado de pedido.
+- El usuario selecciona cliente, productos y cantidades.
+- El servidor carga los documentos reales de `Customer` y `Product`.
+- El pedido se guarda como documento `Order` con `customerSnapshot`, `lineItems`, `statusHistory`, `status = Pending`, `lineTotal` por linea y `total`.
+- Los importes se recalculan siempre en servidor; el frontend no envia ni decide `lineTotal` ni `total`.
 
 ## Contrato API-first (OpenAPI)
 
@@ -134,8 +180,6 @@ Guia de uso para desarrollo y pruebas:
 ## Que falta por implementar
 
 - CRUD completo de clientes y filtros avanzados de productos.
-- Modelo y caso de uso completo de pedidos (`Order`).
-- Caso de uso de creacion de pedidos.
 - Consultas RQL y evidencias de auto-indexes.
 - Vistas Thymeleaf basicas para la demo.
 - Documentacion tecnica final y guion de defensa.
