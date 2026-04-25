@@ -13,6 +13,8 @@ public class Order {
 
     public static final String STATUS_PENDING = "Pending";
     public static final String INITIAL_STATUS_COMMENT = "Pedido creado";
+    public static final String EMPTY_ORDER_MESSAGE = "El pedido debe tener al menos una linea";
+    public static final String INVALID_QUANTITY_MESSAGE = "La cantidad de cada linea debe ser mayor que cero";
 
     private String id;
     private String customerId;
@@ -42,10 +44,29 @@ public class Order {
         return order;
     }
 
+    public static Order createPending(List<OrderLineItem> lineItems) {
+        Order order = createPending();
+        order.setLineItems(lineItems);
+        order.validateForCreation();
+        order.recalculateTotals();
+        return order;
+    }
+
+    public void validateForCreation() {
+        if (lineItems.isEmpty()) {
+            throw new IllegalArgumentException(EMPTY_ORDER_MESSAGE);
+        }
+
+        for (OrderLineItem lineItem : lineItems) {
+            lineItem.validateQuantity();
+        }
+    }
+
     public void recalculateTotals() {
         BigDecimal calculatedTotal = BigDecimal.ZERO;
 
         for (OrderLineItem lineItem : lineItems) {
+            lineItem.validateQuantity();
             BigDecimal lineTotal = lineItem.calculateLineTotal();
             lineItem.setLineTotal(lineTotal);
             calculatedTotal = calculatedTotal.add(lineTotal);
@@ -236,6 +257,12 @@ public class Order {
                 return BigDecimal.ZERO;
             }
             return unitPrice.multiply(BigDecimal.valueOf(quantity));
+        }
+
+        private void validateQuantity() {
+            if (quantity <= 0) {
+                throw new IllegalArgumentException(INVALID_QUANTITY_MESSAGE);
+            }
         }
     }
 

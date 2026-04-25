@@ -398,3 +398,31 @@ El objetivo actual es representar estado actual y trazabilidad sin cerrar todavi
 ### Por que
 
 El requisito es demostrar una regla de negocio sencilla y defendible: los importes salen de `quantity` y `unitPrice`. Un metodo de dominio invocado desde el servicio cubre el caso sin sobredisenar el proyecto.
+
+## 2026-04-25 - Validaciones minimas de Order
+
+### Que produjo la IA
+
+- Sobrecarga `Order.createPending(List<OrderLineItem>)` para crear pedidos nuevos con lineas.
+- Metodo `Order.validateForCreation()` para rechazar pedidos vacios.
+- Validacion de `quantity > 0` en cada linea.
+- Pruebas de modelo para pedido vacio, cantidad invalida, estado inicial `Pending` y recalculo de totales.
+- Prueba de servicio para confirmar que una cantidad invalida se detecta al recalcular en servidor.
+
+### Que se acepto
+
+- Usar `IllegalArgumentException` con mensajes simples y explicables.
+- Mantener las reglas en el agregado `Order`, porque pertenecen al documento de pedido y evitan capas innecesarias.
+- Mantener `Order.createPending()` sin argumentos para no romper codigo existente, y usar la nueva sobrecarga para creaciones reales con lineas.
+- Mantener Java 21 como version del proyecto por regla activa de `AGENTS.md`.
+
+### Que se descarto
+
+- Crear pantalla o formulario de creacion de pedidos.
+- Anadir validaciones de producto, stock, cliente o transiciones de estado.
+- Introducir frameworks o dependencias nuevas.
+- Cambiar el proyecto a Java 17.
+
+### Por que
+
+Las reglas pedidas son invariantes basicas del documento `Order`: un pedido nuevo necesita lineas, cantidades validas, estado inicial y totales calculados por servidor. Resolverlo en el modelo mantiene el codigo corto y defendible para la explicacion oral.

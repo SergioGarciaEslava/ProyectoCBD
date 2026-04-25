@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -76,6 +77,21 @@ class OrderServiceTest {
 
         assertThat(result).isEmpty();
         verify(orderRepository).findById("orders/404-A");
+    }
+
+    @Test
+    void findByIdDetectsInvalidQuantitiesWhenRecalculatingTotalsOnServer() {
+        Order order = new Order();
+        order.setId("orders/2-A");
+        order.setLineItems(List.of(line("products/1-A", "Cafe", "Bebidas", 0, "21.90", "0.00")));
+
+        when(orderRepository.findById("orders/2-A")).thenReturn(Optional.of(order));
+
+        assertThatThrownBy(() -> orderService.findById("2-A"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(Order.INVALID_QUANTITY_MESSAGE);
+
+        verify(orderRepository).findById("orders/2-A");
     }
 
     private Order.OrderLineItem line(String productId, String productName, String category, int quantity, String unitPrice,
