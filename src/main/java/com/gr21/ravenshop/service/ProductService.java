@@ -70,6 +70,13 @@ public class ProductService {
         return productRepository.findAll();
     }
 
+    public List<Product> searchProductsByName(String namePrefix) {
+        if (namePrefix == null || namePrefix.isBlank()) {
+            return productRepository.findAll();
+        }
+        return productRepository.searchByNamePrefix(namePrefix.trim());
+    }
+
     public boolean deleteProduct(String productId) {
         return productRepository.deleteById(normalizeId(productId));
     }

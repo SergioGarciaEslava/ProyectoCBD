@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,8 +28,10 @@ public class ProductController {
     }
 
     @GetMapping
-    public String list(Model model) {
-        model.addAttribute("products", productService.listProducts());
+    public String list(@RequestParam(value = "q", required = false) String q, Model model) {
+        String query = q == null ? "" : q.trim();
+        model.addAttribute("products", productService.searchProductsByName(query));
+        model.addAttribute("query", query);
         return "products/list";
     }
 

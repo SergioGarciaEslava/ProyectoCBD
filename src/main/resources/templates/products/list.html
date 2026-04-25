@@ -26,13 +26,26 @@
         <div>
             <p class="page-kicker">Catalogo</p>
             <h1>Productos</h1>
-            <p class="lead">Documentos de producto disponibles para la demo.</p>
+            <p class="lead">Documentos de producto disponibles para la demo. La busqueda por nombre dispara el auto-index <code>Auto/Products/ByName</code> en RavenDB.</p>
         </div>
         <div class="actions">
             <a class="button button-secondary" th:href="@{/}">Inicio</a>
             <a class="button" th:href="@{/products/new}">Nuevo producto</a>
         </div>
     </header>
+
+    <form class="search-bar" method="get" th:action="@{/products}" role="search" aria-label="Buscar productos por nombre">
+        <label class="visually-hidden" for="product-search-input">Buscar por nombre</label>
+        <input id="product-search-input" type="search" name="q" th:value="${query}" placeholder="Buscar por prefijo de nombre (ej. Cafe)" autocomplete="off">
+        <button class="button" type="submit">Buscar</button>
+        <a class="button button-secondary" th:if="${query != null and !#strings.isEmpty(query)}" th:href="@{/products}">Limpiar</a>
+    </form>
+
+    <p class="search-summary" th:if="${query != null and !#strings.isEmpty(query)}">
+        <span th:text="${#lists.size(products)}">0</span>
+        resultado(s) para
+        <strong th:text="${query}">Cafe</strong>.
+    </p>
 
     <p class="empty-state" th:if="${#lists.isEmpty(products)}">No hay productos disponibles todavia.</p>
 
@@ -67,6 +80,14 @@
             </tbody>
         </table>
     </div>
+
+    <aside class="rql-panel" aria-label="Consulta RQL ejecutada">
+        <p class="rql-kicker">RQL ejecutada</p>
+        <pre th:if="${query == null or #strings.isEmpty(query)}"><code>from @all_docs where startsWith(id(), 'products/')</code></pre>
+        <pre th:if="${query != null and !#strings.isEmpty(query)}"><code th:text="|from Products where startsWith(Name, '${query}')|">from Products where startsWith(Name, 'Cafe')</code></pre>
+        <p class="rql-note" th:if="${query != null and !#strings.isEmpty(query)}">Esta consulta provoca que RavenDB genere automaticamente el indice <code>Auto/Products/ByName</code>, visible en RavenDB Studio.</p>
+        <p class="rql-note" th:if="${query == null or #strings.isEmpty(query)}">El listado por defecto recorre todos los documentos cuyo id empieza por <code>products/</code>, sin generar indice sobre campos.</p>
+    </aside>
 </main>
 </body>
 </html>

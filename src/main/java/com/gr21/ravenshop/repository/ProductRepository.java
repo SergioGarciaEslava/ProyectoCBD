@@ -13,5 +13,7 @@ public interface ProductRepository {
 
     List<Product> findAll();
 
+    List<Product> searchByNamePrefix(String namePrefix);
+
     boolean deleteById(String id);
 }
