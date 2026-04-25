@@ -2,42 +2,77 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${edit} ? 'Editar cliente' : 'Nuevo cliente'">Cliente</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
-<body>
-<h1 th:text="${edit} ? 'Editar cliente' : 'Nuevo cliente'">Cliente</h1>
-<form th:action="${edit} ? @{/customers/{id}(id=${customerId})} : @{/customers}" th:object="${form}" method="post">
-    <label>Nombre completo
-        <input type="text" th:field="*{fullName}"/>
-    </label>
-    <p th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}">Error nombre</p>
-    <br/>
-    <label>Email
-        <input type="email" th:field="*{email}"/>
-    </label>
-    <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Error email</p>
-    <br/>
-    <label>Telefono
-        <input type="text" th:field="*{phone}"/>
-    </label>
-    <br/>
-    <label>Calle
-        <input type="text" th:field="*{address.street}"/>
-    </label>
-    <p th:if="${#fields.hasErrors('address.street')}" th:errors="*{address.street}">Error calle</p>
-    <br/>
-    <label>Ciudad
-        <input type="text" th:field="*{address.city}"/>
-    </label>
-    <p th:if="${#fields.hasErrors('address.city')}" th:errors="*{address.city}">Error ciudad</p>
-    <br/>
-    <label>Codigo postal
-        <input type="text" th:field="*{address.postalCode}"/>
-    </label>
-    <p th:if="${#fields.hasErrors('address.postalCode')}" th:errors="*{address.postalCode}">Error codigo postal</p>
-    <br/>
-    <button type="submit">Guardar</button>
-</form>
-<a th:href="@{/customers}">Volver</a>
+<body class="app-shell">
+<header class="topbar">
+    <div class="topbar-inner">
+        <a class="brand" th:href="@{/}">
+            <span class="brand-mark" aria-hidden="true"></span>
+            <span>RavenShop</span>
+        </a>
+        <nav class="nav" aria-label="Navegacion principal">
+            <a th:href="@{/products}">Productos</a>
+            <a class="is-active" th:href="@{/customers}">Clientes</a>
+            <a th:href="@{/orders/new}">Crear pedido</a>
+        </nav>
+    </div>
+</header>
+
+<main class="page">
+    <header class="page-header">
+        <div>
+            <p class="page-kicker">Cliente</p>
+            <h1 th:text="${edit} ? 'Editar cliente' : 'Nuevo cliente'">Cliente</h1>
+        </div>
+        <div class="actions">
+            <a class="button button-secondary" th:href="@{/customers}">Volver</a>
+        </div>
+    </header>
+
+    <form class="form-panel form-grid" th:action="${edit} ? @{/customers/{id}(id=${customerId})} : @{/customers}" th:object="${form}" method="post">
+        <div class="field">
+            <label for="fullName">Nombre completo</label>
+            <input id="fullName" type="text" th:field="*{fullName}"/>
+            <p class="field-error" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}">Error nombre</p>
+        </div>
+
+        <div class="field">
+            <label for="email">Email</label>
+            <input id="email" type="email" th:field="*{email}"/>
+            <p class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Error email</p>
+        </div>
+
+        <div class="field">
+            <label for="phone">Telefono</label>
+            <input id="phone" type="text" th:field="*{phone}"/>
+        </div>
+
+        <div class="field">
+            <label for="street">Calle</label>
+            <input id="street" type="text" th:field="*{address.street}"/>
+            <p class="field-error" th:if="${#fields.hasErrors('address.street')}" th:errors="*{address.street}">Error calle</p>
+        </div>
+
+        <div class="field">
+            <label for="city">Ciudad</label>
+            <input id="city" type="text" th:field="*{address.city}"/>
+            <p class="field-error" th:if="${#fields.hasErrors('address.city')}" th:errors="*{address.city}">Error ciudad</p>
+        </div>
+
+        <div class="field">
+            <label for="postalCode">Codigo postal</label>
+            <input id="postalCode" type="text" th:field="*{address.postalCode}"/>
+            <p class="field-error" th:if="${#fields.hasErrors('address.postalCode')}" th:errors="*{address.postalCode}">Error codigo postal</p>
+        </div>
+
+        <div class="actions">
+            <button type="submit">Guardar</button>
+            <a class="button button-secondary" th:href="@{/customers}">Cancelar</a>
+        </div>
+    </form>
+</main>
 </body>
 </html>

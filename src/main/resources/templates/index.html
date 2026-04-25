@@ -4,19 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RavenShop</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
-<body>
-<main>
-    <h1>RavenShop</h1>
-    <p>Proyecto base de CBD con Spring Boot, Thymeleaf y RavenDB.</p>
+<body class="app-shell">
+<header class="topbar">
+    <div class="topbar-inner">
+        <a class="brand" th:href="@{/}">
+            <span class="brand-mark" aria-hidden="true"></span>
+            <span>RavenShop</span>
+        </a>
+        <nav class="nav" aria-label="Navegacion principal">
+            <a th:href="@{/products}">Productos</a>
+            <a th:href="@{/customers}">Clientes</a>
+            <a th:href="@{/orders/new}">Crear pedido</a>
+        </nav>
+    </div>
+</header>
 
-    <nav>
-        <ul>
-            <li><a th:href="@{/products}">Productos</a></li>
-            <li><a th:href="@{/customers}">Clientes</a></li>
-            <li><a th:href="@{/orders/new}">Crear pedido</a></li>
-        </ul>
-    </nav>
+<main class="page">
+    <section class="page-header">
+        <div>
+            <p class="page-kicker">RavenDB + Spring Boot</p>
+            <h1>RavenShop</h1>
+            <p class="lead">Proyecto academico de CBD con documentos de productos, clientes y pedidos.</p>
+            <div class="actions home-actions">
+                <a class="button" th:href="@{/orders/new}">Crear pedido</a>
+                <a class="button button-secondary" th:href="@{/products}">Ver productos</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="home-strip" aria-label="Accesos principales">
+        <a class="home-link" th:href="@{/products}">
+            <strong>Productos</strong>
+            <span>Catalogo, alta, edicion y borrado logico.</span>
+        </a>
+        <a class="home-link" th:href="@{/customers}">
+            <strong>Clientes</strong>
+            <span>Datos de contacto y direccion para la demo.</span>
+        </a>
+        <a class="home-link" th:href="@{/orders/new}">
+            <strong>Crear pedido</strong>
+            <span>Pedido documental con lineas y snapshot de cliente.</span>
+        </a>
+    </section>
 </main>
 </body>
 </html>

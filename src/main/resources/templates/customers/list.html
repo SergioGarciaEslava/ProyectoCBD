@@ -2,38 +2,68 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clientes</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
-<body>
-<h1>Clientes</h1>
-<p><a th:href="@{/}">Volver al inicio</a></p>
-<p><a th:href="@{/customers/new}">Nuevo cliente</a></p>
+<body class="app-shell">
+<header class="topbar">
+    <div class="topbar-inner">
+        <a class="brand" th:href="@{/}">
+            <span class="brand-mark" aria-hidden="true"></span>
+            <span>RavenShop</span>
+        </a>
+        <nav class="nav" aria-label="Navegacion principal">
+            <a th:href="@{/products}">Productos</a>
+            <a class="is-active" th:href="@{/customers}">Clientes</a>
+            <a th:href="@{/orders/new}">Crear pedido</a>
+        </nav>
+    </div>
+</header>
 
-<p th:if="${#lists.isEmpty(customers)}">No hay clientes registrados todavia.</p>
+<main class="page">
+    <header class="page-header">
+        <div>
+            <p class="page-kicker">Clientes</p>
+            <h1>Clientes</h1>
+            <p class="lead">Documentos de cliente usados por los pedidos de la demo.</p>
+        </div>
+        <div class="actions">
+            <a class="button button-secondary" th:href="@{/}">Inicio</a>
+            <a class="button" th:href="@{/customers/new}">Nuevo cliente</a>
+        </div>
+    </header>
 
-<table th:if="${not #lists.isEmpty(customers)}">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Nombre completo</th>
-        <th>Email</th>
-        <th>Ciudad</th>
-        <th>Telefono</th>
-        <th>Acciones</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="customer : ${customers}">
-        <td th:text="${customer.id}">customers/1-A</td>
-        <td th:text="${customer.fullName}">Ana Lopez</td>
-        <td th:text="${customer.email}">ana.lopez@example.com</td>
-        <td th:text="${customer.address != null and customer.address.city != null and !#strings.isEmpty(customer.address.city) ? customer.address.city : '-'}">Madrid</td>
-        <td th:text="${customer.phone != null and !#strings.isEmpty(customer.phone) ? customer.phone : '-'}">+34 600000000</td>
-        <td>
-            <a th:href="@{/customers/{id}/edit(id=${#strings.substringAfter(customer.id, '/')})}">Editar</a>
-        </td>
-    </tr>
-    </tbody>
-</table>
+    <p class="empty-state" th:if="${#lists.isEmpty(customers)}">No hay clientes registrados todavia.</p>
+
+    <div class="table-wrap" th:if="${not #lists.isEmpty(customers)}">
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre completo</th>
+                <th>Email</th>
+                <th>Ciudad</th>
+                <th>Telefono</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="customer : ${customers}">
+                <td th:text="${customer.id}">customers/1-A</td>
+                <td th:text="${customer.fullName}">Ana Lopez</td>
+                <td th:text="${customer.email}">ana.lopez@example.com</td>
+                <td th:text="${customer.address != null and customer.address.city != null and !#strings.isEmpty(customer.address.city) ? customer.address.city : '-'}">Madrid</td>
+                <td th:text="${customer.phone != null and !#strings.isEmpty(customer.phone) ? customer.phone : '-'}">+34 600000000</td>
+                <td>
+                    <div class="cell-actions">
+                        <a th:href="@{/customers/{id}/edit(id=${#strings.substringAfter(customer.id, '/')})}">Editar</a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
 </body>
 </html>
