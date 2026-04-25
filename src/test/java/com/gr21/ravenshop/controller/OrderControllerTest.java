@@ -1,7 +1,12 @@
 package com.gr21.ravenshop.controller;
 
+import com.gr21.ravenshop.dto.OrderCreateForm;
+import com.gr21.ravenshop.model.Customer;
 import com.gr21.ravenshop.model.Order;
+import com.gr21.ravenshop.model.Product;
+import com.gr21.ravenshop.service.CustomerService;
 import com.gr21.ravenshop.service.OrderService;
+import com.gr21.ravenshop.service.ProductService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -14,10 +19,14 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -29,6 +38,53 @@ class OrderControllerTest {
 
     @MockitoBean
     private OrderService orderService;
+
+    @MockitoBean
+    private CustomerService customerService;
+
+    @MockitoBean
+    private ProductService productService;
+
+    @Test
+    void newFormLoadsCustomersProductsAndEmptyOrderForm() throws Exception {
+        Customer customer = new Customer();
+        customer.setId("customers/1-A");
+        customer.setFullName("Ana Lopez");
+
+        Product product = new Product();
+        product.setId("products/1-A");
+        product.setName("Cafe Colombia");
+
+        given(customerService.listCustomers()).willReturn(List.of(customer));
+        given(productService.listProducts()).willReturn(List.of(product));
+
+        mockMvc.perform(get("/orders/new"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("orders/form"))
+                .andExpect(model().attributeExists("orderForm"))
+                .andExpect(model().attributeExists("customers"))
+                .andExpect(model().attributeExists("products"))
+                .andExpect(content().string(containsString("Crear pedido")))
+                .andExpect(content().string(containsString("Ana Lopez")))
+                .andExpect(content().string(containsString("Cafe Colombia")));
+    }
+
+    @Test
+    void createOrderRedirectsToDetailWhenFormIsValid() throws Exception {
+        Order order = new Order();
+        order.setId("orders/99-A");
+
+        given(orderService.createOrder(any(OrderCreateForm.class))).willReturn(order);
+
+        mockMvc.perform(post("/orders")
+                        .param("customerId", "customers/1-A")
+                        .param("shippingAddress", "Calle Mayor 1, Madrid")
+                        .param("lines[0].productId", "products/1-A")
+                        .param("lines[0].quantity", "2"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/orders/99-A"))
+                .andExpect(header().string("Location", "/orders/99-A"));
+    }
 
     @Test
     void detailViewRendersOrderFields() throws Exception {
