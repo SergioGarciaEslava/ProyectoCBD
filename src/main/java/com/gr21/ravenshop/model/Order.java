@@ -11,6 +11,9 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Order {
 
+    public static final String STATUS_PENDING = "Pending";
+    public static final String INITIAL_STATUS_COMMENT = "Pedido creado";
+
     private String id;
     private String customerId;
     private CustomerSnapshot customerSnapshot;
@@ -26,6 +29,17 @@ public class Order {
     private List<StatusHistoryEntry> statusHistory = new ArrayList<>();
 
     public Order() {
+    }
+
+    public static Order createPending() {
+        Order order = new Order();
+        order.setStatus(STATUS_PENDING);
+        order.getStatusHistory().add(new StatusHistoryEntry(
+                STATUS_PENDING,
+                OffsetDateTime.now(),
+                INITIAL_STATUS_COMMENT
+        ));
+        return order;
     }
 
     public String getId() {
@@ -211,8 +225,15 @@ public class Order {
 
         private String status;
         private OffsetDateTime changedAt;
+        private String comment;
 
         public StatusHistoryEntry() {
+        }
+
+        public StatusHistoryEntry(String status, OffsetDateTime changedAt, String comment) {
+            this.status = status;
+            this.changedAt = changedAt;
+            this.comment = comment;
         }
 
         public String getStatus() {
@@ -229,6 +250,14 @@ public class Order {
 
         public void setChangedAt(OffsetDateTime changedAt) {
             this.changedAt = changedAt;
+        }
+
+        public String getComment() {
+            return comment;
+        }
+
+        public void setComment(String comment) {
+            this.comment = comment;
         }
     }
 }

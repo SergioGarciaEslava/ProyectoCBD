@@ -321,3 +321,28 @@ La peticion era acotada: dejar `Order` como documento RavenDB compilable y facil
 ### Por que
 
 El pedido debe conservar el contexto historico tal como existia al comprar. Por eso la linea almacena nombre, categoria, precio e importe en lugar de depender siempre del documento actual de producto.
+
+## 2026-04-25 - Estado inicial Pending en Order
+
+### Que produjo la IA
+
+- Campo `comment` en `Order.StatusHistoryEntry`.
+- Constantes simples para el estado inicial `Pending` y el comentario inicial.
+- Metodo de fabrica `Order.createPending()` para preparar estado actual e historial inicial.
+- Prueba de modelo para verificar el comportamiento.
+
+### Que se acepto
+
+- Usar `String` constante para el estado inicial en vez de enum, porque el proyecto aun no necesita transiciones ni validaciones complejas.
+- Usar `Order.createPending()` como punto explicito de creacion futura de pedidos.
+- Mantener el constructor vacio de `Order` sin inicializacion automatica para no alterar la carga de documentos existentes desde RavenDB.
+
+### Que se descarto
+
+- Crear formularios, controladores o vistas.
+- Implementar transiciones de estado.
+- Anadir validaciones o reglas de negocio avanzadas.
+
+### Por que
+
+El objetivo actual es representar estado actual y trazabilidad sin cerrar todavia el flujo de alta de pedidos. La fabrica permite explicar claramente como nace un pedido nuevo y deja preparado el historial sin sobredisenar.
