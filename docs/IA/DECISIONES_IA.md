@@ -295,3 +295,29 @@ El cambio solicitado es de version de compilacion y requisitos locales. Java 21 
 ### Por que
 
 La peticion era acotada: dejar `Order` como documento RavenDB compilable y facil de explicar. El cambio evita ampliar arquitectura y mantiene compatibilidad con datos ya presentes en el proyecto.
+
+## 2026-04-25 - Objetos embebidos de Order
+
+### Que produjo la IA
+
+- Ajuste de `OrderLineItem` dentro de `Order` para incluir `category`.
+- Simplificacion de `lineTotal` como campo persistido, sin calculo automatico en el getter.
+- Ajuste minimo de servicio y pruebas existentes para compilar con el modelo.
+- Registro de trazabilidad de la sesion.
+
+### Que se acepto
+
+- Mantener `OrderLineItem` y `CustomerSnapshot` como clases simples embebidas en `Order`.
+- Guardar en cada linea datos historicos del producto: identificador, nombre, categoria, precio unitario, cantidad e importe de linea.
+- Guardar en el snapshot datos historicos del cliente: nombre, email y ciudad.
+- Conservar `customerId` en `CustomerSnapshot` por compatibilidad con codigo y vista ya existentes, manteniendo tambien `customerId` como campo principal de `Order`.
+
+### Que se descarto
+
+- Crear controladores o vistas nuevas.
+- Introducir logica de calculo de totales en el modelo.
+- Crear nuevas capas o dependencias.
+
+### Por que
+
+El pedido debe conservar el contexto historico tal como existia al comprar. Por eso la linea almacena nombre, categoria, precio e importe en lugar de depender siempre del documento actual de producto.

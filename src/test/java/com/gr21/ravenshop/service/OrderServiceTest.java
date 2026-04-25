@@ -37,7 +37,7 @@ class OrderServiceTest {
         Order order = new Order();
         order.setId("orders/1-A");
         order.setCustomerId("customers/1-A");
-        order.setLineItems(List.of(line("products/1-A", "Cafe", 2, "21.90")));
+        order.setLineItems(List.of(line("products/1-A", "Cafe", "Bebidas", 2, "21.90", "43.80")));
         order.setTotal(new BigDecimal("43.80"));
         order.setStatusHistory(List.of(
                 history("CREATED", "2026-04-19T10:00:00Z"),
@@ -77,12 +77,15 @@ class OrderServiceTest {
         verify(orderRepository).findById("orders/404-A");
     }
 
-    private Order.OrderLineItem line(String productId, String productName, int quantity, String unitPrice) {
+    private Order.OrderLineItem line(String productId, String productName, String category, int quantity, String unitPrice,
+            String lineTotal) {
         Order.OrderLineItem line = new Order.OrderLineItem();
         line.setProductId(productId);
         line.setProductName(productName);
+        line.setCategory(category);
         line.setQuantity(quantity);
         line.setUnitPrice(new BigDecimal(unitPrice));
+        line.setLineTotal(new BigDecimal(lineTotal));
         return line;
     }
 
