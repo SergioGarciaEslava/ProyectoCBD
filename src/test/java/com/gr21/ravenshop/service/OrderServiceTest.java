@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -37,8 +38,8 @@ class OrderServiceTest {
         Order order = new Order();
         order.setId("orders/1-A");
         order.setCustomerId("customers/1-A");
-        order.setLineItems(List.of(line("products/1-A", "Cafe", "Bebidas", 2, "21.90", "43.80")));
-        order.setTotal(new BigDecimal("43.80"));
+        order.setLineItems(List.of(line("products/1-A", "Cafe", "Bebidas", 2, "21.90", "0.00")));
+        order.setTotal(new BigDecimal("0.00"));
         order.setStatusHistory(List.of(
                 history("CREATED", "2026-04-19T10:00:00Z"),
                 history("PAID", "2026-04-19T10:05:00Z")
@@ -62,6 +63,7 @@ class OrderServiceTest {
         assertThat(result.get().getOrderedAt()).isEqualTo(OffsetDateTime.parse("2026-04-19T10:00:00Z"));
         assertThat(result.get().getStatus()).isEqualTo("PAID");
         assertThat(result.get().getLineItems().get(0).getLineTotal()).isEqualByComparingTo("43.80");
+        assertThat(result.get().getTotal()).isEqualByComparingTo("43.80");
 
         verify(orderRepository).findById("orders/1-A");
         verify(customerRepository).findById("customers/1-A");
@@ -75,6 +77,21 @@ class OrderServiceTest {
 
         assertThat(result).isEmpty();
         verify(orderRepository).findById("orders/404-A");
+    }
+
+    @Test
+    void findByIdDetectsInvalidQuantitiesWhenRecalculatingTotalsOnServer() {
+        Order order = new Order();
+        order.setId("orders/2-A");
+        order.setLineItems(List.of(line("products/1-A", "Cafe", "Bebidas", 0, "21.90", "0.00")));
+
+        when(orderRepository.findById("orders/2-A")).thenReturn(Optional.of(order));
+
+        assertThatThrownBy(() -> orderService.findById("2-A"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(Order.INVALID_QUANTITY_MESSAGE);
+
+        verify(orderRepository).findById("orders/2-A");
     }
 
     private Order.OrderLineItem line(String productId, String productName, String category, int quantity, String unitPrice,

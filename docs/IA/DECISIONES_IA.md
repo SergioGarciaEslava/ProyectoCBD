@@ -371,3 +371,84 @@ El pedido debe conservar el contexto historico tal como existia al comprar. Por 
 ### Por que
 
 El objetivo actual es representar estado actual y trazabilidad sin cerrar todavia el flujo de alta de pedidos. La fabrica permite explicar claramente como nace un pedido nuevo y deja preparado el historial sin sobredisenar.
+
+## 2026-04-25 - Calculo de totales de pedido en servidor
+
+### Que produjo la IA
+
+- Metodo `Order.recalculateTotals()` para recalcular importes del pedido.
+- Calculo de `OrderLineItem.lineTotal` como `unitPrice * quantity`.
+- Calculo de `Order.total` como suma de los importes de linea.
+- Invocacion desde `OrderService` al preparar el detalle del pedido.
+- Pruebas de modelo y servicio para cubrir el calculo.
+
+### Que se acepto
+
+- Centralizar el calculo en el modelo `Order`, porque es la forma mas pequena y facil de explicar.
+- Llamar al recalculo desde el servicio para dejar claro que el servidor no depende de valores del frontend.
+- Mantener `lineTotal` y `total` como datos almacenables del documento RavenDB, pero recalculables desde los datos base.
+
+### Que se descarto
+
+- Crear formulario de pedidos.
+- Recalcular importes en Thymeleaf o JavaScript.
+- Crear servicios auxiliares, validadores o nuevas capas.
+- Anadir dependencias nuevas.
+
+### Por que
+
+El requisito es demostrar una regla de negocio sencilla y defendible: los importes salen de `quantity` y `unitPrice`. Un metodo de dominio invocado desde el servicio cubre el caso sin sobredisenar el proyecto.
+
+## 2026-04-25 - Validaciones minimas de Order
+
+### Que produjo la IA
+
+- Sobrecarga `Order.createPending(List<OrderLineItem>)` para crear pedidos nuevos con lineas.
+- Metodo `Order.validateForCreation()` para rechazar pedidos vacios.
+- Validacion de `quantity > 0` en cada linea.
+- Pruebas de modelo para pedido vacio, cantidad invalida, estado inicial `Pending` y recalculo de totales.
+- Prueba de servicio para confirmar que una cantidad invalida se detecta al recalcular en servidor.
+
+### Que se acepto
+
+- Usar `IllegalArgumentException` con mensajes simples y explicables.
+- Mantener las reglas en el agregado `Order`, porque pertenecen al documento de pedido y evitan capas innecesarias.
+- Mantener `Order.createPending()` sin argumentos para no romper codigo existente, y usar la nueva sobrecarga para creaciones reales con lineas.
+- Mantener Java 21 como version del proyecto por regla activa de `AGENTS.md`.
+
+### Que se descarto
+
+- Crear pantalla o formulario de creacion de pedidos.
+- Anadir validaciones de producto, stock, cliente o transiciones de estado.
+- Introducir frameworks o dependencias nuevas.
+- Cambiar el proyecto a Java 17.
+
+### Por que
+
+Las reglas pedidas son invariantes basicas del documento `Order`: un pedido nuevo necesita lineas, cantidades validas, estado inicial y totales calculados por servidor. Resolverlo en el modelo mantiene el codigo corto y defendible para la explicacion oral.
+
+## 2026-04-25 - Verificacion documental de WI-007
+
+### Que produjo la IA
+
+- Checklist manual para revisar el documento `Order`.
+- Pedido JSON de ejemplo para insertar desde RavenDB Studio o como dato semilla.
+- Texto breve para `docs/uso_ia.md`.
+- Evidencia minima reutilizable en PR o Clockify.
+- Sugerencia de prueba automatica pequena para el agregado `Order`.
+
+### Que se acepto
+
+- Ubicar la evidencia de demo en `docs/demo/wi-007_verificacion_order_ravendb.md`.
+- Crear `docs/uso_ia.md` como resumen general y breve para defensa academica.
+- Mantener el contenido como documentacion de cierre, sin cambiar codigo ni introducir nuevas funcionalidades.
+
+### Que se descarto
+
+- Crear formularios de pedidos.
+- Insertar datos automaticamente en RavenDB en esta sesion.
+- Anadir pruebas nuevas, porque la prueba recomendada ya queda cubierta por las pruebas del agregado existentes.
+
+### Por que
+
+La WI-007 ya cuenta con modelo, calculo de totales y validaciones. Para cerrarla de forma defendible, basta con dejar una evidencia manual clara y un ejemplo documental que explique el enfoque de RavenDB sin ampliar alcance.
