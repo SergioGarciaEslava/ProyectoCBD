@@ -10,6 +10,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.BDDMockito.given;
@@ -68,7 +69,8 @@ class CustomerControllerTest {
         mockMvc.perform(get("/customers/new"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("customers/form"))
-                .andExpect(model().attributeExists("form"));
+                .andExpect(model().attributeExists("form"))
+                .andExpect(model().attribute("edit", false));
     }
 
     @Test
@@ -140,6 +142,87 @@ class CustomerControllerTest {
                 .andExpect(content().string(containsString("value=\"+34 600000000\"")));
 
         verify(customerService, never()).createCustomer(
+                org.mockito.ArgumentMatchers.anyString(),
+                org.mockito.ArgumentMatchers.anyString(),
+                org.mockito.ArgumentMatchers.anyString(),
+                org.mockito.ArgumentMatchers.any()
+        );
+    }
+
+    @Test
+    void editFormLoadsExistingCustomer() throws Exception {
+        Customer customer = new Customer();
+        customer.setId("customers/1-A");
+        customer.setFullName("Ana Lopez");
+        customer.setEmail("ana.lopez@example.com");
+        customer.setPhone("+34 600000000");
+        customer.setAddress(new Address("Calle Mayor 1", "Madrid", "28013"));
+        given(customerService.findCustomerById("1-A")).willReturn(Optional.of(customer));
+
+        mockMvc.perform(get("/customers/1-A/edit"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("customers/form"))
+                .andExpect(model().attributeExists("form"))
+                .andExpect(model().attribute("edit", true))
+                .andExpect(content().string(containsString("Editar cliente")))
+                .andExpect(content().string(containsString("value=\"Ana Lopez\"")))
+                .andExpect(content().string(containsString("value=\"ana.lopez@example.com\"")))
+                .andExpect(content().string(containsString("value=\"+34 600000000\"")))
+                .andExpect(content().string(containsString("value=\"Calle Mayor 1\"")))
+                .andExpect(content().string(containsString("value=\"Madrid\"")))
+                .andExpect(content().string(containsString("value=\"28013\"")));
+    }
+
+    @Test
+    void editFormRedirectsWhenCustomerDoesNotExist() throws Exception {
+        given(customerService.findCustomerById("404-A")).willReturn(Optional.empty());
+
+        mockMvc.perform(get("/customers/404-A/edit"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/customers"));
+    }
+
+    @Test
+    void updateFromFormRedirectsToCustomers() throws Exception {
+        mockMvc.perform(post("/customers/1-A")
+                        .param("fullName", "Ana Lopez Editada")
+                        .param("email", "ana.editada@example.com")
+                        .param("phone", "+34 611111111")
+                        .param("address.street", "Calle Nueva 2")
+                        .param("address.city", "Valencia")
+                        .param("address.postalCode", "46001"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/customers"));
+
+        verify(customerService).updateCustomer(
+                org.mockito.ArgumentMatchers.eq("1-A"),
+                org.mockito.ArgumentMatchers.eq("Ana Lopez Editada"),
+                org.mockito.ArgumentMatchers.eq("ana.editada@example.com"),
+                org.mockito.ArgumentMatchers.eq("+34 611111111"),
+                org.mockito.ArgumentMatchers.argThat(address ->
+                        "Calle Nueva 2".equals(address.getStreet())
+                                && "Valencia".equals(address.getCity())
+                                && "46001".equals(address.getPostalCode()))
+        );
+    }
+
+    @Test
+    void updateFromFormShowsErrorsAndDoesNotSaveWhenValidationFails() throws Exception {
+        mockMvc.perform(post("/customers/1-A")
+                        .param("fullName", "")
+                        .param("email", "email-no-valido")
+                        .param("phone", "+34 600000000")
+                        .param("address.street", "Calle Mayor 1")
+                        .param("address.city", "Madrid")
+                        .param("address.postalCode", "28013"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("customers/form"))
+                .andExpect(model().attribute("edit", true))
+                .andExpect(content().string(containsString("El nombre completo es obligatorio")))
+                .andExpect(content().string(containsString("El email no tiene un formato valido")));
+
+        verify(customerService, never()).updateCustomer(
+                org.mockito.ArgumentMatchers.anyString(),
                 org.mockito.ArgumentMatchers.anyString(),
                 org.mockito.ArgumentMatchers.anyString(),
                 org.mockito.ArgumentMatchers.anyString(),

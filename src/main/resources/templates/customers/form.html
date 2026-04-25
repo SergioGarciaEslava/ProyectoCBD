@@ -2,11 +2,11 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Nuevo cliente</title>
+    <title th:text="${edit} ? 'Editar cliente' : 'Nuevo cliente'">Cliente</title>
 </head>
 <body>
-<h1>Nuevo cliente</h1>
-<form th:action="@{/customers}" th:object="${form}" method="post">
+<h1 th:text="${edit} ? 'Editar cliente' : 'Nuevo cliente'">Cliente</h1>
+<form th:action="${edit} ? @{/customers/{id}(id=${customerId})} : @{/customers}" th:object="${form}" method="post">
     <label>Nombre completo
         <input type="text" th:field="*{fullName}"/>
     </label>
