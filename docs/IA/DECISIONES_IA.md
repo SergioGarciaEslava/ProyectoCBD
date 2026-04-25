@@ -426,3 +426,29 @@ El requisito es demostrar una regla de negocio sencilla y defendible: los import
 ### Por que
 
 Las reglas pedidas son invariantes basicas del documento `Order`: un pedido nuevo necesita lineas, cantidades validas, estado inicial y totales calculados por servidor. Resolverlo en el modelo mantiene el codigo corto y defendible para la explicacion oral.
+
+## 2026-04-25 - Verificacion documental de WI-007
+
+### Que produjo la IA
+
+- Checklist manual para revisar el documento `Order`.
+- Pedido JSON de ejemplo para insertar desde RavenDB Studio o como dato semilla.
+- Texto breve para `docs/uso_ia.md`.
+- Evidencia minima reutilizable en PR o Clockify.
+- Sugerencia de prueba automatica pequena para el agregado `Order`.
+
+### Que se acepto
+
+- Ubicar la evidencia de demo en `docs/demo/wi-007_verificacion_order_ravendb.md`.
+- Crear `docs/uso_ia.md` como resumen general y breve para defensa academica.
+- Mantener el contenido como documentacion de cierre, sin cambiar codigo ni introducir nuevas funcionalidades.
+
+### Que se descarto
+
+- Crear formularios de pedidos.
+- Insertar datos automaticamente en RavenDB en esta sesion.
+- Anadir pruebas nuevas, porque la prueba recomendada ya queda cubierta por las pruebas del agregado existentes.
+
+### Por que
+
+La WI-007 ya cuenta con modelo, calculo de totales y validaciones. Para cerrarla de forma defendible, basta con dejar una evidencia manual clara y un ejemplo documental que explique el enfoque de RavenDB sin ampliar alcance.
