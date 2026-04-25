@@ -57,10 +57,16 @@ public class OrderService {
     }
 
     private String normalizeCustomerId(String customerId) {
+        if (isBlank(customerId)) {
+            return "";
+        }
         return customerId.contains("/") ? customerId : "customers/" + customerId;
     }
 
     private String normalizeProductId(String productId) {
+        if (isBlank(productId)) {
+            return "";
+        }
         return productId.contains("/") ? productId : "products/" + productId;
     }
 

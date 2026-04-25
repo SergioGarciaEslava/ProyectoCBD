@@ -133,6 +133,16 @@ class OrderServiceTest {
     }
 
     @Test
+    void createOrderRejectsMissingCustomer() {
+        OrderCreateForm form = new OrderCreateForm();
+        form.setLines(List.of(lineForm("products/1-A", 1)));
+
+        assertThatThrownBy(() -> orderService.createOrder(form))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Cliente no encontrado");
+    }
+
+    @Test
     void findByIdDetectsInvalidQuantitiesWhenRecalculatingTotalsOnServer() {
         Order order = new Order();
         order.setId("orders/2-A");
