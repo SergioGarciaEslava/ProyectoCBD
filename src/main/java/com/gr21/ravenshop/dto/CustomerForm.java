@@ -17,7 +17,11 @@ public class CustomerForm {
     private String phone;
 
     @Valid
+<<<<<<< HEAD
     private AddressForm address = new AddressForm();
+=======
+    private Address address = new Address();
+>>>>>>> featuretask/WI-006-implementar-crud-de-clientes
 
     public CustomerForm() {
     }
