@@ -1,28 +1,23 @@
 package com.gr21.ravenshop.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gr21.ravenshop.dto.CustomerCreateRequest;
-import com.gr21.ravenshop.dto.CustomerPageResponse;
-import com.gr21.ravenshop.dto.CustomerResponse;
-import com.gr21.ravenshop.dto.PaginationResponse;
+import com.gr21.ravenshop.model.Address;
+import com.gr21.ravenshop.model.Customer;
 import com.gr21.ravenshop.service.CustomerService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
-import java.util.Optional;
 
-import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @WebMvcTest(CustomerController.class)
 class CustomerControllerTest {
@@ -30,57 +25,37 @@ class CustomerControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @MockitoBean
     private CustomerService customerService;
 
     @Test
-    void createReturns201() throws Exception {
-        CustomerResponse response = new CustomerResponse(
-                "customers/1-A",
-                "Ana Lopez",
-                "ana.lopez@example.com",
-                "+34 600000000",
-                "Madrid",
-                "Calle Gran Via 1"
-        );
-        given(customerService.create(any(CustomerCreateRequest.class))).willReturn(response);
+    void listShowsCustomersPage() throws Exception {
+        Customer customer = new Customer();
+        customer.setId("customers/1-A");
+        customer.setFullName("Ana Lopez");
+        customer.setEmail("ana.lopez@example.com");
+        customer.setPhone("+34 600000000");
+        customer.setAddress(new Address(null, "Madrid", null));
+        given(customerService.listCustomers()).willReturn(List.of(customer));
 
-        CustomerCreateRequest request = new CustomerCreateRequest(
-                "Ana Lopez",
-                "ana.lopez@example.com",
-                "+34 600000000",
-                "Madrid",
-                "Calle Gran Via 1"
-        );
-
-        mockMvc.perform(post("/api/v1/customers")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", is("customers/1-A")));
-    }
-
-    @Test
-    void getByIdReturns404WhenNotFound() throws Exception {
-        given(customerService.getById("404-A")).willReturn(Optional.empty());
-
-        mockMvc.perform(get("/api/v1/customers/404-A"))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void listReturns200() throws Exception {
-        CustomerPageResponse response = new CustomerPageResponse(
-                List.of(new CustomerResponse("customers/1-A", "Ana Lopez", "ana.lopez@example.com", null, "Madrid", null)),
-                new PaginationResponse(0, 20, 1)
-        );
-        given(customerService.list(0, 20)).willReturn(response);
-
-        mockMvc.perform(get("/api/v1/customers"))
+        mockMvc.perform(get("/customers"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.pagination.totalElements", is(1)));
+                .andExpect(view().name("customers/list"))
+                .andExpect(model().attributeExists("customers"))
+                .andExpect(content().string(containsString("customers/1-A")))
+                .andExpect(content().string(containsString("Ana Lopez")))
+                .andExpect(content().string(containsString("ana.lopez@example.com")))
+                .andExpect(content().string(containsString("Madrid")))
+                .andExpect(content().string(containsString("+34 600000000")));
+    }
+
+    @Test
+    void listShowsFriendlyMessageWhenThereAreNoCustomers() throws Exception {
+        given(customerService.listCustomers()).willReturn(List.of());
+
+        mockMvc.perform(get("/customers"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("customers/list"))
+                .andExpect(content().string(containsString("No hay clientes registrados todavia")));
     }
 }

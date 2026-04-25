@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Clientes</title>
+</head>
+<body>
+<h1>Clientes</h1>
+<p><a th:href="@{/}">Volver al inicio</a></p>
+
+<p th:if="${#lists.isEmpty(customers)}">No hay clientes registrados todavia.</p>
+
+<table th:if="${not #lists.isEmpty(customers)}">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nombre completo</th>
+        <th>Email</th>
+        <th>Ciudad</th>
+        <th>Telefono</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="customer : ${customers}">
+        <td th:text="${customer.id}">customers/1-A</td>
+        <td th:text="${customer.fullName}">Ana Lopez</td>
+        <td th:text="${customer.email}">ana.lopez@example.com</td>
+        <td th:text="${customer.address != null and customer.address.city != null and !#strings.isEmpty(customer.address.city) ? customer.address.city : '-'}">Madrid</td>
+        <td th:text="${customer.phone != null and !#strings.isEmpty(customer.phone) ? customer.phone : '-'}">+34 600000000</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
