@@ -24,14 +24,17 @@
     <label>Calle
         <input type="text" th:field="*{address.street}"/>
     </label>
+    <p th:if="${#fields.hasErrors('address.street')}" th:errors="*{address.street}">Error calle</p>
     <br/>
     <label>Ciudad
         <input type="text" th:field="*{address.city}"/>
     </label>
+    <p th:if="${#fields.hasErrors('address.city')}" th:errors="*{address.city}">Error ciudad</p>
     <br/>
     <label>Codigo postal
         <input type="text" th:field="*{address.postalCode}"/>
     </label>
+    <p th:if="${#fields.hasErrors('address.postalCode')}" th:errors="*{address.postalCode}">Error codigo postal</p>
     <br/>
     <button type="submit">Guardar</button>
 </form>

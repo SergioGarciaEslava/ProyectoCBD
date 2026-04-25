@@ -106,7 +106,38 @@ class CustomerControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("customers/form"))
                 .andExpect(content().string(containsString("El nombre completo es obligatorio")))
-                .andExpect(content().string(containsString("El email no tiene un formato valido")));
+                .andExpect(content().string(containsString("El email no tiene un formato valido")))
+                .andExpect(content().string(containsString("value=\"email-no-valido\"")))
+                .andExpect(content().string(containsString("value=\"+34 600000000\"")))
+                .andExpect(content().string(containsString("value=\"Calle Mayor 1\"")))
+                .andExpect(content().string(containsString("value=\"Madrid\"")))
+                .andExpect(content().string(containsString("value=\"28013\"")));
+
+        verify(customerService, never()).createCustomer(
+                org.mockito.ArgumentMatchers.anyString(),
+                org.mockito.ArgumentMatchers.anyString(),
+                org.mockito.ArgumentMatchers.anyString(),
+                org.mockito.ArgumentMatchers.any()
+        );
+    }
+
+    @Test
+    void createFromFormValidatesRequiredAddressFields() throws Exception {
+        mockMvc.perform(post("/customers")
+                        .param("fullName", "Ana Lopez")
+                        .param("email", "ana.lopez@example.com")
+                        .param("phone", "+34 600000000")
+                        .param("address.street", "")
+                        .param("address.city", "")
+                        .param("address.postalCode", ""))
+                .andExpect(status().isOk())
+                .andExpect(view().name("customers/form"))
+                .andExpect(content().string(containsString("La calle es obligatoria")))
+                .andExpect(content().string(containsString("La ciudad es obligatoria")))
+                .andExpect(content().string(containsString("El codigo postal es obligatorio")))
+                .andExpect(content().string(containsString("value=\"Ana Lopez\"")))
+                .andExpect(content().string(containsString("value=\"ana.lopez@example.com\"")))
+                .andExpect(content().string(containsString("value=\"+34 600000000\"")));
 
         verify(customerService, never()).createCustomer(
                 org.mockito.ArgumentMatchers.anyString(),

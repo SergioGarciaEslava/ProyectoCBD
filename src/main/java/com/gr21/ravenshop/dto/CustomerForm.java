@@ -1,6 +1,7 @@
 package com.gr21.ravenshop.dto;
 
 import com.gr21.ravenshop.model.Address;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
@@ -14,7 +15,9 @@ public class CustomerForm {
     private String email;
 
     private String phone;
-    private Address address = new Address();
+
+    @Valid
+    private AddressForm address = new AddressForm();
 
     public CustomerForm() {
     }
@@ -43,11 +46,54 @@ public class CustomerForm {
         this.phone = phone;
     }
 
-    public Address getAddress() {
+    public AddressForm getAddress() {
         return address;
     }
 
-    public void setAddress(Address address) {
-        this.address = address == null ? new Address() : address;
+    public void setAddress(AddressForm address) {
+        this.address = address == null ? new AddressForm() : address;
+    }
+
+    public Address toAddress() {
+        return new Address(address.getStreet(), address.getCity(), address.getPostalCode());
+    }
+
+    public static class AddressForm {
+
+        @NotBlank(message = "La calle es obligatoria")
+        private String street;
+
+        @NotBlank(message = "La ciudad es obligatoria")
+        private String city;
+
+        @NotBlank(message = "El codigo postal es obligatorio")
+        private String postalCode;
+
+        public AddressForm() {
+        }
+
+        public String getStreet() {
+            return street;
+        }
+
+        public void setStreet(String street) {
+            this.street = street;
+        }
+
+        public String getCity() {
+            return city;
+        }
+
+        public void setCity(String city) {
+            this.city = city;
+        }
+
+        public String getPostalCode() {
+            return postalCode;
+        }
+
+        public void setPostalCode(String postalCode) {
+            this.postalCode = postalCode;
+        }
     }
 }
