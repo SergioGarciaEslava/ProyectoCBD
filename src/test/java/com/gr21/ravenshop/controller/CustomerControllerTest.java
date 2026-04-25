@@ -13,9 +13,13 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -57,5 +61,58 @@ class CustomerControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("customers/list"))
                 .andExpect(content().string(containsString("No hay clientes registrados todavia")));
+    }
+
+    @Test
+    void newFormShowsCustomerForm() throws Exception {
+        mockMvc.perform(get("/customers/new"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("customers/form"))
+                .andExpect(model().attributeExists("form"));
+    }
+
+    @Test
+    void createFromFormRedirectsToCustomers() throws Exception {
+        mockMvc.perform(post("/customers")
+                        .param("fullName", "Ana Lopez")
+                        .param("email", "ana.lopez@example.com")
+                        .param("phone", "+34 600000000")
+                        .param("address.street", "Calle Mayor 1")
+                        .param("address.city", "Madrid")
+                        .param("address.postalCode", "28013"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/customers"));
+
+        verify(customerService).createCustomer(
+                org.mockito.ArgumentMatchers.eq("Ana Lopez"),
+                org.mockito.ArgumentMatchers.eq("ana.lopez@example.com"),
+                org.mockito.ArgumentMatchers.eq("+34 600000000"),
+                org.mockito.ArgumentMatchers.argThat(address ->
+                        "Calle Mayor 1".equals(address.getStreet())
+                                && "Madrid".equals(address.getCity())
+                                && "28013".equals(address.getPostalCode()))
+        );
+    }
+
+    @Test
+    void createFromFormShowsErrorsAndDoesNotSaveWhenValidationFails() throws Exception {
+        mockMvc.perform(post("/customers")
+                        .param("fullName", "")
+                        .param("email", "email-no-valido")
+                        .param("phone", "+34 600000000")
+                        .param("address.street", "Calle Mayor 1")
+                        .param("address.city", "Madrid")
+                        .param("address.postalCode", "28013"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("customers/form"))
+                .andExpect(content().string(containsString("El nombre completo es obligatorio")))
+                .andExpect(content().string(containsString("El email no tiene un formato valido")));
+
+        verify(customerService, never()).createCustomer(
+                org.mockito.ArgumentMatchers.anyString(),
+                org.mockito.ArgumentMatchers.anyString(),
+                org.mockito.ArgumentMatchers.anyString(),
+                org.mockito.ArgumentMatchers.any()
+        );
     }
 }

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nuevo cliente</title>
+</head>
+<body>
+<h1>Nuevo cliente</h1>
+<form th:action="@{/customers}" th:object="${form}" method="post">
+    <label>Nombre completo
+        <input type="text" th:field="*{fullName}"/>
+    </label>
+    <p th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}">Error nombre</p>
+    <br/>
+    <label>Email
+        <input type="email" th:field="*{email}"/>
+    </label>
+    <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Error email</p>
+    <br/>
+    <label>Telefono
+        <input type="text" th:field="*{phone}"/>
+    </label>
+    <br/>
+    <label>Calle
+        <input type="text" th:field="*{address.street}"/>
+    </label>
+    <br/>
+    <label>Ciudad
+        <input type="text" th:field="*{address.city}"/>
+    </label>
+    <br/>
+    <label>Codigo postal
+        <input type="text" th:field="*{address.postalCode}"/>
+    </label>
+    <br/>
+    <button type="submit">Guardar</button>
+</form>
+<a th:href="@{/customers}">Volver</a>
+</body>
+</html>
