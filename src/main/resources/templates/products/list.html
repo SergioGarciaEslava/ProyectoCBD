@@ -2,41 +2,71 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Productos</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
-<body>
-<h1>Catalogo de productos</h1>
-<p><a th:href="@{/}">Volver al inicio</a></p>
-<p><a th:href="@{/products/new}">Nuevo producto</a></p>
+<body class="app-shell">
+<header class="topbar">
+    <div class="topbar-inner">
+        <a class="brand" th:href="@{/}">
+            <span class="brand-mark" aria-hidden="true"></span>
+            <span>RavenShop</span>
+        </a>
+        <nav class="nav" aria-label="Navegacion principal">
+            <a class="is-active" th:href="@{/products}">Productos</a>
+            <a th:href="@{/customers}">Clientes</a>
+            <a th:href="@{/orders/new}">Crear pedido</a>
+        </nav>
+    </div>
+</header>
 
-<p th:if="${#lists.isEmpty(products)}">No hay productos disponibles todavia.</p>
+<main class="page">
+    <header class="page-header">
+        <div>
+            <p class="page-kicker">Catalogo</p>
+            <h1>Productos</h1>
+            <p class="lead">Documentos de producto disponibles para la demo.</p>
+        </div>
+        <div class="actions">
+            <a class="button button-secondary" th:href="@{/}">Inicio</a>
+            <a class="button" th:href="@{/products/new}">Nuevo producto</a>
+        </div>
+    </header>
 
-<table th:if="${not #lists.isEmpty(products)}">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Categoria</th>
-        <th>Precio</th>
-        <th>Stock</th>
-        <th>Acciones</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="product : ${products}">
-        <td th:text="${product.id}">products/1-A</td>
-        <td th:text="${product.name}">Cafe</td>
-        <td th:text="${product.category}">Bebidas</td>
-        <td th:text="${product.price}">19.90</td>
-        <td th:text="${product.stock}">50</td>
-        <td>
-            <a th:href="@{/products/{id}/edit(id=${#strings.substringAfter(product.id, '/')})}">Editar</a>
-            <form th:action="@{/products/{id}/delete(id=${#strings.substringAfter(product.id, '/')})}" method="post" style="display:inline;">
-                <button type="submit">Eliminar</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
+    <p class="empty-state" th:if="${#lists.isEmpty(products)}">No hay productos disponibles todavia.</p>
+
+    <div class="table-wrap" th:if="${not #lists.isEmpty(products)}">
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Categoria</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="product : ${products}">
+                <td th:text="${product.id}">products/1-A</td>
+                <td th:text="${product.name}">Cafe</td>
+                <td th:text="${product.category}">Bebidas</td>
+                <td th:text="${product.price}">19.90</td>
+                <td th:text="${product.stock}">50</td>
+                <td>
+                    <div class="cell-actions">
+                        <a th:href="@{/products/{id}/edit(id=${#strings.substringAfter(product.id, '/')})}">Editar</a>
+                        <form class="inline-form" th:action="@{/products/{id}/delete(id=${#strings.substringAfter(product.id, '/')})}" method="post">
+                            <button class="button-link" type="submit">Eliminar</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
 </body>
 </html>

@@ -2,67 +2,97 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crear pedido</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
-<body>
-<h1>Crear pedido</h1>
-<p><a th:href="@{/}">Volver al inicio</a></p>
+<body class="app-shell">
+<header class="topbar">
+    <div class="topbar-inner">
+        <a class="brand" th:href="@{/}">
+            <span class="brand-mark" aria-hidden="true"></span>
+            <span>RavenShop</span>
+        </a>
+        <nav class="nav" aria-label="Navegacion principal">
+            <a th:href="@{/products}">Productos</a>
+            <a th:href="@{/customers}">Clientes</a>
+            <a class="is-active" th:href="@{/orders/new}">Crear pedido</a>
+        </nav>
+    </div>
+</header>
 
-<p th:if="${errorMessage}" th:text="${errorMessage}">Error</p>
+<main class="page">
+    <header class="page-header">
+        <div>
+            <p class="page-kicker">Pedido</p>
+            <h1>Crear pedido</h1>
+        </div>
+        <div class="actions">
+            <a class="button button-secondary" th:href="@{/}">Inicio</a>
+        </div>
+    </header>
 
-<form th:action="@{/orders}" th:object="${orderForm}" method="post">
-    <section>
-        <h2>Cliente</h2>
-        <label for="customerId">Cliente</label>
-        <select id="customerId" th:field="*{customerId}" required>
-            <option value="">Selecciona un cliente</option>
-            <option th:each="customer : ${customers}"
-                    th:value="${customer.id}"
-                    th:text="${customer.fullName + ' (' + customer.email + ')'}">
-                Ana Lopez
-            </option>
-        </select>
-    </section>
+    <p class="error-message" th:if="${errorMessage}" th:text="${errorMessage}">Error</p>
 
-    <section>
-        <h2>Envio</h2>
-        <label for="shippingAddress">Direccion de envio</label>
-        <input id="shippingAddress" type="text" th:field="*{shippingAddress}"
-               placeholder="Si se deja vacia, se usara la direccion del cliente">
-    </section>
+    <form class="form-grid" th:action="@{/orders}" th:object="${orderForm}" method="post">
+        <section class="form-panel form-grid">
+            <h2>Cliente</h2>
+            <div class="field">
+                <label for="customerId">Cliente</label>
+                <select id="customerId" th:field="*{customerId}" required>
+                    <option value="">Selecciona un cliente</option>
+                    <option th:each="customer : ${customers}"
+                            th:value="${customer.id}"
+                            th:text="${customer.fullName + ' (' + customer.email + ')'}">
+                        Ana Lopez
+                    </option>
+                </select>
+            </div>
 
-    <section>
-        <h2>Lineas</h2>
-        <p>El servidor copia nombre, categoria y precio del producto, y calcula los totales.</p>
+            <div class="field">
+                <label for="shippingAddress">Direccion de envio</label>
+                <input id="shippingAddress" type="text" th:field="*{shippingAddress}"
+                       placeholder="Si se deja vacia, se usara la direccion del cliente">
+            </div>
+        </section>
 
-        <table>
-            <thead>
-            <tr>
-                <th>Producto</th>
-                <th>Cantidad</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="line, status : *{lines}">
-                <td>
-                    <select th:field="*{lines[__${status.index}__].productId}">
-                        <option value="">Sin producto</option>
-                        <option th:each="product : ${products}"
-                                th:value="${product.id}"
-                                th:text="${product.name + ' - ' + product.category + ' - ' + product.price}">
-                            Cafe Colombia
-                        </option>
-                    </select>
-                </td>
-                <td>
-                    <input type="number" min="1" th:field="*{lines[__${status.index}__].quantity}">
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </section>
+        <section class="section">
+            <h2>Lineas</h2>
 
-    <button type="submit">Crear pedido</button>
-</form>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="line, status : *{lines}">
+                        <td>
+                            <select th:field="*{lines[__${status.index}__].productId}">
+                                <option value="">Sin producto</option>
+                                <option th:each="product : ${products}"
+                                        th:value="${product.id}"
+                                        th:text="${product.name + ' - ' + product.category + ' - ' + product.price}">
+                                    Cafe Colombia
+                                </option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="number" min="1" th:field="*{lines[__${status.index}__].quantity}">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <div class="actions">
+            <button type="submit">Crear pedido</button>
+            <a class="button button-secondary" th:href="@{/}">Cancelar</a>
+        </div>
+    </form>
+</main>
 </body>
 </html>

@@ -484,3 +484,32 @@ La WI-007 ya cuenta con modelo, calculo de totales y validaciones. Para cerrarla
 ### Por que
 
 WI-008 necesita cerrar el caso de uso de creacion de pedidos de forma demostrable. La solucion mantiene el foco academico: un formulario sencillo produce un documento agregado en RavenDB con datos embebidos, snapshot historico y totales calculados por el servidor.
+
+## 2026-04-25 - Layout visual comun WI-018
+
+### Que produjo la IA
+
+- CSS global en `src/main/resources/static/css/app.css`.
+- Sistema de variables visuales basado en la paleta propuesta por el usuario.
+- Cabecera y navegacion principal consistentes en las vistas MVC.
+- Estilos comunes para botones, enlaces, tablas, formularios, mensajes y estados de foco.
+- Adaptacion visual de home, productos, clientes y pedidos.
+
+### Que se acepto
+
+- Usar la paleta como acento sobre fondos neutros para conservar legibilidad.
+- Mantener un estilo minimalista, con pocas superficies enmarcadas y sin decoracion excesiva.
+- Usar CSS propio y Thymeleaf sin dependencias frontend nuevas.
+- Aplicar el estilo tambien a pedidos para que la navegacion no lleve a una pantalla sin pulir.
+- Evitar fragmentos Thymeleaf por ahora para que la WI se mantenga pequena y revisable.
+
+### Que se descarto
+
+- Introducir React, Vue, Angular, Tailwind o librerias de componentes.
+- Crear una landing page de marketing.
+- Usar degradados grandes o una interfaz dominada por la paleta completa.
+- Refactorizar controladores o logica de negocio.
+
+### Por que
+
+WI-018 busca mejorar la percepcion visual de la demo sin complicar la arquitectura. Un CSS global con clases compartidas cubre el objetivo y mantiene el proyecto defendible como aplicacion academica Spring MVC + Thymeleaf.
