@@ -4,6 +4,7 @@ import com.gr21.ravenshop.dto.CustomerCreateRequest;
 import com.gr21.ravenshop.dto.CustomerPageResponse;
 import com.gr21.ravenshop.dto.CustomerResponse;
 import com.gr21.ravenshop.dto.PaginationResponse;
+import com.gr21.ravenshop.model.Address;
 import com.gr21.ravenshop.model.Customer;
 import com.gr21.ravenshop.repository.CustomerRepository;
 import org.springframework.stereotype.Service;
@@ -25,8 +26,7 @@ public class CustomerService {
         customer.setFullName(request.fullName());
         customer.setEmail(request.email());
         customer.setPhone(request.phone());
-        customer.setCity(request.city());
-        customer.setAddress(request.address());
+        customer.setAddress(new Address(request.address(), request.city(), null));
 
         Customer saved = customerRepository.save(customer);
         return toResponse(saved);
@@ -47,13 +47,14 @@ public class CustomerService {
     }
 
     private CustomerResponse toResponse(Customer customer) {
+        Address address = customer.getAddress();
         return new CustomerResponse(
                 customer.getId(),
                 customer.getFullName(),
                 customer.getEmail(),
                 customer.getPhone(),
-                customer.getCity(),
-                customer.getAddress()
+                address.getCity(),
+                address.getStreet()
         );
     }
 
