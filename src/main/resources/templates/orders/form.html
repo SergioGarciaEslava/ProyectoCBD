@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear pedido</title>
+</head>
+<body>
+<h1>Crear pedido</h1>
+<p><a th:href="@{/}">Volver al inicio</a></p>
+
+<p th:if="${errorMessage}" th:text="${errorMessage}">Error</p>
+
+<form th:action="@{/orders}" th:object="${orderForm}" method="post">
+    <section>
+        <h2>Cliente</h2>
+        <label for="customerId">Cliente</label>
+        <select id="customerId" th:field="*{customerId}" required>
+            <option value="">Selecciona un cliente</option>
+            <option th:each="customer : ${customers}"
+                    th:value="${customer.id}"
+                    th:text="${customer.fullName + ' (' + customer.email + ')'}">
+                Ana Lopez
+            </option>
+        </select>
+    </section>
+
+    <section>
+        <h2>Envio</h2>
+        <label for="shippingAddress">Direccion de envio</label>
+        <input id="shippingAddress" type="text" th:field="*{shippingAddress}"
+               placeholder="Si se deja vacia, se usara la direccion del cliente">
+    </section>
+
+    <section>
+        <h2>Lineas</h2>
+        <p>El servidor copia nombre, categoria y precio del producto, y calcula los totales.</p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="line, status : *{lines}">
+                <td>
+                    <select th:field="*{lines[__${status.index}__].productId}">
+                        <option value="">Sin producto</option>
+                        <option th:each="product : ${products}"
+                                th:value="${product.id}"
+                                th:text="${product.name + ' - ' + product.category + ' - ' + product.price}">
+                            Cafe Colombia
+                        </option>
+                    </select>
+                </td>
+                <td>
+                    <input type="number" min="1" th:field="*{lines[__${status.index}__].quantity}">
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <button type="submit">Crear pedido</button>
+</form>
+</body>
+</html>

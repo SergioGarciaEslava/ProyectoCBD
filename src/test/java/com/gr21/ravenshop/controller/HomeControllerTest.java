@@ -25,6 +25,6 @@ class HomeControllerTest {
                 .andExpect(content().string(containsString("RavenShop")))
                 .andExpect(content().string(containsString("Productos")))
                 .andExpect(content().string(containsString("Clientes")))
-                .andExpect(content().string(containsString("Pedidos")));
+                .andExpect(content().string(containsString("Crear pedido")));
     }
 }

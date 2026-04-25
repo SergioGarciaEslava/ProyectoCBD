@@ -1,10 +1,14 @@
 package com.gr21.ravenshop.service;
 
+import com.gr21.ravenshop.dto.OrderCreateForm;
+import com.gr21.ravenshop.dto.OrderLineForm;
 import com.gr21.ravenshop.model.Address;
 import com.gr21.ravenshop.model.Customer;
 import com.gr21.ravenshop.model.Order;
+import com.gr21.ravenshop.model.Product;
 import com.gr21.ravenshop.repository.CustomerRepository;
 import com.gr21.ravenshop.repository.OrderRepository;
+import com.gr21.ravenshop.repository.ProductRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,6 +22,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -30,8 +35,56 @@ class OrderServiceTest {
     @Mock
     private CustomerRepository customerRepository;
 
+    @Mock
+    private ProductRepository productRepository;
+
     @InjectMocks
     private OrderService orderService;
+
+    @Test
+    void createOrderCopiesSnapshotsCalculatesTotalsAndSavesPendingOrder() {
+        Customer customer = new Customer();
+        customer.setId("customers/1-A");
+        customer.setFullName("Ana Lopez");
+        customer.setEmail("ana.lopez@example.com");
+        customer.setAddress(new Address("Calle Mayor 1", "Madrid", null));
+
+        Product coffee = product("products/1-A", "Cafe Colombia", "Bebidas", "10.50");
+        Product tea = product("products/2-A", "Te Verde", "Bebidas", "4.25");
+
+        when(customerRepository.findById("customers/1-A")).thenReturn(Optional.of(customer));
+        when(productRepository.findById("products/1-A")).thenReturn(Optional.of(coffee));
+        when(productRepository.findById("products/2-A")).thenReturn(Optional.of(tea));
+        when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> {
+            Order order = invocation.getArgument(0);
+            order.setId("orders/99-A");
+            return order;
+        });
+
+        OrderCreateForm form = new OrderCreateForm();
+        form.setCustomerId("customers/1-A");
+        form.setShippingAddress("Calle Mayor 1, Madrid");
+        form.setLines(List.of(lineForm("products/1-A", 2), lineForm("products/2-A", 3)));
+
+        Order created = orderService.createOrder(form);
+
+        assertThat(created.getId()).isEqualTo("orders/99-A");
+        assertThat(created.getCustomerId()).isEqualTo("customers/1-A");
+        assertThat(created.getCustomerSnapshot().getFullName()).isEqualTo("Ana Lopez");
+        assertThat(created.getCustomerSnapshot().getEmail()).isEqualTo("ana.lopez@example.com");
+        assertThat(created.getCustomerSnapshot().getCity()).isEqualTo("Madrid");
+        assertThat(created.getStatus()).isEqualTo(Order.STATUS_PENDING);
+        assertThat(created.getStatusHistory()).hasSize(1);
+        assertThat(created.getOrderedAt()).isNotNull();
+        assertThat(created.getLineItems()).hasSize(2);
+        assertThat(created.getLineItems().get(0).getProductName()).isEqualTo("Cafe Colombia");
+        assertThat(created.getLineItems().get(0).getCategory()).isEqualTo("Bebidas");
+        assertThat(created.getLineItems().get(0).getLineTotal()).isEqualByComparingTo("21.00");
+        assertThat(created.getLineItems().get(1).getLineTotal()).isEqualByComparingTo("12.75");
+        assertThat(created.getTotal()).isEqualByComparingTo("33.75");
+
+        verify(orderRepository).save(any(Order.class));
+    }
 
     @Test
     void findByIdNormalizesIdAndCompletesLegacyFieldsFromCustomerAndHistory() {
@@ -80,6 +133,16 @@ class OrderServiceTest {
     }
 
     @Test
+    void createOrderRejectsMissingCustomer() {
+        OrderCreateForm form = new OrderCreateForm();
+        form.setLines(List.of(lineForm("products/1-A", 1)));
+
+        assertThatThrownBy(() -> orderService.createOrder(form))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Cliente no encontrado");
+    }
+
+    @Test
     void findByIdDetectsInvalidQuantitiesWhenRecalculatingTotalsOnServer() {
         Order order = new Order();
         order.setId("orders/2-A");
@@ -104,6 +167,22 @@ class OrderServiceTest {
         line.setUnitPrice(new BigDecimal(unitPrice));
         line.setLineTotal(new BigDecimal(lineTotal));
         return line;
+    }
+
+    private OrderLineForm lineForm(String productId, int quantity) {
+        OrderLineForm line = new OrderLineForm();
+        line.setProductId(productId);
+        line.setQuantity(quantity);
+        return line;
+    }
+
+    private Product product(String id, String name, String category, String price) {
+        Product product = new Product();
+        product.setId(id);
+        product.setName(name);
+        product.setCategory(category);
+        product.setPrice(new BigDecimal(price));
+        return product;
     }
 
     private Order.StatusHistoryEntry history(String status, String changedAt) {

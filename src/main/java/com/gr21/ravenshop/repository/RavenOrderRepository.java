@@ -17,6 +17,15 @@ public class RavenOrderRepository implements OrderRepository {
     }
 
     @Override
+    public Order save(Order order) {
+        try (IDocumentSession session = documentStore.openSession(documentStore.getDatabase())) {
+            session.store(order);
+            session.saveChanges();
+            return order;
+        }
+    }
+
+    @Override
     public Optional<Order> findById(String id) {
         try (IDocumentSession session = documentStore.openSession(documentStore.getDatabase())) {
             return Optional.ofNullable(session.load(Order.class, id));
