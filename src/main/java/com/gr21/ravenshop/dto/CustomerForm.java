@@ -1,6 +1,7 @@
 package com.gr21.ravenshop.dto;
 
 import com.gr21.ravenshop.model.Address;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
@@ -14,6 +15,8 @@ public class CustomerForm {
     private String email;
 
     private String phone;
+
+    @Valid
     private Address address = new Address();
 
     public CustomerForm() {

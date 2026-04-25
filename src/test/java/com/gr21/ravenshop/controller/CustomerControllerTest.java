@@ -119,6 +119,29 @@ class CustomerControllerTest {
     }
 
     @Test
+    void createFromFormRequiresAddressFields() throws Exception {
+        mockMvc.perform(post("/customers")
+                        .param("fullName", "Ana Lopez")
+                        .param("email", "ana.lopez@example.com")
+                        .param("phone", "+34 600000000")
+                        .param("address.street", "")
+                        .param("address.city", "")
+                        .param("address.postalCode", ""))
+                .andExpect(status().isOk())
+                .andExpect(view().name("customers/form"))
+                .andExpect(content().string(containsString("La calle es obligatoria")))
+                .andExpect(content().string(containsString("La ciudad es obligatoria")))
+                .andExpect(content().string(containsString("El codigo postal es obligatorio")));
+
+        verify(customerService, never()).createCustomer(
+                org.mockito.ArgumentMatchers.anyString(),
+                org.mockito.ArgumentMatchers.anyString(),
+                org.mockito.ArgumentMatchers.anyString(),
+                org.mockito.ArgumentMatchers.any()
+        );
+    }
+
+    @Test
     void editFormLoadsExistingCustomer() throws Exception {
         Customer customer = new Customer();
         customer.setId("customers/1-A");
@@ -189,6 +212,31 @@ class CustomerControllerTest {
                 .andExpect(model().attribute("edit", true))
                 .andExpect(content().string(containsString("El nombre completo es obligatorio")))
                 .andExpect(content().string(containsString("El email no tiene un formato valido")));
+
+        verify(customerService, never()).updateCustomer(
+                org.mockito.ArgumentMatchers.anyString(),
+                org.mockito.ArgumentMatchers.anyString(),
+                org.mockito.ArgumentMatchers.anyString(),
+                org.mockito.ArgumentMatchers.anyString(),
+                org.mockito.ArgumentMatchers.any()
+        );
+    }
+
+    @Test
+    void updateFromFormRequiresAddressFields() throws Exception {
+        mockMvc.perform(post("/customers/1-A")
+                        .param("fullName", "Ana Lopez")
+                        .param("email", "ana.lopez@example.com")
+                        .param("phone", "+34 600000000")
+                        .param("address.street", " ")
+                        .param("address.city", " ")
+                        .param("address.postalCode", " "))
+                .andExpect(status().isOk())
+                .andExpect(view().name("customers/form"))
+                .andExpect(model().attribute("edit", true))
+                .andExpect(content().string(containsString("La calle es obligatoria")))
+                .andExpect(content().string(containsString("La ciudad es obligatoria")))
+                .andExpect(content().string(containsString("El codigo postal es obligatorio")));
 
         verify(customerService, never()).updateCustomer(
                 org.mockito.ArgumentMatchers.anyString(),
