@@ -269,3 +269,29 @@ El usuario pidio volver a incluir la trazabilidad eliminada, pero aclaro que no 
 ### Por que
 
 El cambio solicitado es de version de compilacion y requisitos locales. Java 21 es una version LTS y Spring Boot 3.5.x la soporta, por lo que basta con ajustar la propiedad Maven y la documentacion activa.
+
+## 2026-04-25 - Documento Order RavenDB
+
+### Que produjo la IA
+
+- Revision de `Order` como documento RavenDB en `src/main/java/com/gr21/ravenshop/model/`.
+- Ajuste minimo para eliminar un alias JSON redundante en el campo `total`.
+- Registro de trazabilidad de la sesion.
+
+### Que se acepto
+
+- Mantener `Order` como POJO simple, sin anotaciones JPA.
+- Mantener los campos documentales solicitados: `id`, `customerId`, `customerSnapshot`, `orderedAt`, `status`, `shippingAddress`, `lineItems`, `total` y `statusHistory`.
+- Mantener `status` como `String`, porque facilita RQL directo sobre estados textuales y evita introducir conversiones adicionales.
+- Mantener `shippingAddress` como `String`, porque el alcance actual solo requiere una direccion de envio defendible y no pide normalizarla como objeto.
+- Conservar `@JsonAlias("lines")` para que documentos semilla anteriores con `lines` puedan seguir cargando en `lineItems`.
+
+### Que se descarto
+
+- Crear controlador, vista, servicio o repositorio nuevo para pedidos.
+- Introducir autenticacion, JPA, base relacional o nuevas dependencias.
+- Refactorizar el seeder o el modulo de pedidos existente fuera del alcance pedido.
+
+### Por que
+
+La peticion era acotada: dejar `Order` como documento RavenDB compilable y facil de explicar. El cambio evita ampliar arquitectura y mantiene compatibilidad con datos ya presentes en el proyecto.

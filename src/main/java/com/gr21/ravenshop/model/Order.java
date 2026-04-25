@@ -21,7 +21,6 @@ public class Order {
     @JsonAlias("lines")
     private List<OrderLineItem> lineItems = new ArrayList<>();
 
-    @JsonAlias("total")
     private BigDecimal total;
 
     private List<StatusHistoryEntry> statusHistory = new ArrayList<>();
