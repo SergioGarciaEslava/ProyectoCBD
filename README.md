@@ -83,7 +83,7 @@ mvn spring-boot:run
 Comprobacion basica:
 
 ```bash
-curl http://localhost:8080/health
+curl http://localhost:8081/health
 ```
 
 Respuesta esperada:
@@ -91,6 +91,14 @@ Respuesta esperada:
 ```json
 {"application":"RavenShop","status":"UP"}
 ```
+
+Documentacion interactiva de la API:
+
+- Swagger UI: `http://localhost:8081/swagger-ui.html`
+- OpenAPI JSON: `http://localhost:8081/v3/api-docs`
+- Salud RavenDB: `http://localhost:8081/health-db`
+
+Swagger UI permite probar los endpoints contra la aplicacion arrancada. Para pruebas con RavenDB, levanta RavenDB en `http://127.0.0.1:8085` y usa la base `RavenShop`, que son los valores configurados en `application.properties`.
 
 ## Como ejecutar pruebas
 

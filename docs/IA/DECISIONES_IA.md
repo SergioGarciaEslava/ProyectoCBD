@@ -270,6 +270,31 @@ El usuario pidio volver a incluir la trazabilidad eliminada, pero aclaro que no 
 
 El cambio solicitado es de version de compilacion y requisitos locales. Java 21 es una version LTS y Spring Boot 3.5.x la soporta, por lo que basta con ajustar la propiedad Maven y la documentacion activa.
 
+## 2026-04-24 - OpenAPI y Swagger UI en runtime
+
+### Que produjo la IA
+
+- Dependencia `springdoc-openapi-starter-webmvc-ui` para exponer OpenAPI dinamico y Swagger UI.
+- Propiedades `springdoc.api-docs.*` y `springdoc.swagger-ui.*` en `application.properties`.
+- Prueba automatica de disponibilidad de `/v3/api-docs` y `/swagger-ui.html`.
+- Documentacion de URLs de prueba en README.
+
+### Que se acepto
+
+- Añadir una dependencia nueva acotada a documentacion interactiva de API.
+- Mantener el contrato versionado en `docs/spec/openapi/` como artefacto de referencia academica.
+- Usar Springdoc `2.8.17`, alineado con Spring Boot 3.x.
+
+### Que se descarto
+
+- Implementar autenticacion, perfiles separados o seguridad alrededor de Swagger.
+- Cambiar la configuracion RavenDB existente.
+- Sustituir el contrato OpenAPI versionado por generacion runtime.
+
+### Por que
+
+Swagger UI requiere un componente que sirva la interfaz y el documento OpenAPI en runtime. Springdoc cubre ese uso de forma directa en Spring MVC, manteniendo el alcance centrado en pruebas locales y demo con RavenDB.
+
 ## 2026-04-25 - Documento Order RavenDB
 
 ### Que produjo la IA
