@@ -42,6 +42,18 @@ public class Order {
         return order;
     }
 
+    public void recalculateTotals() {
+        BigDecimal calculatedTotal = BigDecimal.ZERO;
+
+        for (OrderLineItem lineItem : lineItems) {
+            BigDecimal lineTotal = lineItem.calculateLineTotal();
+            lineItem.setLineTotal(lineTotal);
+            calculatedTotal = calculatedTotal.add(lineTotal);
+        }
+
+        setTotal(calculatedTotal);
+    }
+
     public String getId() {
         return id;
     }
@@ -217,6 +229,13 @@ public class Order {
 
         public void setLineTotal(BigDecimal lineTotal) {
             this.lineTotal = lineTotal;
+        }
+
+        private BigDecimal calculateLineTotal() {
+            if (unitPrice == null) {
+                return BigDecimal.ZERO;
+            }
+            return unitPrice.multiply(BigDecimal.valueOf(quantity));
         }
     }
 

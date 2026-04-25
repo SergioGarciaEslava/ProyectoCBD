@@ -2,6 +2,9 @@ package com.gr21.ravenshop.model;
 
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class OrderTest {
@@ -17,5 +20,27 @@ class OrderTest {
         assertThat(initialEntry.getStatus()).isEqualTo(Order.STATUS_PENDING);
         assertThat(initialEntry.getChangedAt()).isNotNull();
         assertThat(initialEntry.getComment()).isEqualTo(Order.INITIAL_STATUS_COMMENT);
+    }
+
+    @Test
+    void recalculateTotalsCalculatesLineTotalsAndOrderTotalFromQuantityAndUnitPrice() {
+        Order order = new Order();
+        order.setLineItems(List.of(
+                line(2, "10.50"),
+                line(3, "4.25")
+        ));
+
+        order.recalculateTotals();
+
+        assertThat(order.getLineItems().get(0).getLineTotal()).isEqualByComparingTo("21.00");
+        assertThat(order.getLineItems().get(1).getLineTotal()).isEqualByComparingTo("12.75");
+        assertThat(order.getTotal()).isEqualByComparingTo("33.75");
+    }
+
+    private Order.OrderLineItem line(int quantity, String unitPrice) {
+        Order.OrderLineItem line = new Order.OrderLineItem();
+        line.setQuantity(quantity);
+        line.setUnitPrice(new BigDecimal(unitPrice));
+        return line;
     }
 }

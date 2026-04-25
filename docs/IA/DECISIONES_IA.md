@@ -371,3 +371,30 @@ El pedido debe conservar el contexto historico tal como existia al comprar. Por 
 ### Por que
 
 El objetivo actual es representar estado actual y trazabilidad sin cerrar todavia el flujo de alta de pedidos. La fabrica permite explicar claramente como nace un pedido nuevo y deja preparado el historial sin sobredisenar.
+
+## 2026-04-25 - Calculo de totales de pedido en servidor
+
+### Que produjo la IA
+
+- Metodo `Order.recalculateTotals()` para recalcular importes del pedido.
+- Calculo de `OrderLineItem.lineTotal` como `unitPrice * quantity`.
+- Calculo de `Order.total` como suma de los importes de linea.
+- Invocacion desde `OrderService` al preparar el detalle del pedido.
+- Pruebas de modelo y servicio para cubrir el calculo.
+
+### Que se acepto
+
+- Centralizar el calculo en el modelo `Order`, porque es la forma mas pequena y facil de explicar.
+- Llamar al recalculo desde el servicio para dejar claro que el servidor no depende de valores del frontend.
+- Mantener `lineTotal` y `total` como datos almacenables del documento RavenDB, pero recalculables desde los datos base.
+
+### Que se descarto
+
+- Crear formulario de pedidos.
+- Recalcular importes en Thymeleaf o JavaScript.
+- Crear servicios auxiliares, validadores o nuevas capas.
+- Anadir dependencias nuevas.
+
+### Por que
+
+El requisito es demostrar una regla de negocio sencilla y defendible: los importes salen de `quantity` y `unitPrice`. Un metodo de dominio invocado desde el servicio cubre el caso sin sobredisenar el proyecto.

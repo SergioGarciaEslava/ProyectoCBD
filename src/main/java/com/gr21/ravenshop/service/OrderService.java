@@ -31,6 +31,8 @@ public class OrderService {
     }
 
     private Order enrichForDetailView(Order order) {
+        order.recalculateTotals();
+
         if ((order.getCustomerSnapshot() == null || isBlank(order.getShippingAddress())) && !isBlank(order.getCustomerId())) {
             customerRepository.findById(order.getCustomerId()).ifPresent(customer -> mergeCustomerData(order, customer));
         }

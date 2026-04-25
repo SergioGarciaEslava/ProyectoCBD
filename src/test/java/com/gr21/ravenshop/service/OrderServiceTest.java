@@ -37,8 +37,8 @@ class OrderServiceTest {
         Order order = new Order();
         order.setId("orders/1-A");
         order.setCustomerId("customers/1-A");
-        order.setLineItems(List.of(line("products/1-A", "Cafe", "Bebidas", 2, "21.90", "43.80")));
-        order.setTotal(new BigDecimal("43.80"));
+        order.setLineItems(List.of(line("products/1-A", "Cafe", "Bebidas", 2, "21.90", "0.00")));
+        order.setTotal(new BigDecimal("0.00"));
         order.setStatusHistory(List.of(
                 history("CREATED", "2026-04-19T10:00:00Z"),
                 history("PAID", "2026-04-19T10:05:00Z")
@@ -62,6 +62,7 @@ class OrderServiceTest {
         assertThat(result.get().getOrderedAt()).isEqualTo(OffsetDateTime.parse("2026-04-19T10:00:00Z"));
         assertThat(result.get().getStatus()).isEqualTo("PAID");
         assertThat(result.get().getLineItems().get(0).getLineTotal()).isEqualByComparingTo("43.80");
+        assertThat(result.get().getTotal()).isEqualByComparingTo("43.80");
 
         verify(orderRepository).findById("orders/1-A");
         verify(customerRepository).findById("customers/1-A");
