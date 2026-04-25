@@ -23,7 +23,12 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class RavenDbSeedRunnerTest {
 
-    private static final String SEED_MARKER_ID = "seed-data/ravenshop-wi003";
+    private static final String SEED_MARKER_ID = RavenDbSeedRunner.SEED_MARKER_ID;
+    private static final int EXPECTED_PRODUCT_COUNT = 6;
+    private static final int EXPECTED_CUSTOMER_COUNT = 3;
+    private static final int EXPECTED_ORDER_COUNT = 4;
+    private static final int EXPECTED_TOTAL_STORES =
+            EXPECTED_PRODUCT_COUNT + EXPECTED_CUSTOMER_COUNT + EXPECTED_ORDER_COUNT + 1;
 
     @Mock
     private IDocumentStore documentStore;
@@ -50,12 +55,12 @@ class RavenDbSeedRunnerTest {
         runner.run(args);
 
         ArgumentCaptor<Object> storedEntities = ArgumentCaptor.forClass(Object.class);
-        verify(session, times(12)).store(any(), anyString());
-        verify(session, times(12)).store(storedEntities.capture(), anyString());
+        verify(session, times(EXPECTED_TOTAL_STORES)).store(any(), anyString());
+        verify(session, times(EXPECTED_TOTAL_STORES)).store(storedEntities.capture(), anyString());
         verify(session, times(1)).saveChanges();
 
         List<Object> allStored = storedEntities.getAllValues();
-        org.assertj.core.api.Assertions.assertThat(allStored.subList(0, 4))
+        org.assertj.core.api.Assertions.assertThat(allStored.subList(0, EXPECTED_PRODUCT_COUNT))
                 .allMatch(Product.class::isInstance);
     }
 

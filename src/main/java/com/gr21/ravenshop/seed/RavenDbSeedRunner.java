@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @ConditionalOnProperty(prefix = "ravenshop.seed", name = "enabled", havingValue = "true")
 public class RavenDbSeedRunner implements ApplicationRunner {
 
-    static final String SEED_MARKER_ID = "seed-data/ravenshop-wi003";
+    static final String SEED_MARKER_ID = "seed-data/ravenshop-wi020";
 
     private final IDocumentStore documentStore;
 
@@ -45,6 +45,8 @@ public class RavenDbSeedRunner implements ApplicationRunner {
         session.store(product("Te verde organico 500g", "Bebidas", "12.40", 80), "products/2-A");
         session.store(product("Chocolate negro 70% 200g", "Snacks", "6.95", 120), "products/3-A");
         session.store(product("Muesli sin azucar 750g", "Despensa", "8.50", 65), "products/4-A");
+        session.store(product("Cafe instantaneo 200g", "Bebidas", "5.40", 100), "products/5-A");
+        session.store(product("Cafe descafeinado 250g", "Bebidas", "7.80", 70), "products/6-A");
     }
 
     private Product product(String name, String category, String price, int stock) {

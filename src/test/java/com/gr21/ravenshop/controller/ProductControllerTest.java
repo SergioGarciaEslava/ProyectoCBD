@@ -40,12 +40,13 @@ class ProductControllerTest {
         product.setCategory("Bebidas");
         product.setPrice(new BigDecimal("19.90"));
         product.setStock(50);
-        given(productService.listProducts()).willReturn(List.of(product));
+        given(productService.searchProductsByName("")).willReturn(List.of(product));
 
         mockMvc.perform(get("/products"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("products/list"))
                 .andExpect(model().attributeExists("products"))
+                .andExpect(model().attribute("query", ""))
                 .andExpect(content().string(containsString("Cafe")))
                 .andExpect(content().string(containsString("Bebidas")))
                 .andExpect(content().string(containsString("19.90")))
@@ -54,12 +55,30 @@ class ProductControllerTest {
 
     @Test
     void listViewShowsFriendlyMessageWhenThereAreNoProducts() throws Exception {
-        given(productService.listProducts()).willReturn(List.of());
+        given(productService.searchProductsByName("")).willReturn(List.of());
 
         mockMvc.perform(get("/products"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("products/list"))
                 .andExpect(content().string(containsString("No hay productos disponibles todavia")));
+    }
+
+    @Test
+    void listViewFiltersByNamePrefixWhenQueryProvided() throws Exception {
+        Product product = new Product();
+        product.setId("products/1-A");
+        product.setName("Cafe de especialidad 1kg");
+        product.setCategory("Bebidas");
+        product.setPrice(new BigDecimal("21.90"));
+        product.setStock(50);
+        given(productService.searchProductsByName("Cafe")).willReturn(List.of(product));
+
+        mockMvc.perform(get("/products").param("q", "Cafe"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("products/list"))
+                .andExpect(model().attribute("query", "Cafe"))
+                .andExpect(content().string(containsString("Cafe de especialidad")))
+                .andExpect(content().string(containsString("startsWith(Name")));
     }
 
     @Test

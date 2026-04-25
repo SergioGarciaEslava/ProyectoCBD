@@ -34,6 +34,7 @@
     </header>
 
     <section class="section">
+        <p class="doc-kicker">Documento principal &middot; <code>Orders</code></p>
         <dl class="detail-grid">
             <div>
                 <dt>ID</dt>
@@ -45,7 +46,13 @@
             </div>
             <div>
                 <dt>status</dt>
-                <dd><span class="status-pill" th:text="${order.status != null ? order.status : '-'}">PAID</span></dd>
+                <dd>
+                    <span th:if="${order.status != null}"
+                          class="status-pill"
+                          th:classappend="${'status-pill--' + #strings.toLowerCase(order.status)}"
+                          th:text="${order.status}">PAID</span>
+                    <span th:if="${order.status == null}">-</span>
+                </dd>
             </div>
             <div>
                 <dt>shippingAddress</dt>
@@ -58,7 +65,8 @@
         </dl>
     </section>
 
-    <section class="section">
+    <section class="section embedded-section">
+        <p class="doc-kicker">Subdocumento embebido &middot; <code>customerSnapshot</code></p>
         <h2>customerSnapshot</h2>
         <dl class="detail-grid" th:if="${order.customerSnapshot != null}">
             <div>
@@ -81,7 +89,8 @@
         <p class="empty-state" th:if="${order.customerSnapshot == null}">-</p>
     </section>
 
-    <section class="section">
+    <section class="section embedded-section">
+        <p class="doc-kicker">Subdocumento embebido &middot; <code>lineItems[]</code></p>
         <h2>lineItems</h2>
         <p class="empty-state" th:if="${#lists.isEmpty(order.lineItems)}">No hay lineItems disponibles.</p>
         <div class="table-wrap" th:if="${not #lists.isEmpty(order.lineItems)}">
@@ -108,7 +117,8 @@
         </div>
     </section>
 
-    <section class="section">
+    <section class="section embedded-section">
+        <p class="doc-kicker">Subdocumento embebido &middot; <code>statusHistory[]</code></p>
         <h2>statusHistory</h2>
         <p class="empty-state" th:if="${#lists.isEmpty(order.statusHistory)}">No hay statusHistory disponible.</p>
         <div class="table-wrap" th:if="${not #lists.isEmpty(order.statusHistory)}">
@@ -121,13 +131,23 @@
                 </thead>
                 <tbody>
                 <tr th:each="entry : ${order.statusHistory}">
-                    <td th:text="${entry.status}">CREATED</td>
+                    <td>
+                        <span class="status-pill"
+                              th:classappend="${'status-pill--' + #strings.toLowerCase(entry.status)}"
+                              th:text="${entry.status}">CREATED</span>
+                    </td>
                     <td th:text="${entry.changedAt}">2026-04-19T10:00:00Z</td>
                 </tr>
                 </tbody>
             </table>
         </div>
     </section>
+
+    <aside class="rql-panel" aria-label="Consulta RQL ejecutada">
+        <p class="rql-kicker">RQL ejecutada</p>
+        <pre><code th:text="|from Orders where id() = '${order.id}'|">from Orders where id() = 'orders/1-A'</code></pre>
+        <p class="rql-note">El detalle del pedido carga el documento completo por id, incluyendo subdocumentos embebidos (<code>customerSnapshot</code>, <code>lineItems</code>, <code>statusHistory</code>) sin necesidad de joins.</p>
+    </aside>
 </main>
 </body>
 </html>

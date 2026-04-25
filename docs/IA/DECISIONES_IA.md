@@ -513,3 +513,64 @@ WI-008 necesita cerrar el caso de uso de creacion de pedidos de forma demostrabl
 ### Por que
 
 WI-018 busca mejorar la percepcion visual de la demo sin complicar la arquitectura. Un CSS global con clases compartidas cubre el objetivo y mantiene el proyecto defendible como aplicacion academica Spring MVC + Thymeleaf.
+
+## 2026-04-25 - Dashboard inicial WI-019
+
+### Que produjo la IA
+
+- Rediseño del `index.html` con kicker actualizado, descripcion del proposito academico y los conceptos demostrados.
+- Lista `concept-chips` con cuatro píldoras informativas: Documentos, Subdoc. embebidos, RQL, Auto-Index.
+- Descripciones tecnicas en las tarjetas principales que apuntan a lo que demuestra cada seccion (`Auto/Products/ByName`, snapshot embebido sin join, `lineItems`/`customerSnapshot`/`statusHistory`).
+- Nueva seccion `tools-strip` con accesos a Swagger UI y al endpoint de salud `/health-db`.
+- Reglas CSS `.concept-chips`, `.concept-chip` y `.tools-strip` añadidas al final de `app.css`, integradas visualmente con `.home-strip`.
+- Documentacion del aplazamiento explicito de WI-018.
+
+### Que se acepto
+
+- Mantener Spring MVC + Thymeleaf y CSS propio sin dependencias nuevas.
+- Reutilizar `.home-link` para las tarjetas secundarias por simplicidad visual y coherencia con la fila principal.
+- Usar tecnicismos en las descripciones (`Auto/Products/ByName`, `lineItems`, `customerSnapshot`) porque el publico es academico y conoce el dominio.
+- Enlazar Swagger UI y `/health-db` con `target="_blank"` y `rel="noopener"` para no perder la sesion de demo.
+- Cerrar la issue #26 una vez verificado `mvn test` y arranque local.
+
+### Que se descarto
+
+- Bloque "recorrido sugerido" con pasos numerados: queda como mejora futura, la defensa oral cubre esa orientacion.
+- Refactor a fragmentos Thymeleaf (WI-018): aplazado para no arriesgar regresion visual sobre el commit `b35608d` a horas de la entrega.
+- Tocar codigo Java, formularios o controladores.
+- Añadir JavaScript o librerias frontend.
+
+### Por que
+
+WI-019 pide una primera pantalla que comunique el proposito academico y oriente al tribunal hacia las secciones tecnicas relevantes. La solucion mantiene el alcance pequeño y reversible, prioriza el contenido sobre cambios estructurales y aprovecha la base visual ya estabilizada en WI-018. WI-018 se aplaza porque su valor para la defensa es nulo (refactor invisible) y su riesgo es alto (toca todas las plantillas justo despues de estabilizarlas).
+
+## 2026-04-25 - Pedidos pulidos, busqueda con auto-index y paneles RQL WI-020
+
+### Que produjo la IA
+
+- Backend de busqueda por nombre: metodo `searchByNamePrefix` en `ProductRepository`, implementacion RQL en `RavenProductRepository`, paso por `ProductService` y aceptacion de parametro `q` en `ProductController.list`.
+- Refuerzo del seed con `products/5-A` y `products/6-A`, ambos con prefijo `Cafe`, y cambio de `SEED_MARKER_ID` a `seed-data/ravenshop-wi020`.
+- UI de busqueda en `/products`: formulario `GET`, resumen de resultados, boton de limpiar y panel `<aside class="rql-panel">` con la RQL ejecutada y nota sobre el auto-index generado.
+- Detalle de pedido pulido: cabecera `doc-kicker` por seccion, clase `embedded-section` para los tres subdocumentos (`customerSnapshot`, `lineItems[]`, `statusHistory[]`), pills de estado con variantes de color y panel RQL con `from Orders where id() = '<id>'`.
+- CSS: `.search-bar`, `.search-summary`, `.rql-panel`, `.rql-kicker`, `.doc-kicker`, `.rql-note`, `.embedded-section`, variantes `.status-pill--paid/--shipped/--cancelled/--pending/--processing/--created`, regla `code` general y `.visually-hidden`.
+- Tests: actualizacion de `ProductControllerTest` (mockea `searchProductsByName`, nuevo test para `?q=...`) y de `RavenDbSeedRunnerTest` (constantes para producto/cliente/pedido y referencia al `SEED_MARKER_ID` real).
+
+### Que se acepto
+
+- **RQL `startsWith(Name, $q)`** como base de la busqueda, porque genera el auto-index estandar `Auto/Products/ByName`, facil de mostrar y explicar en RavenDB Studio.
+- Cambiar `SEED_MARKER_ID` a `seed-data/ravenshop-wi020` para que el seed se aplique de nuevo en bases ya sembradas, manteniendo idempotencia: los IDs de documentos del seed se sobrescriben en lugar de duplicarse.
+- Pills de estado con clase modificadora `status-pill--<lowercase>` calculada en plantilla, para cubrir los estados conocidos sin acoplar el modelo a una enum.
+- Paneles RQL como texto estatico en plantilla, sin instrumentacion runtime, porque el objetivo es didactico y no de monitorizacion.
+- Tests `MockMvc` como prueba de render de plantillas, dado que el entorno de CI no levanta RavenDB.
+
+### Que se descarto
+
+- **`search(Name, $q)`** (full-text): introduciria conversacion sobre analizadores que no aporta a la defensa academica.
+- Endpoint nuevo `/orders` (WI-009) con filtros: queda fuera del sprint demo. Aportaria un segundo auto-index pero ~1h adicional.
+- Refactor a fragmentos Thymeleaf (WI-018): sigue aplazado.
+- Librerias de syntax highlighting para los paneles RQL: el contraste fondo-oscuro/codigo-claro basta visualmente.
+- Inicializar la conexion RavenDB en los tests: `MockMvc` cubre el render sin necesidad de DB.
+
+### Por que
+
+WI-020 es la pieza con mejor relacion impacto/riesgo del sprint. El auto-index `Auto/Products/ByName` se genera con una RQL minima y es el momento "wow" de la defensa. Los paneles RQL convierten la interfaz en un material didactico sin coste de mantenimiento. La diferenciacion visual de los embebidos en el detalle de pedido hace tangible el modelado documental. El cambio del marker es la ruta mas pequeña para que el seed se actualice sin romper la convencion existente.

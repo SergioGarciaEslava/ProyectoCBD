@@ -46,6 +46,16 @@ public class RavenProductRepository implements ProductRepository {
     }
 
     @Override
+    public List<Product> searchByNamePrefix(String namePrefix) {
+        try (IDocumentSession session = documentStore.openSession(documentStore.getDatabase())) {
+            return session.advanced()
+                    .rawQuery(Product.class, "from Products where startsWith(Name, $namePrefix)")
+                    .addParameter("namePrefix", namePrefix)
+                    .toList();
+        }
+    }
+
+    @Override
     public boolean deleteById(String id) {
         try (IDocumentSession session = documentStore.openSession(documentStore.getDatabase())) {
             Product product = session.load(Product.class, id);
