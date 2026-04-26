@@ -46,6 +46,40 @@ class OrderControllerTest {
     private ProductService productService;
 
     @Test
+    void listViewRendersOrders() throws Exception {
+        Order order = new Order();
+        order.setId("orders/1-A");
+        order.setOrderedAt(OffsetDateTime.parse("2026-04-19T10:00:00Z"));
+        order.setStatus("Pending");
+        order.setTotal(new BigDecimal("64.65"));
+
+        Order.CustomerSnapshot snapshot = new Order.CustomerSnapshot();
+        snapshot.setFullName("Ana Lopez");
+        order.setCustomerSnapshot(snapshot);
+
+        given(orderService.listOrders()).willReturn(List.of(order));
+
+        mockMvc.perform(get("/orders"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("orders/list"))
+                .andExpect(model().attributeExists("orders"))
+                .andExpect(content().string(containsString("Listado base de pedidos")))
+                .andExpect(content().string(containsString("orders/1-A")))
+                .andExpect(content().string(containsString("Ana Lopez")))
+                .andExpect(content().string(containsString("64.65")));
+    }
+
+    @Test
+    void listViewShowsFriendlyMessageWhenThereAreNoOrders() throws Exception {
+        given(orderService.listOrders()).willReturn(List.of());
+
+        mockMvc.perform(get("/orders"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("orders/list"))
+                .andExpect(content().string(containsString("No hay pedidos registrados todavia.")));
+    }
+
+    @Test
     void newFormLoadsCustomersProductsAndEmptyOrderForm() throws Exception {
         Customer customer = new Customer();
         customer.setId("customers/1-A");

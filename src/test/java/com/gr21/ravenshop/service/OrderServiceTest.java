@@ -87,6 +87,36 @@ class OrderServiceTest {
     }
 
     @Test
+    void listOrdersReturnsOrdersWithTotalsAndFallbackCustomerSnapshotData() {
+        Order order = new Order();
+        order.setId("orders/1-A");
+        order.setCustomerId("customers/1-A");
+        order.setLineItems(List.of(line("products/1-A", "Cafe", "Bebidas", 2, "21.90", "0.00")));
+        order.setStatusHistory(List.of(history("Pending", "2026-04-19T10:00:00Z")));
+
+        Customer customer = new Customer();
+        customer.setId("customers/1-A");
+        customer.setFullName("Ana Lopez");
+        customer.setEmail("ana.lopez@example.com");
+        customer.setAddress(new Address("Calle Mayor 1", "Madrid", null));
+
+        when(orderRepository.findAll()).thenReturn(List.of(order));
+        when(customerRepository.findById("customers/1-A")).thenReturn(Optional.of(customer));
+
+        List<Order> result = orderService.listOrders();
+
+        assertThat(result).hasSize(1);
+        assertThat(result.getFirst().getTotal()).isEqualByComparingTo("43.80");
+        assertThat(result.getFirst().getOrderedAt()).isEqualTo(OffsetDateTime.parse("2026-04-19T10:00:00Z"));
+        assertThat(result.getFirst().getStatus()).isEqualTo("Pending");
+        assertThat(result.getFirst().getCustomerSnapshot()).isNotNull();
+        assertThat(result.getFirst().getCustomerSnapshot().getFullName()).isEqualTo("Ana Lopez");
+
+        verify(orderRepository).findAll();
+        verify(customerRepository).findById("customers/1-A");
+    }
+
+    @Test
     void findByIdNormalizesIdAndCompletesLegacyFieldsFromCustomerAndHistory() {
         Order order = new Order();
         order.setId("orders/1-A");
@@ -130,6 +160,23 @@ class OrderServiceTest {
 
         assertThat(result).isEmpty();
         verify(orderRepository).findById("orders/404-A");
+    }
+
+    @Test
+    void listOrdersSkipsTotalRecalculationWhenAStoredLineHasInvalidQuantity() {
+        Order order = new Order();
+        order.setId("orders/2-A");
+        order.setStatus("Pending");
+        order.setTotal(new BigDecimal("15.00"));
+        order.setLineItems(List.of(line("products/1-A", "Cafe", "Bebidas", 0, "21.90", "0.00")));
+
+        when(orderRepository.findAll()).thenReturn(List.of(order));
+
+        List<Order> result = orderService.listOrders();
+
+        assertThat(result).hasSize(1);
+        assertThat(result.getFirst().getTotal()).isEqualByComparingTo("15.00");
+        verify(orderRepository).findAll();
     }
 
     @Test
