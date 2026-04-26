@@ -10,7 +10,7 @@ Codex
 
 ## Prompt o resumen fiel
 
-Preparar y documentar varias consultas RQL equivalentes para la defensa en RavenDB Studio.
+Preparar y documentar varias consultas RQL equivalentes para la defensa en RavenDB Studio. Despues, rehacer `docs/demo_rql.md` para dejarlo limpio y presentable, sin notas locales ni guion operativo interno.
 
 Quiero:
 
@@ -19,15 +19,16 @@ Quiero:
 - una consulta de productos por categoria o etiqueta
 - dejarlo documentado en `docs/demo_rql.md`
 - verificar las consultas en la base local si RavenDB esta disponible
+- dejar finalmente el documento limpio para lectura del profesor
 
 Restricciones:
 
 - mantener el alcance en documentacion de demo
 - no romper funcionalidad existente
-- dejar instrucciones faciles de ejecutar en la exposicion
+- evitar referencias locales, resultados de una base concreta o notas internas de preparacion
 - registrar la trazabilidad de IA si se toca documentacion del proyecto
 
 ## Verificacion documentada
 
-- Verificacion directa contra RavenDB local en `http://127.0.0.1:8085/databases/RavenShop/queries`
-- `mvn test`
+- Verificacion previa directa contra RavenDB local en `http://127.0.0.1:8085/databases/RavenShop/queries`
+- Revision final del contenido resultante en `docs/demo_rql.md`
