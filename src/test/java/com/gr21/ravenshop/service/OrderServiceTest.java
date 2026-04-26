@@ -25,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.never;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -218,6 +219,24 @@ class OrderServiceTest {
                 .hasMessage("Pedido no encontrado");
 
         verify(orderRepository).findById("orders/404-A");
+    }
+
+    @Test
+    void changeStatusDoesNothingWhenNewStatusMatchesCurrentStatus() {
+        Order order = new Order();
+        order.setId("orders/1-A");
+        order.setStatus("Pending");
+        order.setStatusHistory(List.of(history("Pending", "2026-04-19T10:00:00Z")));
+
+        when(orderRepository.findById("orders/1-A")).thenReturn(Optional.of(order));
+
+        Order unchanged = orderService.changeStatus("1-A", "Pending");
+
+        assertThat(unchanged.getStatus()).isEqualTo("Pending");
+        assertThat(unchanged.getStatusHistory()).hasSize(1);
+
+        verify(orderRepository).findById("orders/1-A");
+        verify(orderRepository, never()).save(any(Order.class));
     }
 
     @Test
