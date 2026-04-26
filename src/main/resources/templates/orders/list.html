@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedidos</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="app-shell">
+<header class="topbar">
+    <div class="topbar-inner">
+        <a class="brand" th:href="@{/}">
+            <span class="brand-mark" aria-hidden="true"></span>
+            <span>RavenShop</span>
+        </a>
+        <nav class="nav" aria-label="Navegacion principal">
+            <a th:href="@{/products}">Productos</a>
+            <a th:href="@{/customers}">Clientes</a>
+            <a class="is-active" th:href="@{/orders}">Pedidos</a>
+            <a th:href="@{/orders/new}">Crear pedido</a>
+        </nav>
+    </div>
+</header>
+
+<main class="page">
+    <header class="page-header">
+        <div>
+            <p class="page-kicker">Pedidos</p>
+            <h1>Listado base de pedidos</h1>
+            <p class="lead">Consulta simple a RavenDB para mostrar los campos principales del documento <code>Order</code> sin filtros ni detalle adicional.</p>
+        </div>
+        <div class="actions">
+            <a class="button button-secondary" th:href="@{/}">Inicio</a>
+            <a class="button" th:href="@{/orders/new}">Crear pedido</a>
+        </div>
+    </header>
+
+    <p class="empty-state" th:if="${#lists.isEmpty(orders)}">No hay pedidos registrados todavia.</p>
+
+    <div class="table-wrap" th:if="${not #lists.isEmpty(orders)}">
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>orderedAt</th>
+                <th>status</th>
+                <th>customerSnapshot.fullName</th>
+                <th>total</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="order : ${orders}">
+                <td th:text="${order.id}">orders/1-A</td>
+                <td th:text="${order.orderedAt != null ? order.orderedAt : '-'}">2026-04-25T18:00:00Z</td>
+                <td>
+                    <span th:if="${order.status != null and !#strings.isEmpty(order.status)}"
+                          class="status-pill"
+                          th:classappend="${'status-pill--' + #strings.toLowerCase(order.status)}"
+                          th:text="${order.status}">Pending</span>
+                    <span th:if="${order.status == null or #strings.isEmpty(order.status)}">-</span>
+                </td>
+                <td th:text="${order.customerSnapshot != null and order.customerSnapshot.fullName != null ? order.customerSnapshot.fullName : '-'}">Ana Lopez</td>
+                <td th:text="${order.total != null ? order.total : '-'}">64.65</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

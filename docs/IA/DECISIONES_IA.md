@@ -574,3 +574,31 @@ WI-019 pide una primera pantalla que comunique el proposito academico y oriente 
 ### Por que
 
 WI-020 es la pieza con mejor relacion impacto/riesgo del sprint. El auto-index `Auto/Products/ByName` se genera con una RQL minima y es el momento "wow" de la defensa. Los paneles RQL convierten la interfaz en un material didactico sin coste de mantenimiento. La diferenciacion visual de los embebidos en el detalle de pedido hace tangible el modelado documental. El cambio del marker es la ruta mas pequeña para que el seed se actualice sin romper la convencion existente.
+## 2026-04-26 - Listado base de pedidos
+
+### Que produjo la IA
+
+- Metodo `findAll()` en `OrderRepository` y `RavenOrderRepository` para recuperar pedidos desde RavenDB.
+- Metodo `OrderService.listOrders()` para preparar los datos del listado MVC.
+- Ruta `GET /orders` en `OrderController`.
+- Nueva vista `templates/orders/list.html`.
+- Enlace a pedidos desde la portada.
+- Tests de servicio y controlador para el listado.
+
+### Que se acepto
+
+- Mantener el listado como una consulta simple de RavenDB, sin filtros ni paginacion.
+- Reutilizar `OrderService` existente en lugar de crear una capa nueva especifica para lectura.
+- Mostrar solo los campos pedidos: `id`, `orderedAt`, `status`, `customerSnapshot.fullName` y `total`.
+- Intentar completar `customerSnapshot` y campos derivados si faltan en documentos antiguos, para que la demo sea mas robusta.
+- Ordenar por `orderedAt desc` en repositorio porque hace el listado mas defendible en demo sin anadir complejidad.
+
+### Que se descarto
+
+- Implementar filtros, busqueda o detalle desde el listado.
+- Anadir DTOs especificos de tabla o view models extra.
+- Introducir nuevas dependencias o cambiar la configuracion de RavenDB.
+
+### Por que
+
+El objetivo de esta sesion es cubrir solo el caso de uso minimo de lectura de pedidos desde RavenDB y dejarlo facil de explicar oralmente. La solucion se apoya en las capas ya existentes, evita arquitectura adicional y mantiene un cambio pequeno, coherente con un commit medio.

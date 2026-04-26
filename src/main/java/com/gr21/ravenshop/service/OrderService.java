@@ -47,6 +47,12 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
+    public List<Order> listOrders() {
+        return orderRepository.findAll().stream()
+                .map(this::enrichForListView)
+                .toList();
+    }
+
     public Optional<Order> findById(String orderId) {
         return orderRepository.findById(normalizeId(orderId))
                 .map(this::enrichForDetailView);
@@ -101,6 +107,20 @@ public class OrderService {
 
     private Order enrichForDetailView(Order order) {
         order.recalculateTotals();
+        ensureDerivedFields(order);
+        return order;
+    }
+
+    private Order enrichForListView(Order order) {
+        if (hasValidLineItems(order)) {
+            order.recalculateTotals();
+        }
+
+        ensureDerivedFields(order);
+        return order;
+    }
+
+    private void ensureDerivedFields(Order order) {
 
         if ((order.getCustomerSnapshot() == null || isBlank(order.getShippingAddress())) && !isBlank(order.getCustomerId())) {
             customerRepository.findById(order.getCustomerId()).ifPresent(customer -> mergeCustomerData(order, customer));
@@ -121,8 +141,6 @@ public class OrderService {
                     .map(Order.StatusHistoryEntry::getStatus)
                     .ifPresent(order::setStatus);
         }
-
-        return order;
     }
 
     private void mergeCustomerData(Order order, Customer customer) {
@@ -167,5 +185,9 @@ public class OrderService {
 
     private boolean isBlank(String value) {
         return value == null || value.isBlank();
+    }
+
+    private boolean hasValidLineItems(Order order) {
+        return order.getLineItems().stream().allMatch(line -> line.getQuantity() > 0);
     }
 }

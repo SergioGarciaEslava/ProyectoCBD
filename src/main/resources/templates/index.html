@@ -16,6 +16,7 @@
         <nav class="nav" aria-label="Navegacion principal">
             <a th:href="@{/products}">Productos</a>
             <a th:href="@{/customers}">Clientes</a>
+            <a th:href="@{/orders}">Pedidos</a>
             <a th:href="@{/orders/new}">Crear pedido</a>
         </nav>
     </div>
@@ -48,6 +49,10 @@
         <a class="home-link" th:href="@{/customers}">
             <strong>Clientes</strong>
             <span>Snapshot embebido en pedidos &mdash; documento relacionado sin join.</span>
+        </a>
+        <a class="home-link" th:href="@{/orders}">
+            <strong>Pedidos</strong>
+            <span>Listado base desde RavenDB con <code>orderedAt</code>, <code>status</code>, <code>customerSnapshot</code> y <code>total</code>.</span>
         </a>
         <a class="home-link" th:href="@{/orders/new}">
             <strong>Crear pedido</strong>

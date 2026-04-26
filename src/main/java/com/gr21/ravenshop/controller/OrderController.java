@@ -35,6 +35,12 @@ public class OrderController {
         this.productService = productService;
     }
 
+    @GetMapping
+    public String list(Model model) {
+        model.addAttribute("orders", orderService.listOrders());
+        return "orders/list";
+    }
+
     @GetMapping("/new")
     public String newForm(Model model) {
         if (!model.containsAttribute("orderForm")) {
