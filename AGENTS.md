@@ -65,25 +65,9 @@ No es objetivo:
 
 ## IA traceability rules
 
-Registra en `docs/IA/` solo sesiones que modifiquen la aplicación o sus artefactos del proyecto: código, configuración, documentación funcional/técnica, modelos, pruebas o decisiones de implementación.
+La trazabilidad existente en `docs/IA/` se conserva como evidencia histórica del uso de herramientas de IA durante el desarrollo.
 
-No registres en `docs/IA/` prompts puramente operativos que no cambien la aplicación, por ejemplo reintentos de `gh auth status`, comprobaciones de login, preguntas de estado o coordinación.
-
-Obligatorio en cada sesión que toque la aplicación:
-1. Guardar el prompt usado o un resumen fiel en `docs/IA/prompts/`.
-2. Añadir una entrada en `docs/IA/PROMPTS_LOG.md`.
-3. Añadir un breve resumen de sesión en `docs/IA/sesiones/`.
-4. Registrar en `docs/IA/DECISIONES_IA.md` las decisiones relevantes cuando aplique.
-
-Cada entrada del log debe incluir:
-- fecha
-- herramienta
-- objetivo
-- prompt o resumen
-- archivos tocados
-- resultado
-- verificación realizada
-- observaciones
+A partir de este punto, no es obligatorio añadir nuevas entradas en `docs/IA/` por cada sesión o cambio. Si se actualiza la memoria final o la declaración de uso de IA, debe mantenerse coherente con `docs/uso_ia.md`, pero no hace falta seguir ampliando `PROMPTS_LOG.md`, `prompts/`, `sesiones/` o `DECISIONES_IA.md`.
 
 ## Build, run and test
 
@@ -117,6 +101,5 @@ Una tarea está terminada cuando:
 - el cambio solicitado existe realmente en el repo
 - el alcance sigue siendo el correcto
 - la documentación asociada está actualizada
-- el uso de IA ha quedado registrado en `docs/IA/` si la tarea tocó la aplicación o sus artefactos del proyecto
 - se ha ejecutado al menos una verificación razonable
 - el resumen final explica qué se hizo, qué no se hizo y qué queda pendiente

@@ -92,7 +92,7 @@ El seed:
 
 - inserta productos, clientes y pedidos de ejemplo
 - es util para probar rapidamente la aplicacion y la demo de RavenDB
-- es idempotente mientras exista el marcador `seed-data/ravenshop-wi020`
+- es idempotente mientras exista el marcador `seed-data/ravenshop-wi022`
 
 Si ya ejecutaste el seed antes y quieres volver a cargarlo desde cero, elimina la base `RavenShop` o borra el documento marcador correspondiente antes de volver a arrancar con seed activado.
 
@@ -207,7 +207,7 @@ Puedes comprobarlo en:
 
 ### El seed no vuelve a cargar datos
 
-El seed no se repite si ya existe el marcador `seed-data/ravenshop-wi020`.
+El seed no se repite si ya existe el marcador `seed-data/ravenshop-wi022`.
 
 Opciones:
 
@@ -248,9 +248,11 @@ La busqueda por `q` funciona por prefijo de nombre. Prueba con terminos como:
 
 ## Uso de IA
 
-El repositorio mantiene trazabilidad de sesiones asistidas por IA en `docs/IA/`:
+La declaracion de uso de IA para la entrega esta en [docs/uso_ia.md](docs/uso_ia.md). Ese documento resume herramientas usadas, partes del trabajo afectadas, proposito de cada uso, enlaces a prompts y criterio de revision humana.
 
-- `PROMPTS_LOG.md`
-- `DECISIONES_IA.md`
-- `prompts/`
-- `sesiones/`
+La trazabilidad completa se conserva en:
+
+- [docs/IA/PROMPTS_LOG.md](docs/IA/PROMPTS_LOG.md)
+- [docs/IA/DECISIONES_IA.md](docs/IA/DECISIONES_IA.md)
+- [docs/IA/prompts/](docs/IA/prompts/)
+- [docs/IA/sesiones/](docs/IA/sesiones/)

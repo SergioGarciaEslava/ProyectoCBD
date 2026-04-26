@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @ConditionalOnProperty(prefix = "ravenshop.seed", name = "enabled", havingValue = "true")
 public class RavenDbSeedRunner implements ApplicationRunner {
 
-    static final String SEED_MARKER_ID = "seed-data/ravenshop-wi021";
+    static final String SEED_MARKER_ID = "seed-data/ravenshop-wi022";
 
     private final IDocumentStore documentStore;
 
@@ -68,6 +68,18 @@ public class RavenDbSeedRunner implements ApplicationRunner {
                 List.of("matcha", "premium", "ceremonial"), "2026-03-01T09:10:00Z"), "products/11-A");
         session.store(product("Barritas de avena 6u", "Snacks", "4.50", 110,
                 List.of("avena", "snack", "energia"), "2026-03-04T17:40:00Z"), "products/12-A");
+        session.store(product("Aceite de oliva virgen extra 500ml", "Despensa", "10.90", 45,
+                List.of("aceite", "mediterraneo", "cocina"), "2026-03-06T10:35:00Z"), "products/13-A");
+        session.store(product("Miel de azahar 450g", "Despensa", "7.25", 60,
+                List.of("miel", "natural", "desayuno"), "2026-03-08T12:15:00Z"), "products/14-A");
+        session.store(product("Limonada artesanal 750ml", "Bebidas", "3.95", 95,
+                List.of("limonada", "refresco", "artesanal"), "2026-03-10T09:45:00Z"), "products/15-A");
+        session.store(product("Chips de garbanzo 120g", "Snacks", "2.90", 130,
+                List.of("snack", "legumbre", "crujiente"), "2026-03-12T16:20:00Z"), "products/16-A");
+        session.store(product("Pasta integral 500g", "Despensa", "2.75", 150,
+                List.of("pasta", "integral", "cocina"), "2026-03-14T11:05:00Z"), "products/17-A");
+        session.store(product("Kombucha jengibre 330ml", "Bebidas", "2.95", 85,
+                List.of("kombucha", "jengibre", "fermentado"), "2026-03-16T14:30:00Z"), "products/18-A");
     }
 
     private Product product(String name, String category, String price, int stock) {
@@ -102,6 +114,14 @@ public class RavenDbSeedRunner implements ApplicationRunner {
                 "Rua do Franco 9", "Santiago de Compostela", "15702", "2026-03-02T08:25:00Z"), "customers/7-A");
         session.store(customer("Helena Torres", "helena.torres@example.com", "+34 600000008",
                 "Calle Alfonso I 22", "Zaragoza", "50003", "2026-03-05T14:10:00Z"), "customers/8-A");
+        session.store(customer("Ivan Navarro", "ivan.navarro@example.com", "+34 600000009",
+                "Calle Uria 15", "Oviedo", "33003", "2026-03-08T10:35:00Z"), "customers/9-A");
+        session.store(customer("Julia Campos", "julia.campos@example.com", "+34 600000010",
+                "Gran Via 42", "Bilbao", "48011", "2026-03-10T17:50:00Z"), "customers/10-A");
+        session.store(customer("Karim Benali", "karim.benali@example.com", "+34 600000011",
+                "Calle Traperia 6", "Murcia", "30001", "2026-03-12T09:15:00Z"), "customers/11-A");
+        session.store(customer("Laura Vidal", "laura.vidal@example.com", "+34 600000012",
+                "Rambla Nova 31", "Tarragona", "43003", "2026-03-15T13:25:00Z"), "customers/12-A");
     }
 
     private Customer customer(String fullName, String email, String phone, String street, String city, String postalCode) {
@@ -332,6 +352,145 @@ public class RavenDbSeedRunner implements ApplicationRunner {
                         statusEntry("Paid", "2026-04-25T13:16:00Z", "Pago confirmado")
                 )
         ), "orders/12-A");
+
+        session.store(order(
+                "customers/9-A",
+                customerSnapshot("customers/9-A", "Ivan Navarro", "ivan.navarro@example.com", "Oviedo"),
+                "Calle Uria 15, Oviedo",
+                "Pending",
+                "2026-04-25T18:25:00Z",
+                List.of(
+                        orderLine("products/13-A", "Aceite de oliva virgen extra 500ml", "Despensa", 2, "10.90"),
+                        orderLine("products/17-A", "Pasta integral 500g", "Despensa", 4, "2.75")
+                ),
+                List.of(
+                        statusEntry("Pending", "2026-04-25T18:25:00Z", "Pedido creado")
+                )
+        ), "orders/13-A");
+
+        session.store(order(
+                "customers/10-A",
+                customerSnapshot("customers/10-A", "Julia Campos", "julia.campos@example.com", "Bilbao"),
+                "Gran Via 42, Bilbao",
+                "Paid",
+                "2026-04-26T09:05:00Z",
+                List.of(
+                        orderLine("products/14-A", "Miel de azahar 450g", "Despensa", 1, "7.25"),
+                        orderLine("products/6-A", "Cafe descafeinado 250g", "Bebidas", 2, "7.80"),
+                        orderLine("products/16-A", "Chips de garbanzo 120g", "Snacks", 3, "2.90")
+                ),
+                List.of(
+                        statusEntry("Pending", "2026-04-26T09:05:00Z", "Pedido creado"),
+                        statusEntry("Paid", "2026-04-26T09:09:00Z", "Pago confirmado")
+                )
+        ), "orders/14-A");
+
+        session.store(order(
+                "customers/11-A",
+                customerSnapshot("customers/11-A", "Karim Benali", "karim.benali@example.com", "Murcia"),
+                "Calle Traperia 6, Murcia",
+                "Processing",
+                "2026-04-26T11:35:00Z",
+                List.of(
+                        orderLine("products/15-A", "Limonada artesanal 750ml", "Bebidas", 6, "3.95"),
+                        orderLine("products/18-A", "Kombucha jengibre 330ml", "Bebidas", 4, "2.95")
+                ),
+                List.of(
+                        statusEntry("Pending", "2026-04-26T11:35:00Z", "Pedido creado"),
+                        statusEntry("Paid", "2026-04-26T11:41:00Z", "Pago confirmado"),
+                        statusEntry("Processing", "2026-04-26T12:10:00Z", "Preparando bebidas refrigeradas")
+                )
+        ), "orders/15-A");
+
+        session.store(order(
+                "customers/12-A",
+                customerSnapshot("customers/12-A", "Laura Vidal", "laura.vidal@example.com", "Tarragona"),
+                "Rambla Nova 31, Tarragona",
+                "Shipped",
+                "2026-04-26T15:20:00Z",
+                List.of(
+                        orderLine("products/11-A", "Matcha ceremonial 100g", "Bebidas", 1, "18.90"),
+                        orderLine("products/14-A", "Miel de azahar 450g", "Despensa", 2, "7.25"),
+                        orderLine("products/8-A", "Galletas integrales 300g", "Snacks", 2, "3.85")
+                ),
+                List.of(
+                        statusEntry("Pending", "2026-04-26T15:20:00Z", "Pedido creado"),
+                        statusEntry("Paid", "2026-04-26T15:28:00Z", "Pago confirmado"),
+                        statusEntry("Processing", "2026-04-26T16:00:00Z", "Pedido empaquetado"),
+                        statusEntry("Shipped", "2026-04-26T18:30:00Z", "Salida de almacen")
+                )
+        ), "orders/16-A");
+
+        session.store(order(
+                "customers/4-A",
+                customerSnapshot("customers/4-A", "Diego Perez", "diego.perez@example.com", "Malaga"),
+                "Calle Larios 18, Malaga",
+                "Cancelled",
+                "2026-04-27T08:45:00Z",
+                List.of(
+                        orderLine("products/18-A", "Kombucha jengibre 330ml", "Bebidas", 8, "2.95"),
+                        orderLine("products/16-A", "Chips de garbanzo 120g", "Snacks", 5, "2.90")
+                ),
+                List.of(
+                        statusEntry("Pending", "2026-04-27T08:45:00Z", "Pedido creado"),
+                        statusEntry("Cancelled", "2026-04-27T09:30:00Z", "Cancelado por duplicado del cliente")
+                )
+        ), "orders/17-A");
+
+        session.store(order(
+                "customers/6-A",
+                customerSnapshot("customers/6-A", "Fatima Romero", "fatima.romero@example.com", "Granada"),
+                "Calle San Juan 4, Granada",
+                "Delivered",
+                "2026-04-27T12:15:00Z",
+                List.of(
+                        orderLine("products/13-A", "Aceite de oliva virgen extra 500ml", "Despensa", 1, "10.90"),
+                        orderLine("products/17-A", "Pasta integral 500g", "Despensa", 6, "2.75"),
+                        orderLine("products/15-A", "Limonada artesanal 750ml", "Bebidas", 4, "3.95")
+                ),
+                List.of(
+                        statusEntry("Pending", "2026-04-27T12:15:00Z", "Pedido creado"),
+                        statusEntry("Paid", "2026-04-27T12:20:00Z", "Pago confirmado"),
+                        statusEntry("Processing", "2026-04-27T13:00:00Z", "Preparando lote familiar"),
+                        statusEntry("Shipped", "2026-04-27T17:45:00Z", "Pedido enviado"),
+                        statusEntry("Delivered", "2026-04-28T10:20:00Z", "Entrega completada")
+                )
+        ), "orders/18-A");
+
+        session.store(order(
+                "customers/8-A",
+                customerSnapshot("customers/8-A", "Helena Torres", "helena.torres@example.com", "Zaragoza"),
+                "Calle Alfonso I 22, Zaragoza",
+                "Paid",
+                "2026-04-28T10:40:00Z",
+                List.of(
+                        orderLine("products/5-A", "Cafe instantaneo 200g", "Bebidas", 3, "5.40"),
+                        orderLine("products/12-A", "Barritas de avena 6u", "Snacks", 3, "4.50"),
+                        orderLine("products/18-A", "Kombucha jengibre 330ml", "Bebidas", 2, "2.95")
+                ),
+                List.of(
+                        statusEntry("Pending", "2026-04-28T10:40:00Z", "Pedido creado"),
+                        statusEntry("Paid", "2026-04-28T10:48:00Z", "Pago confirmado")
+                )
+        ), "orders/19-A");
+
+        session.store(order(
+                "customers/10-A",
+                customerSnapshot("customers/10-A", "Julia Campos", "julia.campos@example.com", "Bilbao"),
+                "Gran Via 42, Bilbao",
+                "Processing",
+                "2026-04-28T16:05:00Z",
+                List.of(
+                        orderLine("products/1-A", "Cafe de especialidad 1kg", "Bebidas", 1, "21.90"),
+                        orderLine("products/14-A", "Miel de azahar 450g", "Despensa", 1, "7.25"),
+                        orderLine("products/4-A", "Muesli sin azucar 750g", "Despensa", 2, "8.50")
+                ),
+                List.of(
+                        statusEntry("Pending", "2026-04-28T16:05:00Z", "Pedido creado"),
+                        statusEntry("Paid", "2026-04-28T16:12:00Z", "Pago confirmado"),
+                        statusEntry("Processing", "2026-04-28T16:55:00Z", "Preparando reposicion semanal")
+                )
+        ), "orders/20-A");
     }
 
     private Order order(
