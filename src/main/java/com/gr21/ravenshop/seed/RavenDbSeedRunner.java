@@ -6,6 +6,7 @@ import com.gr21.ravenshop.model.Order;
 import com.gr21.ravenshop.model.Product;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import net.ravendb.client.documents.IDocumentStore;
@@ -19,7 +20,36 @@ import org.springframework.stereotype.Component;
 @ConditionalOnProperty(prefix = "ravenshop.seed", name = "enabled", havingValue = "true")
 public class RavenDbSeedRunner implements ApplicationRunner {
 
-    static final String SEED_MARKER_ID = "seed-data/ravenshop-wi022";
+    static final String SEED_MARKER_ID = "seed-data/ravenshop-wi023";
+
+    private static final int GENERATED_PRODUCT_COUNT = 60;
+    private static final int GENERATED_CUSTOMER_COUNT = 180;
+    private static final int GENERATED_ORDER_COUNT = 800;
+
+    private static final List<String> GENERATED_CITIES = List.of(
+            "Madrid",
+            "Valencia",
+            "Sevilla",
+            "Malaga",
+            "Barcelona",
+            "Granada",
+            "Bilbao",
+            "Zaragoza",
+            "Murcia",
+            "Alicante",
+            "Valladolid",
+            "Palma"
+    );
+
+    private static final List<String> FIRST_NAMES = List.of(
+            "Adrian", "Beatriz", "Cesar", "Diana", "Estela", "Fernando", "Gloria", "Hector", "Ines",
+            "Javier", "Lidia", "Marcos", "Nuria", "Oscar", "Paula"
+    );
+
+    private static final List<String> LAST_NAMES = List.of(
+            "Alonso", "Blanco", "Crespo", "Dominguez", "Escudero", "Fuentes",
+            "Gil", "Herrera", "Iglesias", "Jimenez", "Lozano", "Molina"
+    );
 
     private final IDocumentStore documentStore;
 
@@ -80,6 +110,21 @@ public class RavenDbSeedRunner implements ApplicationRunner {
                 List.of("pasta", "integral", "cocina"), "2026-03-14T11:05:00Z"), "products/17-A");
         session.store(product("Kombucha jengibre 330ml", "Bebidas", "2.95", 85,
                 List.of("kombucha", "jengibre", "fermentado"), "2026-03-16T14:30:00Z"), "products/18-A");
+
+        storeGeneratedProducts(session);
+    }
+
+    private void storeGeneratedProducts(IDocumentSession session) {
+        for (int index = 1; index <= GENERATED_PRODUCT_COUNT; index++) {
+            session.store(product(
+                    generatedProductName(index),
+                    generatedProductCategory(index),
+                    generatedProductPrice(index),
+                    generatedProductStock(index),
+                    generatedProductTags(index),
+                    generatedProductCreatedAt(index)
+            ), generatedProductId(index));
+        }
     }
 
     private Product product(String name, String category, String price, int stock) {
@@ -122,6 +167,23 @@ public class RavenDbSeedRunner implements ApplicationRunner {
                 "Calle Traperia 6", "Murcia", "30001", "2026-03-12T09:15:00Z"), "customers/11-A");
         session.store(customer("Laura Vidal", "laura.vidal@example.com", "+34 600000012",
                 "Rambla Nova 31", "Tarragona", "43003", "2026-03-15T13:25:00Z"), "customers/12-A");
+
+        storeGeneratedCustomers(session);
+    }
+
+    private void storeGeneratedCustomers(IDocumentSession session) {
+        for (int index = 1; index <= GENERATED_CUSTOMER_COUNT; index++) {
+            String city = generatedCustomerCity(index);
+            session.store(customer(
+                    generatedCustomerFullName(index),
+                    generatedCustomerEmail(index),
+                    generatedCustomerPhone(index),
+                    generatedCustomerStreet(index),
+                    city,
+                    generatedCustomerPostalCode(city, index),
+                    generatedCustomerCreatedAt(index)
+            ), generatedCustomerId(index));
+        }
     }
 
     private Customer customer(String fullName, String email, String phone, String street, String city, String postalCode) {
@@ -491,6 +553,32 @@ public class RavenDbSeedRunner implements ApplicationRunner {
                         statusEntry("Processing", "2026-04-28T16:55:00Z", "Preparando reposicion semanal")
                 )
         ), "orders/20-A");
+
+        storeGeneratedOrders(session);
+    }
+
+    private void storeGeneratedOrders(IDocumentSession session) {
+        for (int index = 1; index <= GENERATED_ORDER_COUNT; index++) {
+            int customerIndex = generatedCustomerIndexForOrder(index);
+            String city = generatedCustomerCity(customerIndex);
+            String orderedAt = generatedOrderCreatedAt(index);
+            boolean madridHighValue = isMadridHighValueOrder(index);
+
+            session.store(order(
+                    generatedCustomerId(customerIndex),
+                    customerSnapshot(
+                            generatedCustomerId(customerIndex),
+                            generatedCustomerFullName(customerIndex),
+                            generatedCustomerEmail(customerIndex),
+                            city
+                    ),
+                    generatedCustomerStreet(customerIndex) + ", " + city,
+                    generatedOrderStatus(index, madridHighValue),
+                    orderedAt,
+                    generatedOrderLineItems(index, madridHighValue),
+                    generatedStatusHistory(index, orderedAt, madridHighValue)
+            ), generatedOrderId(index));
+        }
     }
 
     private Order order(
@@ -535,6 +623,258 @@ public class RavenDbSeedRunner implements ApplicationRunner {
 
     private Order.StatusHistoryEntry statusEntry(String status, String changedAt, String comment) {
         return new Order.StatusHistoryEntry(status, OffsetDateTime.parse(changedAt), comment);
+    }
+
+    private String generatedProductId(int index) {
+        return "products/" + (1000 + index) + "-A";
+    }
+
+    private String generatedProductName(int index) {
+        int family = ((index - 1) / 4) + 1;
+        return switch ((index - 1) % 4) {
+            case 0 -> "Cafe origen microlote " + family;
+            case 1 -> "Te funcional blend " + family;
+            case 2 -> "Granola proteica lote " + family;
+            default -> "Mix crujiente energia " + family;
+        };
+    }
+
+    private String generatedProductCategory(int index) {
+        return switch ((index - 1) % 4) {
+            case 0, 1 -> "Bebidas";
+            case 2 -> "Despensa";
+            default -> "Snacks";
+        };
+    }
+
+    private String generatedProductPrice(int index) {
+        int family = (index - 1) / 4;
+        return switch ((index - 1) % 4) {
+            case 0 -> money(1890 + (family % 7) * 135);
+            case 1 -> money(1040 + (family % 6) * 90);
+            case 2 -> money(890 + (family % 5) * 85);
+            default -> money(520 + (family % 6) * 55);
+        };
+    }
+
+    private int generatedProductStock(int index) {
+        return 30 + (index * 11 % 170);
+    }
+
+    private List<String> generatedProductTags(int index) {
+        return switch ((index - 1) % 4) {
+            case 0 -> List.of("cafe", "microlote", "demo");
+            case 1 -> List.of("te", "blend", "bienestar");
+            case 2 -> List.of("despensa", "proteina", "desayuno");
+            default -> List.of("snack", "energia", "crujiente");
+        };
+    }
+
+    private String generatedProductCreatedAt(int index) {
+        return OffsetDateTime.parse("2026-03-20T08:00:00Z")
+                .plusDays(index / 2L)
+                .plusHours(index % 10L)
+                .toString();
+    }
+
+    private String generatedCustomerId(int index) {
+        return "customers/" + (1000 + index) + "-A";
+    }
+
+    private String generatedCustomerFullName(int index) {
+        String firstName = FIRST_NAMES.get((index - 1) % FIRST_NAMES.size());
+        String lastNameOne = LAST_NAMES.get((index - 1) % LAST_NAMES.size());
+        String lastNameTwo = LAST_NAMES.get((index + 4) % LAST_NAMES.size());
+        return firstName + " " + lastNameOne + " " + lastNameTwo;
+    }
+
+    private String generatedCustomerEmail(int index) {
+        return "seed.customer." + String.format("%03d", index) + "@example.com";
+    }
+
+    private String generatedCustomerPhone(int index) {
+        return "+34 61" + String.format("%07d", index);
+    }
+
+    private String generatedCustomerStreet(int index) {
+        return "Avenida Demo " + (20 + index);
+    }
+
+    private String generatedCustomerCity(int index) {
+        return GENERATED_CITIES.get((index - 1) % GENERATED_CITIES.size());
+    }
+
+    private String generatedCustomerPostalCode(String city, int index) {
+        int suffix = 10 + (index % 80);
+        return switch (city) {
+            case "Madrid" -> "280" + String.format("%02d", suffix % 50);
+            case "Valencia" -> "460" + String.format("%02d", suffix % 50);
+            case "Sevilla" -> "410" + String.format("%02d", suffix % 50);
+            case "Malaga" -> "290" + String.format("%02d", suffix % 50);
+            case "Barcelona" -> "080" + String.format("%02d", suffix % 50);
+            case "Granada" -> "180" + String.format("%02d", suffix % 50);
+            case "Bilbao" -> "480" + String.format("%02d", suffix % 50);
+            case "Zaragoza" -> "500" + String.format("%02d", suffix % 50);
+            case "Murcia" -> "300" + String.format("%02d", suffix % 50);
+            case "Alicante" -> "030" + String.format("%02d", suffix % 50);
+            case "Valladolid" -> "470" + String.format("%02d", suffix % 50);
+            default -> "070" + String.format("%02d", suffix % 50);
+        };
+    }
+
+    private String generatedCustomerCreatedAt(int index) {
+        return OffsetDateTime.parse("2026-03-18T09:00:00Z")
+                .plusDays(index % 75L)
+                .plusHours(index % 9L)
+                .plusMinutes((index * 7L) % 60L)
+                .toString();
+    }
+
+    private String generatedOrderId(int index) {
+        return "orders/" + (1000 + index) + "-A";
+    }
+
+    private int generatedCustomerIndexForOrder(int index) {
+        if (isMadridHighValueOrder(index)) {
+            return 1 + (((index / 5) - 1) % 15) * GENERATED_CITIES.size();
+        }
+        return ((index * 7) % GENERATED_CUSTOMER_COUNT) + 1;
+    }
+
+    private boolean isMadridHighValueOrder(int index) {
+        return index % 5 == 0;
+    }
+
+    private String generatedOrderCreatedAt(int index) {
+        return OffsetDateTime.parse("2026-04-29T08:00:00Z")
+                .plusHours(index * 3L)
+                .plusMinutes((index * 11L) % 60L)
+                .toString();
+    }
+
+    private String generatedOrderStatus(int index, boolean madridHighValue) {
+        if (madridHighValue) {
+            return switch (((index / 5) - 1) % 4) {
+                case 0 -> "Paid";
+                case 1 -> "Processing";
+                case 2 -> "Shipped";
+                default -> "Delivered";
+            };
+        }
+        return switch ((index - 1) % 6) {
+            case 0 -> "Pending";
+            case 1 -> "Paid";
+            case 2 -> "Processing";
+            case 3 -> "Shipped";
+            case 4 -> "Delivered";
+            default -> "Cancelled";
+        };
+    }
+
+    private List<Order.OrderLineItem> generatedOrderLineItems(int index, boolean madridHighValue) {
+        List<Order.OrderLineItem> lineItems = new ArrayList<>();
+
+        if (madridHighValue) {
+            int coffeeIndex = 1 + (((index / 5) - 1) % 15) * 4;
+            int teaIndex = coffeeIndex + 1;
+            int granolaIndex = coffeeIndex + 2;
+
+            lineItems.add(orderLine(
+                    generatedProductId(coffeeIndex),
+                    generatedProductName(coffeeIndex),
+                    generatedProductCategory(coffeeIndex),
+                    3 + (index % 3),
+                    generatedProductPrice(coffeeIndex)
+            ));
+            lineItems.add(orderLine(
+                    generatedProductId(teaIndex),
+                    generatedProductName(teaIndex),
+                    generatedProductCategory(teaIndex),
+                    3 + (index % 2),
+                    generatedProductPrice(teaIndex)
+            ));
+            lineItems.add(orderLine(
+                    generatedProductId(granolaIndex),
+                    generatedProductName(granolaIndex),
+                    generatedProductCategory(granolaIndex),
+                    4 + (index % 2),
+                    generatedProductPrice(granolaIndex)
+            ));
+            return lineItems;
+        }
+
+        int firstIndex = ((index - 1) % GENERATED_PRODUCT_COUNT) + 1;
+        int secondIndex = (firstIndex % GENERATED_PRODUCT_COUNT) + 1;
+        int thirdIndex = ((firstIndex + 12) % GENERATED_PRODUCT_COUNT) + 1;
+
+        lineItems.add(orderLine(
+                generatedProductId(firstIndex),
+                generatedProductName(firstIndex),
+                generatedProductCategory(firstIndex),
+                1 + (index % 3),
+                generatedProductPrice(firstIndex)
+        ));
+        lineItems.add(orderLine(
+                generatedProductId(secondIndex),
+                generatedProductName(secondIndex),
+                generatedProductCategory(secondIndex),
+                1 + ((index + 1) % 3),
+                generatedProductPrice(secondIndex)
+        ));
+
+        if (index % 2 == 0) {
+            lineItems.add(orderLine(
+                    generatedProductId(thirdIndex),
+                    generatedProductName(thirdIndex),
+                    generatedProductCategory(thirdIndex),
+                    1 + ((index + 2) % 2),
+                    generatedProductPrice(thirdIndex)
+            ));
+        }
+
+        return lineItems;
+    }
+
+    private List<Order.StatusHistoryEntry> generatedStatusHistory(int index, String orderedAt, boolean madridHighValue) {
+        List<Order.StatusHistoryEntry> history = new ArrayList<>();
+        OffsetDateTime orderedAtTime = OffsetDateTime.parse(orderedAt);
+        String currentStatus = generatedOrderStatus(index, madridHighValue);
+
+        history.add(new Order.StatusHistoryEntry("Pending", orderedAtTime, "Pedido creado"));
+
+        if ("Pending".equals(currentStatus)) {
+            return history;
+        }
+
+        history.add(new Order.StatusHistoryEntry("Paid", orderedAtTime.plusMinutes(8), "Pago confirmado"));
+
+        if ("Paid".equals(currentStatus)) {
+            return history;
+        }
+
+        history.add(new Order.StatusHistoryEntry("Processing", orderedAtTime.plusHours(2), "Preparando pedido"));
+
+        if ("Processing".equals(currentStatus)) {
+            return history;
+        }
+
+        if ("Cancelled".equals(currentStatus)) {
+            history.add(new Order.StatusHistoryEntry("Cancelled", orderedAtTime.plusHours(3), "Cancelado a solicitud del cliente"));
+            return history;
+        }
+
+        history.add(new Order.StatusHistoryEntry("Shipped", orderedAtTime.plusHours(8), "Pedido enviado"));
+
+        if ("Shipped".equals(currentStatus)) {
+            return history;
+        }
+
+        history.add(new Order.StatusHistoryEntry("Delivered", orderedAtTime.plusDays(1), "Entrega completada"));
+        return history;
+    }
+
+    private String money(int cents) {
+        return BigDecimal.valueOf(cents, 2).toPlainString();
     }
 
     public record SeedMarker(String id, String seededAt) {

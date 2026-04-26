@@ -92,7 +92,8 @@ El seed:
 
 - inserta productos, clientes y pedidos de ejemplo
 - es util para probar rapidamente la aplicacion y la demo de RavenDB
-- es idempotente mientras exista el marcador `seed-data/ravenshop-wi022`
+- es idempotente mientras exista el marcador `seed-data/ravenshop-wi023`
+- incluye un bloque grande de pedidos de Madrid con `total >= 100` para probar consultas RQL de filtrado y ordenacion
 
 Si ya ejecutaste el seed antes y quieres volver a cargarlo desde cero, elimina la base `RavenShop` o borra el documento marcador correspondiente antes de volver a arrancar con seed activado.
 
@@ -207,7 +208,7 @@ Puedes comprobarlo en:
 
 ### El seed no vuelve a cargar datos
 
-El seed no se repite si ya existe el marcador `seed-data/ravenshop-wi022`.
+El seed no se repite si ya existe el marcador `seed-data/ravenshop-wi023`.
 
 Opciones:
 

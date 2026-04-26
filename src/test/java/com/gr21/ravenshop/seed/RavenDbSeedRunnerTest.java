@@ -26,9 +26,9 @@ import static org.mockito.Mockito.when;
 class RavenDbSeedRunnerTest {
 
     private static final String SEED_MARKER_ID = RavenDbSeedRunner.SEED_MARKER_ID;
-    private static final int EXPECTED_PRODUCT_COUNT = 18;
-    private static final int EXPECTED_CUSTOMER_COUNT = 12;
-    private static final int EXPECTED_ORDER_COUNT = 20;
+    private static final int EXPECTED_PRODUCT_COUNT = 78;
+    private static final int EXPECTED_CUSTOMER_COUNT = 192;
+    private static final int EXPECTED_ORDER_COUNT = 820;
     private static final int EXPECTED_TOTAL_STORES =
             EXPECTED_PRODUCT_COUNT + EXPECTED_CUSTOMER_COUNT + EXPECTED_ORDER_COUNT + 1;
 
@@ -68,6 +68,19 @@ class RavenDbSeedRunnerTest {
                 .allMatch(Customer.class::isInstance);
         org.assertj.core.api.Assertions.assertThat(allStored.subList(EXPECTED_PRODUCT_COUNT + EXPECTED_CUSTOMER_COUNT, EXPECTED_PRODUCT_COUNT + EXPECTED_CUSTOMER_COUNT + EXPECTED_ORDER_COUNT))
                 .allMatch(Order.class::isInstance);
+
+        List<Order> allOrders = allStored.subList(
+                EXPECTED_PRODUCT_COUNT + EXPECTED_CUSTOMER_COUNT,
+                EXPECTED_PRODUCT_COUNT + EXPECTED_CUSTOMER_COUNT + EXPECTED_ORDER_COUNT
+        ).stream().map(Order.class::cast).toList();
+
+        org.assertj.core.api.Assertions.assertThat(allOrders)
+                .anyMatch(order ->
+                        order.getTotal() != null
+                                && order.getTotal().compareTo(new java.math.BigDecimal("100.00")) >= 0
+                                && order.getCustomerSnapshot() != null
+                                && "Madrid".equals(order.getCustomerSnapshot().getCity())
+                );
     }
 
     @Test

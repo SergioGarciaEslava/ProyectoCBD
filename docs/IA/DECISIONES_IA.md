@@ -895,3 +895,30 @@ El usuario pidio mas ejemplos sin cambiar nada mas. La decision correcta era enr
 ### Por que
 
 Las instrucciones de entrega piden una declaracion explicita al final de la memoria y referencias a los prompts usados. Separar declaracion, log operativo y decisiones mantiene el contenido legible y permite comprobar cada uso de IA sin convertir el README en un registro largo.
+
+## 2026-04-26 - Ampliacion masiva de seeders con bloque Madrid >= 100
+
+### Borrador generado por IA
+
+- Escalado del seed con generacion adicional de 60 productos, 180 clientes y 800 pedidos.
+- Mantenimiento de la estructura actual del runner con generacion encapsulada dentro de `RavenDbSeedRunner`.
+- Bloque recurrente de pedidos de Madrid con `total >= 100`.
+- Cambio de `SEED_MARKER_ID` a `seed-data/ravenshop-wi023`.
+- Ajuste del test del seeder y del README operativo.
+
+### Decisiones adoptadas por el equipo
+
+- Mantener el mismo patron del seed actual en lugar de mover la logica a servicios nuevos o introducir herramientas de fixtures.
+- Usar generacion determinista y con IDs explicitos para que la base resultante siga siendo reproducible y defendible.
+- Repartir la ampliacion entre productos, clientes y pedidos, no solo inflar pedidos, para que las futuras demos tengan mas variedad documental real.
+- Reservar una fraccion estable de pedidos generados para clientes de Madrid con importes altos, asegurando resultados para la query pedida por el usuario.
+
+### Alternativas evaluadas y descartadas por el equipo
+
+- Tocar controladores, servicios, repositorios o vistas para soportar el nuevo volumen.
+- Crear importadores externos, CSVs o dependencias nuevas solo para poblar datos.
+- Convertir el seed en una migracion compleja o en una pieza separada del runner actual.
+
+### Por que
+
+La peticion no era funcional sino de datos: mas volumen y mas valor para la defensa. La forma menos arriesgada de cumplirla era ampliar el propio seed con generacion simple, estable y alineada con la estructura existente, y al mismo tiempo dejar garantizada la consulta RQL de Madrid sobre pedidos de alto importe.
