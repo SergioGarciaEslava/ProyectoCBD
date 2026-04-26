@@ -16,7 +16,8 @@
         <nav class="nav" aria-label="Navegacion principal">
             <a th:href="@{/products}">Productos</a>
             <a th:href="@{/customers}">Clientes</a>
-            <a class="is-active" th:href="@{/orders/new}">Crear pedido</a>
+            <a class="is-active" th:href="@{/orders}">Pedidos</a>
+            <a th:href="@{/orders/new}">Crear pedido</a>
         </nav>
     </div>
 </header>
@@ -26,15 +27,17 @@
         <div>
             <p class="page-kicker">Pedido</p>
             <h1>Detalle del pedido</h1>
+            <p class="lead">Vista base del documento <code>Order</code> con los campos principales para la demo academica.</p>
         </div>
         <div class="actions">
-            <a class="button button-secondary" th:href="@{/}">Inicio</a>
+            <a class="button button-secondary" th:href="@{/orders}">Volver al listado</a>
             <a class="button" th:href="@{/orders/new}">Crear pedido</a>
         </div>
     </header>
 
     <section class="section">
         <p class="doc-kicker">Documento principal &middot; <code>Orders</code></p>
+        <h2>Campos principales</h2>
         <dl class="detail-grid">
             <div>
                 <dt>ID</dt>
@@ -88,66 +91,6 @@
         </dl>
         <p class="empty-state" th:if="${order.customerSnapshot == null}">-</p>
     </section>
-
-    <section class="section embedded-section">
-        <p class="doc-kicker">Subdocumento embebido &middot; <code>lineItems[]</code></p>
-        <h2>lineItems</h2>
-        <p class="empty-state" th:if="${#lists.isEmpty(order.lineItems)}">No hay lineItems disponibles.</p>
-        <div class="table-wrap" th:if="${not #lists.isEmpty(order.lineItems)}">
-            <table>
-                <thead>
-                <tr>
-                    <th>productId</th>
-                    <th>productName</th>
-                    <th>quantity</th>
-                    <th>unitPrice</th>
-                    <th>lineTotal</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="line : ${order.lineItems}">
-                    <td th:text="${line.productId}">products/1-A</td>
-                    <td th:text="${line.productName}">Cafe</td>
-                    <td th:text="${line.quantity}">2</td>
-                    <td th:text="${line.unitPrice}">21.90</td>
-                    <td th:text="${line.lineTotal}">43.80</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </section>
-
-    <section class="section embedded-section">
-        <p class="doc-kicker">Subdocumento embebido &middot; <code>statusHistory[]</code></p>
-        <h2>statusHistory</h2>
-        <p class="empty-state" th:if="${#lists.isEmpty(order.statusHistory)}">No hay statusHistory disponible.</p>
-        <div class="table-wrap" th:if="${not #lists.isEmpty(order.statusHistory)}">
-            <table>
-                <thead>
-                <tr>
-                    <th>status</th>
-                    <th>changedAt</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="entry : ${order.statusHistory}">
-                    <td>
-                        <span class="status-pill"
-                              th:classappend="${'status-pill--' + #strings.toLowerCase(entry.status)}"
-                              th:text="${entry.status}">CREATED</span>
-                    </td>
-                    <td th:text="${entry.changedAt}">2026-04-19T10:00:00Z</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </section>
-
-    <aside class="rql-panel" aria-label="Consulta RQL ejecutada">
-        <p class="rql-kicker">RQL ejecutada</p>
-        <pre><code th:text="|from Orders where id() = '${order.id}'|">from Orders where id() = 'orders/1-A'</code></pre>
-        <p class="rql-note">El detalle del pedido carga el documento completo por id, incluyendo subdocumentos embebidos (<code>customerSnapshot</code>, <code>lineItems</code>, <code>statusHistory</code>) sin necesidad de joins.</p>
-    </aside>
 </main>
 </body>
 </html>

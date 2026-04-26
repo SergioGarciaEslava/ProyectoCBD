@@ -624,3 +624,27 @@ El objetivo de esta sesion es cubrir solo el caso de uso minimo de lectura de pe
 ### Por que
 
 La query ya era coherente con la demo RQL, pero un pedido legacy puede completar `orderedAt` durante el enriquecimiento. Ordenar al final en el servicio garantiza que los pedidos mas recientes queden primero en el resultado que realmente se pinta.
+
+## 2026-04-26 - Vista base de detalle de pedido
+
+### Que produjo la IA
+
+- Enlace desde el listado al detalle de cada pedido.
+- Simplificacion de `orders/detail.html` para dejar solo la estructura base del documento.
+- Ajuste de tests MVC del controlador de pedidos.
+
+### Que se acepto
+
+- Reutilizar `GET /orders/{id}` y `OrderService.findById(...)` ya existentes.
+- Mostrar `customerSnapshot` como bloque embebido simple con sus campos basicos.
+- Eliminar de esta iteracion la representacion detallada de `lineItems` y `statusHistory`.
+
+### Que se descarto
+
+- Cambiar el backend del detalle.
+- Anadir tabs, acordeones o frontend adicional.
+- Implementar navegacion o acciones extra dentro del detalle.
+
+### Por que
+
+El usuario pidio un commit pequeno y defendible. La forma mas coherente de cumplirlo era conservar el backend ya existente, abrir el acceso desde el listado y recortar la vista para que solo muestre los campos nucleares del pedido sin adelantar partes no pedidas todavia.

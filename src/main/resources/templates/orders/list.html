@@ -78,7 +78,10 @@
             </thead>
             <tbody>
             <tr th:each="order : ${orders}">
-                <td th:text="${order.id}">orders/1-A</td>
+                <td>
+                    <a th:href="@{/orders/{id}(id=${#strings.substringAfter(order.id, '/')})}"
+                       th:text="${order.id}">orders/1-A</a>
+                </td>
                 <td th:text="${order.orderedAt != null ? order.orderedAt : '-'}">2026-04-25T18:00:00Z</td>
                 <td>
                     <span th:if="${order.status != null and !#strings.isEmpty(order.status)}"
