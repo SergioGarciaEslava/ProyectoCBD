@@ -198,13 +198,13 @@ class OrderServiceTest {
         when(orderRepository.findById("orders/1-A")).thenReturn(Optional.of(order));
         when(orderRepository.save(order)).thenReturn(order);
 
-        Order updated = orderService.changeStatus("1-A", "Shipped");
+        Order updated = orderService.changeStatus("1-A", "Shipped", "Pedido enviado");
 
         assertThat(updated.getStatus()).isEqualTo("Shipped");
         assertThat(updated.getStatusHistory()).hasSize(1);
         assertThat(updated.getStatusHistory().getFirst().getStatus()).isEqualTo("Shipped");
         assertThat(updated.getStatusHistory().getFirst().getChangedAt()).isNotNull();
-        assertThat(updated.getStatusHistory().getFirst().getComment()).isEqualTo("Estado actualizado");
+        assertThat(updated.getStatusHistory().getFirst().getComment()).isEqualTo("Pedido enviado");
 
         verify(orderRepository).findById("orders/1-A");
         verify(orderRepository).save(order);
@@ -214,7 +214,7 @@ class OrderServiceTest {
     void changeStatusFailsWhenOrderDoesNotExist() {
         when(orderRepository.findById("orders/404-A")).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> orderService.changeStatus("404-A", "Paid"))
+        assertThatThrownBy(() -> orderService.changeStatus("404-A", "Paid", null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Pedido no encontrado");
 
@@ -230,13 +230,32 @@ class OrderServiceTest {
 
         when(orderRepository.findById("orders/1-A")).thenReturn(Optional.of(order));
 
-        Order unchanged = orderService.changeStatus("1-A", "Pending");
+        Order unchanged = orderService.changeStatus("1-A", "Pending", "Sin cambios");
 
         assertThat(unchanged.getStatus()).isEqualTo("Pending");
         assertThat(unchanged.getStatusHistory()).hasSize(1);
 
         verify(orderRepository).findById("orders/1-A");
         verify(orderRepository, never()).save(any(Order.class));
+    }
+
+    @Test
+    void changeStatusStoresNullCommentWhenOptionalCommentIsBlank() {
+        Order order = new Order();
+        order.setId("orders/1-A");
+        order.setStatus("Pending");
+
+        when(orderRepository.findById("orders/1-A")).thenReturn(Optional.of(order));
+        when(orderRepository.save(order)).thenReturn(order);
+
+        Order updated = orderService.changeStatus("1-A", "Paid", "   ");
+
+        assertThat(updated.getStatus()).isEqualTo("Paid");
+        assertThat(updated.getStatusHistory()).hasSize(1);
+        assertThat(updated.getStatusHistory().getFirst().getComment()).isNull();
+
+        verify(orderRepository).findById("orders/1-A");
+        verify(orderRepository).save(order);
     }
 
     @Test

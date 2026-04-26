@@ -68,7 +68,7 @@ public class OrderService {
                 .map(this::enrichForDetailView);
     }
 
-    public Order changeStatus(String orderId, String newStatus) {
+    public Order changeStatus(String orderId, String newStatus, String comment) {
         Order order = orderRepository.findById(normalizeId(orderId))
                 .orElseThrow(() -> new IllegalArgumentException("Pedido no encontrado"));
 
@@ -85,7 +85,7 @@ public class OrderService {
         order.getStatusHistory().add(new Order.StatusHistoryEntry(
                 normalizedStatus,
                 OffsetDateTime.now(),
-                "Estado actualizado"
+                normalizeComment(comment)
         ));
 
         return orderRepository.save(order);
@@ -233,5 +233,9 @@ public class OrderService {
             return null;
         }
         return new BigDecimal(minTotal.trim());
+    }
+
+    private String normalizeComment(String comment) {
+        return isBlank(comment) ? null : comment.trim();
     }
 }

@@ -155,10 +155,11 @@ class OrderControllerTest {
         order.setId("orders/1-A");
         order.setStatus("Shipped");
 
-        given(orderService.changeStatus("1-A", "Shipped")).willReturn(order);
+        given(orderService.changeStatus("1-A", "Shipped", "Pedido enviado")).willReturn(order);
 
         mockMvc.perform(post("/orders/1-A/status")
-                        .param("status", "Shipped"))
+                        .param("status", "Shipped")
+                        .param("comment", "Pedido enviado"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/orders/1-A"))
                 .andExpect(header().string("Location", "/orders/1-A"));
@@ -166,12 +167,27 @@ class OrderControllerTest {
 
     @Test
     void changeStatusReturns404WhenOrderDoesNotExist() throws Exception {
-        given(orderService.changeStatus("404-A", "Paid"))
+        given(orderService.changeStatus("404-A", "Paid", null))
                 .willThrow(new IllegalArgumentException("Pedido no encontrado"));
 
         mockMvc.perform(post("/orders/404-A/status")
                         .param("status", "Paid"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void changeStatusAcceptsEmptyOptionalComment() throws Exception {
+        Order order = new Order();
+        order.setId("orders/1-A");
+        order.setStatus("Paid");
+
+        given(orderService.changeStatus("1-A", "Paid", "")).willReturn(order);
+
+        mockMvc.perform(post("/orders/1-A/status")
+                        .param("status", "Paid")
+                        .param("comment", ""))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/orders/1-A"));
     }
 
     @Test
@@ -217,6 +233,8 @@ class OrderControllerTest {
                 .andExpect(content().string(containsString("customerSnapshot")))
                 .andExpect(content().string(containsString("/orders/1-A/status")))
                 .andExpect(content().string(containsString("Actualizar estado")))
+                .andExpect(content().string(containsString("Comentario opcional")))
+                .andExpect(content().string(containsString("name=\"comment\"")))
                 .andExpect(content().string(containsString("lineItems")))
                 .andExpect(content().string(containsString("Cafe de especialidad 1kg")))
                 .andExpect(content().string(containsString("Bebidas")))
