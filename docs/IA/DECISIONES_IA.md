@@ -769,3 +769,27 @@ El objetivo de esta iteracion es hacer visible en la interfaz que un pedido Rave
 ### Por que
 
 El objetivo del commit es dejar preparada la arquitectura documental para evolucionar el estado de un pedido sin anadir complejidad innecesaria. Una ruta POST sencilla, un metodo de servicio directo y una nueva entrada en `statusHistory` cubren el caso de uso y son faciles de defender oralmente.
+
+## 2026-04-26 - WI-011 demo RQL para la defensa
+
+### Que produjo la IA
+
+- Reescritura de `docs/demo_rql.md` como guion operativo de RavenDB Studio.
+- Tres consultas RQL alineadas con la estructura real del repo y verificadas contra la base local.
+- Notas de pre-demo para evitar improvisacion durante la exposicion.
+
+### Que se acepto
+
+- Mantener exactamente las tres consultas pedidas por el work item: pendientes, total minimo + ciudad y categoria o etiqueta.
+- Documentar los auto-indexes observados en la verificacion real, aclarando que el nombre puede variar si RavenDB fusiona campos.
+- Dejar la consulta de `Pending` como parte del guion aunque en la base verificada no devolviera resultados, porque sigue siendo la RQL correcta y la preparacion operativa es trivial.
+
+### Que se descarto
+
+- Tocar codigo de aplicacion o seed solo para forzar resultados en la demo.
+- Convertir esta tarea en desarrollo de tests automatizados, porque el alcance era documental y la verificacion util estaba en RavenDB real.
+- Documentar variantes legacy de `Orders` sin `customerSnapshot` ni `status`, porque complicaria la defensa y no representa la estructura actual del proyecto.
+
+### Por que
+
+La defensa necesita una secuencia corta, clara y repetible. Lo mas defendible era basar el documento en la estructura documental actual, validar las RQL sobre la base local y explicitar la unica precondicion operativa sensible: tener al menos un pedido en `Pending` si se quiere que esa query ensene resultados visibles.
