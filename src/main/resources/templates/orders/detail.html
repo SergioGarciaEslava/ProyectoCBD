@@ -68,6 +68,26 @@
         </dl>
     </section>
 
+    <section class="section">
+        <p class="doc-kicker">Operacion de negocio &middot; <code>change status</code></p>
+        <h2>Cambiar estado</h2>
+        <form class="form-grid" method="post" th:action="@{/orders/{id}/status(id=${#strings.substringAfter(order.id, '/')})}">
+            <div class="field">
+                <label for="order-status-input">Nuevo estado</label>
+                <select id="order-status-input" name="status">
+                    <option value="Pending" th:selected="${order.status == 'Pending'}">Pending</option>
+                    <option value="Processing" th:selected="${order.status == 'Processing'}">Processing</option>
+                    <option value="Paid" th:selected="${order.status == 'Paid'}">Paid</option>
+                    <option value="Shipped" th:selected="${order.status == 'Shipped'}">Shipped</option>
+                    <option value="Cancelled" th:selected="${order.status == 'Cancelled'}">Cancelled</option>
+                </select>
+            </div>
+            <div class="actions">
+                <button class="button" type="submit">Actualizar estado</button>
+            </div>
+        </form>
+    </section>
+
     <section class="section embedded-section">
         <p class="doc-kicker">Subdocumento embebido &middot; <code>customerSnapshot</code></p>
         <h2>customerSnapshot</h2>

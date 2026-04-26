@@ -68,6 +68,24 @@ public class OrderService {
                 .map(this::enrichForDetailView);
     }
 
+    public Order changeStatus(String orderId, String newStatus) {
+        Order order = orderRepository.findById(normalizeId(orderId))
+                .orElseThrow(() -> new IllegalArgumentException("Pedido no encontrado"));
+
+        if (isBlank(newStatus)) {
+            throw new IllegalArgumentException("Estado no valido");
+        }
+
+        order.setStatus(newStatus.trim());
+        order.getStatusHistory().add(new Order.StatusHistoryEntry(
+                newStatus.trim(),
+                OffsetDateTime.now(),
+                "Estado actualizado"
+        ));
+
+        return orderRepository.save(order);
+    }
+
     private String normalizeId(String orderId) {
         return orderId.contains("/") ? orderId : "orders/" + orderId;
     }

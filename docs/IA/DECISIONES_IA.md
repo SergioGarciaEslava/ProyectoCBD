@@ -673,3 +673,29 @@ El usuario pidio un commit pequeno y defendible. La forma mas coherente de cumpl
 ### Por que
 
 El objetivo de esta iteracion es hacer visible en la interfaz que un pedido RavenDB puede incluir snapshots, lineas e historial dentro del mismo documento. Mostrar esas dos colecciones embebidas en tablas simples ayuda a explicar el agregado sin complicar la aplicacion.
+
+## 2026-04-26 - Accion base de cambio de estado de pedido
+
+### Que produjo la IA
+
+- Ruta `POST /orders/{id}/status`.
+- Metodo `OrderService.changeStatus(...)` para cargar, actualizar y guardar el pedido.
+- Formulario minimo en la vista de detalle para solicitar el cambio.
+- Pruebas de servicio y controlador para exito y pedido inexistente.
+
+### Que se acepto
+
+- Mantener una sola operacion de negocio clara sobre pedidos: cambiar estado.
+- Registrar el cambio en `statusHistory` en el mismo documento `Order`.
+- Usar un comentario fijo del sistema (`"Estado actualizado"`) para no abrir aun el campo libre en UI.
+- Responder con `404` si el pedido no existe.
+
+### Que se descarto
+
+- Comentario opcional en el formulario.
+- Reglas complejas de transicion entre estados.
+- Refactor amplio del detalle o del agregado.
+
+### Por que
+
+El objetivo del commit es dejar preparada la arquitectura documental para evolucionar el estado de un pedido sin anadir complejidad innecesaria. Una ruta POST sencilla, un metodo de servicio directo y una nueva entrada en `statusHistory` cubren el caso de uso y son faciles de defender oralmente.

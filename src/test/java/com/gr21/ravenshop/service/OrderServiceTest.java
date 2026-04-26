@@ -130,7 +130,7 @@ class OrderServiceTest {
         newer.setTotal(new BigDecimal("20.00"));
         newer.setOrderedAt(OffsetDateTime.parse("2026-04-20T10:00:00Z"));
 
-        when(orderRepository.findAll()).thenReturn(List.of(older, newer));
+        when(orderRepository.findByFilters(null, null, null)).thenReturn(List.of(older, newer));
 
         List<Order> result = orderService.listOrders();
 
@@ -139,7 +139,7 @@ class OrderServiceTest {
         assertThat(result.get(1).getId()).isEqualTo("orders/1-A");
         assertThat(result.get(1).getOrderedAt()).isEqualTo(OffsetDateTime.parse("2026-04-19T10:00:00Z"));
 
-        verify(orderRepository).findAll();
+        verify(orderRepository).findByFilters(null, null, null);
     }
 
     @Test
@@ -185,6 +185,38 @@ class OrderServiceTest {
         Optional<Order> result = orderService.findById("404-A");
 
         assertThat(result).isEmpty();
+        verify(orderRepository).findById("orders/404-A");
+    }
+
+    @Test
+    void changeStatusLoadsOrderAppendsHistoryAndSaves() {
+        Order order = new Order();
+        order.setId("orders/1-A");
+        order.setStatus("Pending");
+
+        when(orderRepository.findById("orders/1-A")).thenReturn(Optional.of(order));
+        when(orderRepository.save(order)).thenReturn(order);
+
+        Order updated = orderService.changeStatus("1-A", "Shipped");
+
+        assertThat(updated.getStatus()).isEqualTo("Shipped");
+        assertThat(updated.getStatusHistory()).hasSize(1);
+        assertThat(updated.getStatusHistory().getFirst().getStatus()).isEqualTo("Shipped");
+        assertThat(updated.getStatusHistory().getFirst().getChangedAt()).isNotNull();
+        assertThat(updated.getStatusHistory().getFirst().getComment()).isEqualTo("Estado actualizado");
+
+        verify(orderRepository).findById("orders/1-A");
+        verify(orderRepository).save(order);
+    }
+
+    @Test
+    void changeStatusFailsWhenOrderDoesNotExist() {
+        when(orderRepository.findById("orders/404-A")).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> orderService.changeStatus("404-A", "Paid"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Pedido no encontrado");
+
         verify(orderRepository).findById("orders/404-A");
     }
 
