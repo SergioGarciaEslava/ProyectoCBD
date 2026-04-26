@@ -256,13 +256,35 @@ class OrderServiceTest {
 
         when(orderRepository.findById("orders/1-A")).thenReturn(Optional.of(order));
 
-        Order unchanged = orderService.changeStatus("1-A", "Pending", "Sin cambios");
+        Order unchanged = orderService.changeStatus("1-A", "Pending", "   ");
 
         assertThat(unchanged.getStatus()).isEqualTo("Pending");
         assertThat(unchanged.getStatusHistory()).hasSize(1);
 
         verify(orderRepository).findById("orders/1-A");
         verify(orderRepository, never()).save(any(Order.class));
+    }
+
+    @Test
+    void changeStatusAppendsHistoryWhenStatusMatchesButCommentIsProvided() {
+        Order order = new Order();
+        order.setId("orders/1-A");
+        order.setStatus("Pending");
+        order.setStatusHistory(List.of(historyWithComment("Pending", "2026-04-19T10:00:00Z", "Pedido creado")));
+
+        when(orderRepository.findById("orders/1-A")).thenReturn(Optional.of(order));
+        when(orderRepository.save(order)).thenReturn(order);
+
+        Order updated = orderService.changeStatus("1-A", "Pending", "Revisado manualmente");
+
+        assertThat(updated.getStatus()).isEqualTo("Pending");
+        assertThat(updated.getStatusHistory()).hasSize(2);
+        assertThat(updated.getStatusHistory().get(1).getStatus()).isEqualTo("Pending");
+        assertThat(updated.getStatusHistory().get(1).getComment()).isEqualTo("Revisado manualmente");
+        assertThat(updated.getStatusHistory().get(1).getChangedAt()).isNotNull();
+
+        verify(orderRepository).findById("orders/1-A");
+        verify(orderRepository).save(order);
     }
 
     @Test

@@ -77,7 +77,8 @@ public class OrderService {
         }
 
         String normalizedStatus = newStatus.trim();
-        if (normalizedStatus.equals(order.getStatus())) {
+        String normalizedComment = normalizeComment(comment);
+        if (normalizedStatus.equals(order.getStatus()) && normalizedComment == null) {
             return order;
         }
 
@@ -85,7 +86,7 @@ public class OrderService {
         order.getStatusHistory().add(new Order.StatusHistoryEntry(
                 normalizedStatus,
                 OffsetDateTime.now(),
-                normalizeComment(comment)
+                normalizedComment
         ));
 
         return orderRepository.save(order);

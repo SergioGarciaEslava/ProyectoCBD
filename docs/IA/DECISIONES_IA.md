@@ -163,6 +163,27 @@ El objetivo era ampliar una operacion de negocio ya existente con el menor cambi
 
 El objetivo era hacer mas defendible la demo del cambio de estado: el estado actual debe verse de inmediato y la ultima entrada del historial no debe quedar escondida al final de la tabla. Reordenar la presentacion en el detalle resuelve eso con un cambio pequeno y claro.
 
+## 2026-04-26 - Correccion del comentario con mismo estado
+
+### Que produjo la IA
+
+- Ajuste puntual de `OrderService.changeStatus(...)` para no descartar comentarios cuando el usuario reenvia el mismo estado.
+- Prueba automatica del caso `mismo estado + comentario`.
+
+### Que se acepto
+
+- Mantener el no-op solo si el estado coincide y no hay comentario.
+- Si el estado coincide pero hay comentario, anadir una nueva entrada en `statusHistory` con ese mismo estado.
+
+### Que se descarto
+
+- Rehacer el formulario o forzar al usuario a cambiar obligatoriamente el estado.
+- Cambiar la vista o introducir mensajes de validacion en cliente.
+
+### Por que
+
+En uso real, el formulario puede enviarse con el mismo estado seleccionado y un comentario manual relevante. Tratar ese caso como no-op hacia que el comentario se perdiera, asi que se adopto una regla mas util y aun sencilla: conservar el estado actual y registrar igualmente la anotacion en el historial.
+
 ## 2026-04-19 - Ejecucion de WI-003 (datos semilla)
 
 ### Que produjo la IA
