@@ -79,6 +79,19 @@ public class OrderController {
         return "orders/detail";
     }
 
+    @PostMapping("/{id}/status")
+    public String changeStatus(@PathVariable String id, @RequestParam("status") String status) {
+        try {
+            orderService.changeStatus(id, status);
+            return "redirect:/orders/" + id;
+        } catch (IllegalArgumentException ex) {
+            if ("Pedido no encontrado".equals(ex.getMessage())) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found");
+            }
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
+        }
+    }
+
     private void addFormOptions(Model model) {
         model.addAttribute("customers", customerService.listCustomers());
         model.addAttribute("products", productService.listProducts());

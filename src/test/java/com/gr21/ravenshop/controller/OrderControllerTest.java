@@ -150,6 +150,31 @@ class OrderControllerTest {
     }
 
     @Test
+    void changeStatusRedirectsBackToDetail() throws Exception {
+        Order order = new Order();
+        order.setId("orders/1-A");
+        order.setStatus("Shipped");
+
+        given(orderService.changeStatus("1-A", "Shipped")).willReturn(order);
+
+        mockMvc.perform(post("/orders/1-A/status")
+                        .param("status", "Shipped"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/orders/1-A"))
+                .andExpect(header().string("Location", "/orders/1-A"));
+    }
+
+    @Test
+    void changeStatusReturns404WhenOrderDoesNotExist() throws Exception {
+        given(orderService.changeStatus("404-A", "Paid"))
+                .willThrow(new IllegalArgumentException("Pedido no encontrado"));
+
+        mockMvc.perform(post("/orders/404-A/status")
+                        .param("status", "Paid"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void detailViewRendersOrderFields() throws Exception {
         Order order = new Order();
         order.setId("orders/1-A");
@@ -190,6 +215,8 @@ class OrderControllerTest {
                 .andExpect(content().string(containsString("Ana Lopez")))
                 .andExpect(content().string(containsString("Calle Mayor 1, Madrid")))
                 .andExpect(content().string(containsString("customerSnapshot")))
+                .andExpect(content().string(containsString("/orders/1-A/status")))
+                .andExpect(content().string(containsString("Actualizar estado")))
                 .andExpect(content().string(containsString("lineItems")))
                 .andExpect(content().string(containsString("Cafe de especialidad 1kg")))
                 .andExpect(content().string(containsString("Bebidas")))
