@@ -76,9 +76,14 @@ public class OrderService {
             throw new IllegalArgumentException("Estado no valido");
         }
 
-        order.setStatus(newStatus.trim());
+        String normalizedStatus = newStatus.trim();
+        if (normalizedStatus.equals(order.getStatus())) {
+            return order;
+        }
+
+        order.setStatus(normalizedStatus);
         order.getStatusHistory().add(new Order.StatusHistoryEntry(
-                newStatus.trim(),
+                normalizedStatus,
                 OffsetDateTime.now(),
                 "Estado actualizado"
         ));
