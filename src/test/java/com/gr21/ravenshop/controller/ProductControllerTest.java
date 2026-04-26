@@ -78,7 +78,7 @@ class ProductControllerTest {
                 .andExpect(view().name("products/list"))
                 .andExpect(model().attribute("query", "Cafe"))
                 .andExpect(content().string(containsString("Cafe de especialidad")))
-                .andExpect(content().string(containsString("startsWith(Name")));
+                .andExpect(content().string(containsString("startsWith(name")));
     }
 
     @Test

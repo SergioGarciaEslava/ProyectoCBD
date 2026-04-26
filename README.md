@@ -214,6 +214,16 @@ Opciones:
 - borrar la base `RavenShop` y crearla de nuevo
 - borrar el documento marcador y volver a arrancar con `--ravenshop.seed.enabled=true`
 
+### RavenDB indica `DocumentCollectionMismatchException`
+
+Si una base local se sembro con una version anterior que guardaba `customers/1-A` como `CustomerDocs` u `orders/1-A` como `OrderDocs`, RavenDB no permite convertir esos documentos a `Customers` u `Orders` mediante una actualizacion.
+
+Las altas nuevas de clientes y pedidos usan IDs explicitos no secuenciales para evitar chocar con esos documentos antiguos. Aun asi, la opcion mas limpia para la demo es borrar la base `RavenShop`, crearla de nuevo y arrancar otra vez con:
+
+```bash
+mvn spring-boot:run -Dspring-boot.run.arguments="--ravenshop.seed.enabled=true"
+```
+
 ### El formulario de pedidos aparece vacio o falla al crear
 
 Para crear pedidos necesitas tener clientes y productos disponibles en RavenDB. Si no los tienes:

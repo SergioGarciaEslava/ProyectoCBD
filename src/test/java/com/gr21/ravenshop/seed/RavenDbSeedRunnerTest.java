@@ -1,5 +1,7 @@
 package com.gr21.ravenshop.seed;
 
+import com.gr21.ravenshop.model.Customer;
+import com.gr21.ravenshop.model.Order;
 import com.gr21.ravenshop.model.Product;
 import net.ravendb.client.documents.IDocumentStore;
 import net.ravendb.client.documents.session.IDocumentSession;
@@ -62,6 +64,10 @@ class RavenDbSeedRunnerTest {
         List<Object> allStored = storedEntities.getAllValues();
         org.assertj.core.api.Assertions.assertThat(allStored.subList(0, EXPECTED_PRODUCT_COUNT))
                 .allMatch(Product.class::isInstance);
+        org.assertj.core.api.Assertions.assertThat(allStored.subList(EXPECTED_PRODUCT_COUNT, EXPECTED_PRODUCT_COUNT + EXPECTED_CUSTOMER_COUNT))
+                .allMatch(Customer.class::isInstance);
+        org.assertj.core.api.Assertions.assertThat(allStored.subList(EXPECTED_PRODUCT_COUNT + EXPECTED_CUSTOMER_COUNT, EXPECTED_PRODUCT_COUNT + EXPECTED_CUSTOMER_COUNT + EXPECTED_ORDER_COUNT))
+                .allMatch(Order.class::isInstance);
     }
 
     @Test

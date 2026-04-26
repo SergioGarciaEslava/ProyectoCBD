@@ -1,5 +1,8 @@
 package com.gr21.ravenshop.seed;
 
+import com.gr21.ravenshop.model.Address;
+import com.gr21.ravenshop.model.Customer;
+import com.gr21.ravenshop.model.Order;
 import com.gr21.ravenshop.model.Product;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -60,81 +63,131 @@ public class RavenDbSeedRunner implements ApplicationRunner {
     }
 
     private void storeCustomers(IDocumentSession session) {
-        session.store(new CustomerDoc("customers/1-A", "Ana Lopez", "ana.lopez@example.com", "Madrid"), "customers/1-A");
-        session.store(new CustomerDoc("customers/2-A", "Bruno Diaz", "bruno.diaz@example.com", "Valencia"), "customers/2-A");
-        session.store(new CustomerDoc("customers/3-A", "Carla Martin", "carla.martin@example.com", "Sevilla"), "customers/3-A");
+        session.store(customer("Ana Lopez", "ana.lopez@example.com", "+34 600000001", "Calle Mayor 1", "Madrid", "28013"), "customers/1-A");
+        session.store(customer("Bruno Diaz", "bruno.diaz@example.com", "+34 600000002", "Avenida Colon 12", "Valencia", "46004"), "customers/2-A");
+        session.store(customer("Carla Martin", "carla.martin@example.com", "+34 600000003", "Calle Feria 8", "Sevilla", "41003"), "customers/3-A");
+    }
+
+    private Customer customer(String fullName, String email, String phone, String street, String city, String postalCode) {
+        Customer customer = new Customer();
+        customer.setFullName(fullName);
+        customer.setEmail(email);
+        customer.setPhone(phone);
+        customer.setAddress(new Address(street, city, postalCode));
+        customer.setCreatedAt(OffsetDateTime.now());
+        return customer;
     }
 
     private void storeOrders(IDocumentSession session) {
-        session.store(new OrderDoc(
-                "orders/1-A",
+        session.store(order(
                 "customers/1-A",
+                customerSnapshot("customers/1-A", "Ana Lopez", "ana.lopez@example.com", "Madrid"),
+                "Calle Mayor 1, Madrid",
+                "Paid",
+                "2026-04-19T10:00:00Z",
                 List.of(
-                        new OrderLine("products/1-A", "Cafe de especialidad 1kg", 2, new BigDecimal("21.90")),
-                        new OrderLine("products/3-A", "Chocolate negro 70% 200g", 3, new BigDecimal("6.95"))
+                        orderLine("products/1-A", "Cafe de especialidad 1kg", "Bebidas", 2, "21.90"),
+                        orderLine("products/3-A", "Chocolate negro 70% 200g", "Snacks", 3, "6.95")
                 ),
-                new BigDecimal("64.65"),
                 List.of(
-                        new OrderStatusEntry("CREATED", "2026-04-19T10:00:00Z"),
-                        new OrderStatusEntry("PAID", "2026-04-19T10:05:00Z")
+                        statusEntry("Pending", "2026-04-19T10:00:00Z", "Pedido creado"),
+                        statusEntry("Paid", "2026-04-19T10:05:00Z", "Pago confirmado")
                 )
         ), "orders/1-A");
 
-        session.store(new OrderDoc(
-                "orders/2-A",
+        session.store(order(
                 "customers/2-A",
+                customerSnapshot("customers/2-A", "Bruno Diaz", "bruno.diaz@example.com", "Valencia"),
+                "Avenida Colon 12, Valencia",
+                "Processing",
+                "2026-04-19T11:00:00Z",
                 List.of(
-                        new OrderLine("products/2-A", "Te verde organico 500g", 2, new BigDecimal("12.40")),
-                        new OrderLine("products/4-A", "Muesli sin azucar 750g", 1, new BigDecimal("8.50"))
+                        orderLine("products/2-A", "Te verde organico 500g", "Bebidas", 2, "12.40"),
+                        orderLine("products/4-A", "Muesli sin azucar 750g", "Despensa", 1, "8.50")
                 ),
-                new BigDecimal("33.30"),
                 List.of(
-                        new OrderStatusEntry("CREATED", "2026-04-19T11:00:00Z"),
-                        new OrderStatusEntry("PROCESSING", "2026-04-19T11:20:00Z")
+                        statusEntry("Pending", "2026-04-19T11:00:00Z", "Pedido creado"),
+                        statusEntry("Processing", "2026-04-19T11:20:00Z", "Preparando pedido")
                 )
         ), "orders/2-A");
 
-        session.store(new OrderDoc(
-                "orders/3-A",
+        session.store(order(
                 "customers/3-A",
+                customerSnapshot("customers/3-A", "Carla Martin", "carla.martin@example.com", "Sevilla"),
+                "Calle Feria 8, Sevilla",
+                "Shipped",
+                "2026-04-19T12:00:00Z",
                 List.of(
-                        new OrderLine("products/1-A", "Cafe de especialidad 1kg", 1, new BigDecimal("21.90")),
-                        new OrderLine("products/2-A", "Te verde organico 500g", 1, new BigDecimal("12.40")),
-                        new OrderLine("products/3-A", "Chocolate negro 70% 200g", 2, new BigDecimal("6.95"))
+                        orderLine("products/1-A", "Cafe de especialidad 1kg", "Bebidas", 1, "21.90"),
+                        orderLine("products/2-A", "Te verde organico 500g", "Bebidas", 1, "12.40"),
+                        orderLine("products/3-A", "Chocolate negro 70% 200g", "Snacks", 2, "6.95")
                 ),
-                new BigDecimal("48.20"),
                 List.of(
-                        new OrderStatusEntry("CREATED", "2026-04-19T12:00:00Z"),
-                        new OrderStatusEntry("PAID", "2026-04-19T12:10:00Z"),
-                        new OrderStatusEntry("SHIPPED", "2026-04-19T13:00:00Z")
+                        statusEntry("Pending", "2026-04-19T12:00:00Z", "Pedido creado"),
+                        statusEntry("Paid", "2026-04-19T12:10:00Z", "Pago confirmado"),
+                        statusEntry("Shipped", "2026-04-19T13:00:00Z", "Pedido enviado")
                 )
         ), "orders/3-A");
 
-        session.store(new OrderDoc(
-                "orders/4-A",
+        session.store(order(
                 "customers/1-A",
+                customerSnapshot("customers/1-A", "Ana Lopez", "ana.lopez@example.com", "Madrid"),
+                "Calle Mayor 1, Madrid",
+                "Pending",
+                "2026-04-19T14:00:00Z",
                 List.of(
-                        new OrderLine("products/4-A", "Muesli sin azucar 750g", 2, new BigDecimal("8.50"))
+                        orderLine("products/4-A", "Muesli sin azucar 750g", "Despensa", 2, "8.50")
                 ),
-                new BigDecimal("17.00"),
                 List.of(
-                        new OrderStatusEntry("CREATED", "2026-04-19T14:00:00Z")
+                        statusEntry("Pending", "2026-04-19T14:00:00Z", "Pedido creado")
                 )
         ), "orders/4-A");
     }
 
+    private Order order(
+            String customerId,
+            Order.CustomerSnapshot customerSnapshot,
+            String shippingAddress,
+            String status,
+            String orderedAt,
+            List<Order.OrderLineItem> lineItems,
+            List<Order.StatusHistoryEntry> statusHistory
+    ) {
+        Order order = new Order();
+        order.setCustomerId(customerId);
+        order.setCustomerSnapshot(customerSnapshot);
+        order.setShippingAddress(shippingAddress);
+        order.setStatus(status);
+        order.setOrderedAt(OffsetDateTime.parse(orderedAt));
+        order.setLineItems(lineItems);
+        order.setStatusHistory(statusHistory);
+        order.recalculateTotals();
+        return order;
+    }
+
+    private Order.CustomerSnapshot customerSnapshot(String customerId, String fullName, String email, String city) {
+        Order.CustomerSnapshot snapshot = new Order.CustomerSnapshot();
+        snapshot.setCustomerId(customerId);
+        snapshot.setFullName(fullName);
+        snapshot.setEmail(email);
+        snapshot.setCity(city);
+        return snapshot;
+    }
+
+    private Order.OrderLineItem orderLine(String productId, String productName, String category, int quantity, String unitPrice) {
+        Order.OrderLineItem lineItem = new Order.OrderLineItem();
+        lineItem.setProductId(productId);
+        lineItem.setProductName(productName);
+        lineItem.setCategory(category);
+        lineItem.setQuantity(quantity);
+        lineItem.setUnitPrice(new BigDecimal(unitPrice));
+        return lineItem;
+    }
+
+    private Order.StatusHistoryEntry statusEntry(String status, String changedAt, String comment) {
+        return new Order.StatusHistoryEntry(status, OffsetDateTime.parse(changedAt), comment);
+    }
+
     public record SeedMarker(String id, String seededAt) {
-    }
-
-    public record CustomerDoc(String id, String fullName, String email, String city) {
-    }
-
-    public record OrderDoc(String id, String customerId, List<OrderLine> lines, BigDecimal total, List<OrderStatusEntry> statusHistory) {
-    }
-
-    public record OrderLine(String productId, String productName, int quantity, BigDecimal unitPrice) {
-    }
-
-    public record OrderStatusEntry(String status, String changedAt) {
     }
 }

@@ -644,6 +644,30 @@ WI-019 pide una primera pantalla que comunique el proposito academico y oriente 
 ### Por que
 
 WI-020 es la pieza con mejor relacion impacto/riesgo del sprint. El auto-index `Auto/Products/ByName` se genera con una RQL minima y es el momento "wow" de la defensa. Los paneles RQL convierten la interfaz en un material didactico sin coste de mantenimiento. La diferenciacion visual de los embebidos en el detalle de pedido hace tangible el modelado documental. El cambio del marker es la ruta mas pequeña para que el seed se actualice sin romper la convencion existente.
+
+## 2026-04-26 - Correccion de colecciones seed y busqueda de productos
+
+### Que produjo la IA
+
+- Correccion del seed para guardar clientes como `Customer` y pedidos como `Order`, no como records auxiliares `CustomerDoc`/`OrderDoc`.
+- Correccion de la RQL de busqueda de productos a `from Products where startsWith(name, $namePrefix)`, alineada con el campo JSON serializado por Jackson.
+- Asignacion de IDs explicitos `customers/<uuid>` al crear clientes nuevos para no depender del contador secuencial de RavenDB cuando una base local conserva documentos antiguos con IDs `customers/1-A`, `customers/2-A`, etc.
+- Asignacion de IDs explicitos `orders/<uuid>` al crear pedidos nuevos para no depender del contador secuencial de RavenDB cuando una base local conserva documentos antiguos con IDs `orders/1-A`, `orders/2-A`, etc.
+- Ajuste de textos didacticos en portada y productos para hablar de `Products.name`.
+- Documentacion en README del caso `DocumentCollectionMismatchException` en bases locales ya sembradas con versiones anteriores.
+- Refuerzo de tests para detectar el tipo real de entidades sembradas y la RQL emitida.
+
+### Que se acepto
+
+- Usar los modelos de dominio reales en el seed para que RavenDB asigne las colecciones `Customers` y `Orders`.
+- Mantener el listado general por prefijo de ID donde ya se usaba `@all_docs`, pero usar la coleccion `Products` para la busqueda por nombre.
+- Evitar el generador automatico secuencial de RavenDB solo en altas nuevas de cliente; las ediciones siguen guardando el documento existente.
+- Evitar el generador automatico secuencial de RavenDB solo en altas nuevas de pedido; las actualizaciones de estado siguen guardando el documento existente.
+- Explicar en README que una base ya contaminada debe recrearse o limpiarse, porque RavenDB no convierte metadatos de coleccion mediante update.
+
+### Por que
+
+RavenDB deriva la coleccion desde el tipo Java guardado. Guardar `CustomerDoc` con ID `customers/1-A` crea un documento de la coleccion `CustomerDocs`; al guardar despues un `Customer` con el mismo ID, RavenDB rechaza el cambio de coleccion. La busqueda fallaba por una discrepancia de casing: el documento contiene `name`, no `Name`.
 ## 2026-04-26 - Listado base de pedidos
 
 ### Que produjo la IA

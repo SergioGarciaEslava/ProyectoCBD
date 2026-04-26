@@ -11,6 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public class RavenOrderRepository implements OrderRepository {
@@ -26,7 +27,12 @@ public class RavenOrderRepository implements OrderRepository {
     @Override
     public Order save(Order order) {
         try (IDocumentSession session = documentStore.openSession(documentStore.getDatabase())) {
-            session.store(order);
+            if (order.getId() == null || order.getId().isBlank()) {
+                order.setId("orders/" + UUID.randomUUID());
+                session.store(order, order.getId());
+            } else {
+                session.store(order);
+            }
             session.saveChanges();
             return order;
         }

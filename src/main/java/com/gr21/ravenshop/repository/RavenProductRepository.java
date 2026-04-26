@@ -49,7 +49,7 @@ public class RavenProductRepository implements ProductRepository {
     public List<Product> searchByNamePrefix(String namePrefix) {
         try (IDocumentSession session = documentStore.openSession(documentStore.getDatabase())) {
             return session.advanced()
-                    .rawQuery(Product.class, "from Products where startsWith(Name, $namePrefix)")
+                    .rawQuery(Product.class, "from Products where startsWith(name, $namePrefix)")
                     .addParameter("namePrefix", namePrefix)
                     .toList();
         }

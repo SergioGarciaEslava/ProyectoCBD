@@ -60,4 +60,22 @@ class RavenProductRepositoryTest {
         verify(advancedSessionOperations).rawQuery(Product.class, "from @all_docs where startsWith(id(), $idPrefix)");
         verify(rawQuery).addParameter("idPrefix", "products/");
     }
+
+    @Test
+    void searchByNamePrefixQueriesSerializedJsonFieldName() {
+        Product product = new Product();
+        product.setId("products/1-A");
+        product.setName("Cafe de especialidad 1kg");
+
+        when(advancedSessionOperations.rawQuery(Product.class, "from Products where startsWith(name, $namePrefix)"))
+                .thenReturn(rawQuery);
+        when(rawQuery.addParameter("namePrefix", "Cafe")).thenReturn(rawQuery);
+        when(rawQuery.toList()).thenReturn(List.of(product));
+
+        List<Product> products = repository.searchByNamePrefix("Cafe");
+
+        assertThat(products).containsExactly(product);
+        verify(advancedSessionOperations).rawQuery(Product.class, "from Products where startsWith(name, $namePrefix)");
+        verify(rawQuery).addParameter("namePrefix", "Cafe");
+    }
 }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public class RavenCustomerRepository implements CustomerRepository {
@@ -20,7 +21,12 @@ public class RavenCustomerRepository implements CustomerRepository {
     @Override
     public Customer save(Customer customer) {
         try (IDocumentSession session = documentStore.openSession(documentStore.getDatabase())) {
-            session.store(customer);
+            if (customer.getId() == null || customer.getId().isBlank()) {
+                customer.setId("customers/" + UUID.randomUUID());
+                session.store(customer, customer.getId());
+            } else {
+                session.store(customer);
+            }
             session.saveChanges();
             return customer;
         }
