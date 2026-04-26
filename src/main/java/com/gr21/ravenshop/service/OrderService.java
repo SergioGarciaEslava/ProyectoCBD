@@ -11,6 +11,7 @@ import com.gr21.ravenshop.repository.OrderRepository;
 import com.gr21.ravenshop.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Comparator;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -48,7 +49,15 @@ public class OrderService {
     }
 
     public List<Order> listOrders() {
-        return orderRepository.findAll().stream()
+        return listOrders(null, null, null);
+    }
+
+    public List<Order> listOrders(String status, String customer, String minTotal) {
+        return orderRepository.findByFilters(
+                        normalizeFilter(status),
+                        normalizeFilter(customer),
+                        parseMinTotal(minTotal)
+                ).stream()
                 .map(this::enrichForListView)
                 .toList();
     }
@@ -189,5 +198,16 @@ public class OrderService {
 
     private boolean hasValidLineItems(Order order) {
         return order.getLineItems().stream().allMatch(line -> line.getQuantity() > 0);
+    }
+
+    private String normalizeFilter(String value) {
+        return isBlank(value) ? null : value.trim();
+    }
+
+    private BigDecimal parseMinTotal(String minTotal) {
+        if (isBlank(minTotal)) {
+            return null;
+        }
+        return new BigDecimal(minTotal.trim());
     }
 }

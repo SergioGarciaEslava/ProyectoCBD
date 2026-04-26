@@ -100,7 +100,7 @@ class OrderServiceTest {
         customer.setEmail("ana.lopez@example.com");
         customer.setAddress(new Address("Calle Mayor 1", "Madrid", null));
 
-        when(orderRepository.findAll()).thenReturn(List.of(order));
+        when(orderRepository.findByFilters(null, null, null)).thenReturn(List.of(order));
         when(customerRepository.findById("customers/1-A")).thenReturn(Optional.of(customer));
 
         List<Order> result = orderService.listOrders();
@@ -112,8 +112,41 @@ class OrderServiceTest {
         assertThat(result.getFirst().getCustomerSnapshot()).isNotNull();
         assertThat(result.getFirst().getCustomerSnapshot().getFullName()).isEqualTo("Ana Lopez");
 
-        verify(orderRepository).findAll();
+        verify(orderRepository).findByFilters(null, null, null);
         verify(customerRepository).findById("customers/1-A");
+    }
+
+    @Test
+    void listOrdersPassesCombinedFiltersToRepository() {
+        Order order = new Order();
+        order.setId("orders/1-A");
+        order.setStatus("Paid");
+        order.setLineItems(List.of(line("products/1-A", "Cafe", "Bebidas", 3, "21.55", "0.00")));
+
+        Order.CustomerSnapshot snapshot = new Order.CustomerSnapshot();
+        snapshot.setFullName("Ana Lopez");
+        order.setCustomerSnapshot(snapshot);
+
+        when(orderRepository.findByFilters("Paid", "Ana Lopez", new BigDecimal("50.00"))).thenReturn(List.of(order));
+
+        List<Order> result = orderService.listOrders(" Paid ", " Ana Lopez ", " 50.00 ");
+
+        assertThat(result).hasSize(1);
+        assertThat(result.getFirst().getStatus()).isEqualTo("Paid");
+        assertThat(result.getFirst().getCustomerSnapshot().getFullName()).isEqualTo("Ana Lopez");
+        assertThat(result.getFirst().getTotal()).isEqualByComparingTo("64.65");
+
+        verify(orderRepository).findByFilters("Paid", "Ana Lopez", new BigDecimal("50.00"));
+    }
+
+    @Test
+    void listOrdersIgnoresBlankFilters() {
+        when(orderRepository.findByFilters(null, null, null)).thenReturn(List.of());
+
+        List<Order> result = orderService.listOrders(" ", "", null);
+
+        assertThat(result).isEmpty();
+        verify(orderRepository).findByFilters(null, null, null);
     }
 
     @Test
@@ -170,13 +203,13 @@ class OrderServiceTest {
         order.setTotal(new BigDecimal("15.00"));
         order.setLineItems(List.of(line("products/1-A", "Cafe", "Bebidas", 0, "21.90", "0.00")));
 
-        when(orderRepository.findAll()).thenReturn(List.of(order));
+        when(orderRepository.findByFilters(null, null, null)).thenReturn(List.of(order));
 
         List<Order> result = orderService.listOrders();
 
         assertThat(result).hasSize(1);
         assertThat(result.getFirst().getTotal()).isEqualByComparingTo("15.00");
-        verify(orderRepository).findAll();
+        verify(orderRepository).findByFilters(null, null, null);
     }
 
     @Test

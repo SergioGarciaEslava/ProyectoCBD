@@ -57,13 +57,16 @@ class OrderControllerTest {
         snapshot.setFullName("Ana Lopez");
         order.setCustomerSnapshot(snapshot);
 
-        given(orderService.listOrders()).willReturn(List.of(order));
+        given(orderService.listOrders(null, null, null)).willReturn(List.of(order));
 
         mockMvc.perform(get("/orders"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("orders/list"))
                 .andExpect(model().attributeExists("orders"))
                 .andExpect(content().string(containsString("Listado base de pedidos")))
+                .andExpect(content().string(containsString("name=\"status\"")))
+                .andExpect(content().string(containsString("name=\"customer\"")))
+                .andExpect(content().string(containsString("name=\"minTotal\"")))
                 .andExpect(content().string(containsString("orders/1-A")))
                 .andExpect(content().string(containsString("Ana Lopez")))
                 .andExpect(content().string(containsString("64.65")));
@@ -71,12 +74,40 @@ class OrderControllerTest {
 
     @Test
     void listViewShowsFriendlyMessageWhenThereAreNoOrders() throws Exception {
-        given(orderService.listOrders()).willReturn(List.of());
+        given(orderService.listOrders(null, null, null)).willReturn(List.of());
 
         mockMvc.perform(get("/orders"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("orders/list"))
                 .andExpect(content().string(containsString("No hay pedidos registrados todavia.")));
+    }
+
+    @Test
+    void listViewPassesCombinedFiltersToService() throws Exception {
+        given(orderService.listOrders("Paid", "Ana Lopez", "50.00")).willReturn(List.of());
+
+        mockMvc.perform(get("/orders")
+                        .param("status", "Paid")
+                        .param("customer", "Ana Lopez")
+                        .param("minTotal", "50.00"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("orders/list"))
+                .andExpect(content().string(containsString("name=\"status\"")))
+                .andExpect(content().string(containsString("name=\"customer\"")))
+                .andExpect(content().string(containsString("name=\"minTotal\"")));
+    }
+
+    @Test
+    void listViewShowsFriendlyMessageWhenFiltersReturnNoOrders() throws Exception {
+        given(orderService.listOrders("Pending", "Ana Lopez", "100.00")).willReturn(List.of());
+
+        mockMvc.perform(get("/orders")
+                        .param("status", "Pending")
+                        .param("customer", "Ana Lopez")
+                        .param("minTotal", "100.00"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("orders/list"))
+                .andExpect(content().string(containsString("No hay pedidos que cumplan los filtros indicados.")));
     }
 
     @Test

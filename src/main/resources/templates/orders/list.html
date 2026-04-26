@@ -27,7 +27,7 @@
         <div>
             <p class="page-kicker">Pedidos</p>
             <h1>Listado base de pedidos</h1>
-            <p class="lead">Consulta simple a RavenDB para mostrar los campos principales del documento <code>Order</code> sin filtros ni detalle adicional.</p>
+            <p class="lead">Consulta simple a RavenDB para mostrar los campos principales del documento <code>Order</code> y filtrar por estado, cliente y total minimo.</p>
         </div>
         <div class="actions">
             <a class="button button-secondary" th:href="@{/}">Inicio</a>
@@ -35,7 +35,35 @@
         </div>
     </header>
 
-    <p class="empty-state" th:if="${#lists.isEmpty(orders)}">No hay pedidos registrados todavia.</p>
+    <form class="search-bar" method="get" th:action="@{/orders}" aria-label="Filtrar pedidos">
+        <div class="field">
+            <label for="order-status-filter">Estado</label>
+            <select id="order-status-filter" name="status">
+                <option value="">Todos</option>
+                <option value="Pending" th:selected="${filterStatus == 'Pending'}">Pending</option>
+                <option value="Processing" th:selected="${filterStatus == 'Processing'}">Processing</option>
+                <option value="Paid" th:selected="${filterStatus == 'Paid'}">Paid</option>
+                <option value="Shipped" th:selected="${filterStatus == 'Shipped'}">Shipped</option>
+                <option value="Cancelled" th:selected="${filterStatus == 'Cancelled'}">Cancelled</option>
+                <option value="Created" th:selected="${filterStatus == 'Created'}">Created</option>
+            </select>
+        </div>
+        <div class="field">
+            <label for="order-customer-filter">Cliente</label>
+            <input id="order-customer-filter" type="text" name="customer" th:value="${filterCustomer}" placeholder="Nombre completo">
+        </div>
+        <div class="field">
+            <label for="order-min-total-filter">Total minimo</label>
+            <input id="order-min-total-filter" type="number" name="minTotal" th:value="${filterMinTotal}" min="0" step="0.01" placeholder="0.00">
+        </div>
+        <div class="actions">
+            <button class="button" type="submit">Filtrar</button>
+            <a class="button button-secondary" th:href="@{/orders}">Limpiar</a>
+        </div>
+    </form>
+
+    <p class="empty-state" th:if="${#lists.isEmpty(orders) and (filterStatus == null or #strings.isEmpty(filterStatus)) and (filterCustomer == null or #strings.isEmpty(filterCustomer)) and (filterMinTotal == null or #strings.isEmpty(filterMinTotal))}">No hay pedidos registrados todavia.</p>
+    <p class="empty-state" th:if="${#lists.isEmpty(orders) and !((filterStatus == null or #strings.isEmpty(filterStatus)) and (filterCustomer == null or #strings.isEmpty(filterCustomer)) and (filterMinTotal == null or #strings.isEmpty(filterMinTotal)))}">No hay pedidos que cumplan los filtros indicados.</p>
 
     <div class="table-wrap" th:if="${not #lists.isEmpty(orders)}">
         <table>

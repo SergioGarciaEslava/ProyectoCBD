@@ -602,3 +602,31 @@ WI-020 es la pieza con mejor relacion impacto/riesgo del sprint. El auto-index `
 ### Por que
 
 El objetivo de esta sesion es cubrir solo el caso de uso minimo de lectura de pedidos desde RavenDB y dejarlo facil de explicar oralmente. La solucion se apoya en las capas ya existentes, evita arquitectura adicional y mantiene un cambio pequeno, coherente con un commit medio.
+
+## 2026-04-26 - Filtros en listado de pedidos
+
+### Que produjo la IA
+
+- Metodo `findByFilters(...)` en `OrderRepository` y `RavenOrderRepository`.
+- Construccion dinamica de RQL con condiciones opcionales para `status`, `customerSnapshot.fullName` y `total`.
+- Nuevo `listOrders(String status, String customer, String minTotal)` en `OrderService`.
+- Lectura de query params en `OrderController`.
+- Formulario GET simple de filtros en `orders/list.html`.
+- Tests de servicio y controlador para filtros individuales y combinados.
+
+### Que se acepto
+
+- Mantener los filtros en la misma pagina `/orders`.
+- Ignorar filtros vacios en vez de forzar valores por defecto.
+- Filtrar cliente por igualdad exacta de `customerSnapshot.fullName`, porque es la opcion mas simple de defender.
+- Parsear `minTotal` en el servicio para no anadir DTOs ni binding extra.
+
+### Que se descarto
+
+- JavaScript, filtros asincronos o cambios visuales complejos.
+- DTOs especificos de filtro o una capa nueva de consultas.
+- Busqueda parcial de cliente o filtros avanzados no pedidos.
+
+### Por que
+
+El objetivo es ampliar un listado ya existente con la menor complejidad posible. La query dinamica en repositorio y el formulario GET clasico cubren el caso de uso, permiten combinar filtros y dejan una explicacion oral directa sobre como RavenDB aplica solo las condiciones recibidas.

@@ -2,6 +2,7 @@ package com.gr21.ravenshop.repository;
 
 import com.gr21.ravenshop.model.Order;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,4 +13,6 @@ public interface OrderRepository {
     Optional<Order> findById(String id);
 
     List<Order> findAll();
+
+    List<Order> findByFilters(String status, String customer, BigDecimal minTotal);
 }
