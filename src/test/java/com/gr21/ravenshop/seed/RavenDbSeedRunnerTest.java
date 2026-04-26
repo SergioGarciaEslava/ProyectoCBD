@@ -26,9 +26,9 @@ import static org.mockito.Mockito.when;
 class RavenDbSeedRunnerTest {
 
     private static final String SEED_MARKER_ID = RavenDbSeedRunner.SEED_MARKER_ID;
-    private static final int EXPECTED_PRODUCT_COUNT = 6;
-    private static final int EXPECTED_CUSTOMER_COUNT = 3;
-    private static final int EXPECTED_ORDER_COUNT = 4;
+    private static final int EXPECTED_PRODUCT_COUNT = 12;
+    private static final int EXPECTED_CUSTOMER_COUNT = 8;
+    private static final int EXPECTED_ORDER_COUNT = 12;
     private static final int EXPECTED_TOTAL_STORES =
             EXPECTED_PRODUCT_COUNT + EXPECTED_CUSTOMER_COUNT + EXPECTED_ORDER_COUNT + 1;
 

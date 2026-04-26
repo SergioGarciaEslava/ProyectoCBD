@@ -841,3 +841,32 @@ El usuario pidio un archivo limpio para lectura del profesor. En ese contexto, l
 ### Por que
 
 El work item pide reproducibilidad para profesores y companeros. La forma mas clara de cumplirlo es un README directo, ordenado por flujo real de uso y alineado con la configuracion y funcionalidades efectivamente presentes en el repo.
+
+## 2026-04-26 - Ampliacion de seeders para demo
+
+### Que produjo la IA
+
+- Ampliacion del seed de productos de 6 a 12 documentos.
+- Ampliacion del seed de clientes de 3 a 8 documentos.
+- Ampliacion del seed de pedidos de 4 a 12 documentos.
+- Mayor variedad de estados, ciudades, categorias, tags, fechas e importes.
+- Cambio de `SEED_MARKER_ID` a `seed-data/ravenshop-wi021`.
+- Ajuste del test del seeder a los nuevos conteos esperados.
+
+### Que se acepto
+
+- Mantener la estructura actual de `RavenDbSeedRunner` y sus helpers, ampliando solo el volumen y la diversidad de datos.
+- Aprovechar campos ya existentes en el modelo, como `tags` en `Product`, para dejar semillas mas utiles en futuras consultas.
+- Introducir pedidos con estados variados (`Pending`, `Paid`, `Processing`, `Shipped`, `Delivered`, `Cancelled`) y con historiales mas ricos para reforzar la demo documental.
+- Repartir clientes entre varias ciudades para facilitar filtros, agrupaciones y ejemplos RQL posteriores.
+- Cambiar el marker para que el nuevo seed pueda aplicarse de nuevo en bases ya sembradas con la version anterior.
+
+### Que se descarto
+
+- Cambiar la estructura del seeder, mover logica a otras clases o refactorizar el flujo de carga.
+- Tocar controladores, servicios, repositorios, vistas o configuracion funcional.
+- Anadir nuevas dependencias o crear nuevos modelos solo para el seed.
+
+### Por que
+
+El usuario pidio mas ejemplos sin cambiar nada mas. La decision correcta era enriquecer exclusivamente el contenido del seed, manteniendo la forma actual del codigo y generando una base mas util para consultas, auto-indexes y demos futuras sin abrir trabajo adicional fuera de alcance.
