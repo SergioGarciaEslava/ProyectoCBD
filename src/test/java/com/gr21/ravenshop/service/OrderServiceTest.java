@@ -180,6 +180,32 @@ class OrderServiceTest {
     }
 
     @Test
+    void findByIdShowsMostRecentStatusHistoryEntryFirstInDetailView() {
+        Order order = new Order();
+        order.setId("orders/1-A");
+        order.setStatus("Shipped");
+        order.setLineItems(List.of(line("products/1-A", "Cafe", "Bebidas", 1, "21.90", "21.90")));
+        order.setStatusHistory(List.of(
+                historyWithComment("Pending", "2026-04-19T10:00:00Z", "Pedido creado"),
+                historyWithComment("Shipped", "2026-04-20T08:30:00Z", "Pedido enviado")
+        ));
+
+        when(orderRepository.findById("orders/1-A")).thenReturn(Optional.of(order));
+
+        Optional<Order> result = orderService.findById("1-A");
+
+        assertThat(result).isPresent();
+        assertThat(result.get().getStatus()).isEqualTo("Shipped");
+        assertThat(result.get().getStatusHistory()).hasSize(2);
+        assertThat(result.get().getStatusHistory().get(0).getStatus()).isEqualTo("Shipped");
+        assertThat(result.get().getStatusHistory().get(0).getComment()).isEqualTo("Pedido enviado");
+        assertThat(result.get().getStatusHistory().get(1).getStatus()).isEqualTo("Pending");
+        assertThat(result.get().getStatusHistory().get(1).getComment()).isEqualTo("Pedido creado");
+
+        verify(orderRepository).findById("orders/1-A");
+    }
+
+    @Test
     void findByIdReturnsEmptyWhenOrderDoesNotExist() {
         when(orderRepository.findById("orders/404-A")).thenReturn(Optional.empty());
 
@@ -332,6 +358,12 @@ class OrderServiceTest {
         Order.StatusHistoryEntry entry = new Order.StatusHistoryEntry();
         entry.setStatus(status);
         entry.setChangedAt(OffsetDateTime.parse(changedAt));
+        return entry;
+    }
+
+    private Order.StatusHistoryEntry historyWithComment(String status, String changedAt, String comment) {
+        Order.StatusHistoryEntry entry = history(status, changedAt);
+        entry.setComment(comment);
         return entry;
     }
 }

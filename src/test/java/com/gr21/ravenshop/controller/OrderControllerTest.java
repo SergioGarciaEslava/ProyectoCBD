@@ -18,6 +18,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -241,10 +242,45 @@ class OrderControllerTest {
                 .andExpect(content().string(containsString("21.90")))
                 .andExpect(content().string(containsString("43.80")))
                 .andExpect(content().string(containsString("statusHistory")))
+                .andExpect(content().string(containsString("La entrada mas reciente se muestra primero.")))
                 .andExpect(content().string(containsString("2026-04-19T10:05Z")))
                 .andExpect(content().string(containsString("Pago confirmado")))
                 .andExpect(content().string(containsString("64.65")))
                 .andExpect(content().string(containsString("PAID")));
+    }
+
+    @Test
+    void detailViewKeepsCurrentStatusAndShowsLatestHistoryEntryFirst() throws Exception {
+        Order order = new Order();
+        order.setId("orders/1-A");
+        order.setStatus("Shipped");
+        order.setShippingAddress("Calle Mayor 1, Madrid");
+        order.setTotal(new BigDecimal("64.65"));
+
+        Order.StatusHistoryEntry latest = new Order.StatusHistoryEntry();
+        latest.setStatus("Shipped");
+        latest.setChangedAt(OffsetDateTime.parse("2026-04-20T08:30:00Z"));
+        latest.setComment("Pedido enviado");
+
+        Order.StatusHistoryEntry previous = new Order.StatusHistoryEntry();
+        previous.setStatus("Pending");
+        previous.setChangedAt(OffsetDateTime.parse("2026-04-19T10:00:00Z"));
+        previous.setComment("Pedido creado");
+
+        order.setStatusHistory(List.of(latest, previous));
+
+        given(orderService.findById("1-A")).willReturn(Optional.of(order));
+
+        String html = mockMvc.perform(get("/orders/1-A"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Shipped")))
+                .andExpect(content().string(containsString("Pedido enviado")))
+                .andExpect(content().string(containsString("Pedido creado")))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        assertThat(html.indexOf("Pedido enviado")).isLessThan(html.indexOf("Pedido creado"));
     }
 
     @Test

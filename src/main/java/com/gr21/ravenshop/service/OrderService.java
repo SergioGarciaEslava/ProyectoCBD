@@ -141,6 +141,11 @@ public class OrderService {
     private Order enrichForDetailView(Order order) {
         order.recalculateTotals();
         ensureDerivedFields(order);
+        order.setStatusHistory(order.getStatusHistory().stream()
+                .sorted(Comparator.comparing(
+                        Order.StatusHistoryEntry::getChangedAt,
+                        Comparator.nullsLast(Comparator.reverseOrder())))
+                .toList());
         return order;
     }
 

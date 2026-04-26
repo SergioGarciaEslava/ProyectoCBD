@@ -149,7 +149,7 @@
     <section class="section embedded-section">
         <p class="doc-kicker">Subdocumento embebido &middot; <code>statusHistory[]</code></p>
         <h2>statusHistory</h2>
-        <p class="lead">El historial de estados queda embebido en el pedido para explicar la evolucion del documento sin joins.</p>
+        <p class="lead">El historial de estados queda embebido en el pedido para explicar la evolucion del documento sin joins. La entrada mas reciente se muestra primero.</p>
         <p class="empty-state" th:if="${#lists.isEmpty(order.statusHistory)}">No hay statusHistory disponible.</p>
         <div class="table-wrap" th:if="${not #lists.isEmpty(order.statusHistory)}">
             <table>
