@@ -793,3 +793,27 @@ El objetivo del commit es dejar preparada la arquitectura documental para evoluc
 ### Por que
 
 El usuario pidio un archivo limpio para lectura del profesor. En ese contexto, lo correcto es dejar un documento neutro, compacto y academico, separado de cualquier croquis interno de preparacion o de datos accidentales del entorno local.
+
+## 2026-04-26 - WI-013 README de instalacion, ejecucion y uso
+
+### Que produjo la IA
+
+- Reescritura completa de `README.md`.
+- Guia centrada en requisitos, arranque de RavenDB, arranque de Spring Boot, seed, recorrido minimo de uso y problemas comunes.
+- Eliminacion del tono de changelog y de referencias de sprint que no ayudaban a reproducir el proyecto.
+
+### Que se acepto
+
+- Documentar solo rutas, comandos y comportamientos confirmados en el estado actual del repositorio.
+- Mantener el README como documento operativo para terceros, no como memoria tecnica extensa.
+- Explicar el seed y sus limites practicos, incluido el marcador idempotente `seed-data/ravenshop-wi020`.
+
+### Que se descarto
+
+- Mantener secciones largas de contexto historico del sprint dentro del README principal.
+- Documentar `./mvnw`, porque el repositorio no incluye Maven Wrapper.
+- Anadir pruebas o scripts nuevos solo para apoyar la documentacion.
+
+### Por que
+
+El work item pide reproducibilidad para profesores y companeros. La forma mas clara de cumplirlo es un README directo, ordenado por flujo real de uso y alineado con la configuracion y funcionalidades efectivamente presentes en el repo.
