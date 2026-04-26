@@ -80,9 +80,11 @@ public class OrderController {
     }
 
     @PostMapping("/{id}/status")
-    public String changeStatus(@PathVariable String id, @RequestParam("status") String status) {
+    public String changeStatus(@PathVariable String id,
+            @RequestParam("status") String status,
+            @RequestParam(value = "comment", required = false) String comment) {
         try {
-            orderService.changeStatus(id, status);
+            orderService.changeStatus(id, status, comment);
             return "redirect:/orders/" + id;
         } catch (IllegalArgumentException ex) {
             if ("Pedido no encontrado".equals(ex.getMessage())) {

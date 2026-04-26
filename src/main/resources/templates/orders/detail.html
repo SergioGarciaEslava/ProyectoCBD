@@ -82,6 +82,11 @@
                     <option value="Cancelled" th:selected="${order.status == 'Cancelled'}">Cancelled</option>
                 </select>
             </div>
+            <div class="field">
+                <label for="order-status-comment">Comentario opcional</label>
+                <textarea id="order-status-comment" name="comment" rows="3"
+                          placeholder="Ejemplo: preparado para envio"></textarea>
+            </div>
             <div class="actions">
                 <button class="button" type="submit">Actualizar estado</button>
             </div>

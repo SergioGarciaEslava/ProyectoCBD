@@ -114,6 +114,31 @@ WI-002 busca dejar preparada la conexion y una verificacion defendible. La valid
 
 WI-017 es una tarea de contrato y alineacion tecnica. El objetivo es fijar una referencia estable para pruebas y desarrollo incremental sin ampliar alcance funcional.
 
+## 2026-04-26 - Comentario opcional en cambio de estado de pedido
+
+### Que produjo la IA
+
+- Ampliacion de `POST /orders/{id}/status` para aceptar `comment` opcional.
+- Ajuste de `OrderService.changeStatus(...)` para persistir ese comentario en la nueva entrada de `statusHistory`.
+- Integracion minima en la vista de detalle con un `textarea` sencillo.
+- Pruebas adicionales para comentario informado y comentario vacio.
+
+### Que se acepto
+
+- Mantener el flujo actual de detalle y cambio de estado, sin introducir pantallas nuevas.
+- Guardar el comentario solo en la nueva entrada del historial.
+- Normalizar comentario vacio a `null` para no romper documentos ni meter texto artificial.
+
+### Que se descarto
+
+- Validaciones complejas de longitud o contenido del comentario.
+- Frontend con JavaScript o comportamiento dinamico.
+- Reglas avanzadas de transicion entre estados.
+
+### Por que
+
+El objetivo era ampliar una operacion de negocio ya existente con el menor cambio posible y de forma facil de defender. El comentario opcional queda integrado en el propio documento `Order` como parte de `statusHistory`, reforzando el enfoque documental sin anadir complejidad innecesaria.
+
 ## 2026-04-19 - Ejecucion de WI-003 (datos semilla)
 
 ### Que produjo la IA
