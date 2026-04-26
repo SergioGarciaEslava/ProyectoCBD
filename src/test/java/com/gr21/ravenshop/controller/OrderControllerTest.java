@@ -177,6 +177,7 @@ class OrderControllerTest {
         Order.StatusHistoryEntry entry = new Order.StatusHistoryEntry();
         entry.setStatus("PAID");
         entry.setChangedAt(OffsetDateTime.parse("2026-04-19T10:05:00Z"));
+        entry.setComment("Pago confirmado");
         order.setStatusHistory(List.of(entry));
 
         given(orderService.findById("1-A")).willReturn(Optional.of(order));
@@ -189,6 +190,14 @@ class OrderControllerTest {
                 .andExpect(content().string(containsString("Ana Lopez")))
                 .andExpect(content().string(containsString("Calle Mayor 1, Madrid")))
                 .andExpect(content().string(containsString("customerSnapshot")))
+                .andExpect(content().string(containsString("lineItems")))
+                .andExpect(content().string(containsString("Cafe de especialidad 1kg")))
+                .andExpect(content().string(containsString("Bebidas")))
+                .andExpect(content().string(containsString("21.90")))
+                .andExpect(content().string(containsString("43.80")))
+                .andExpect(content().string(containsString("statusHistory")))
+                .andExpect(content().string(containsString("2026-04-19T10:05Z")))
+                .andExpect(content().string(containsString("Pago confirmado")))
                 .andExpect(content().string(containsString("64.65")))
                 .andExpect(content().string(containsString("PAID")));
     }

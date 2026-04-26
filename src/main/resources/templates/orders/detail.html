@@ -91,6 +91,72 @@
         </dl>
         <p class="empty-state" th:if="${order.customerSnapshot == null}">-</p>
     </section>
+
+    <section class="section embedded-section">
+        <p class="doc-kicker">Subdocumento embebido &middot; <code>lineItems[]</code></p>
+        <h2>lineItems</h2>
+        <p class="lead">Cada linea conserva los datos historicos del producto dentro del propio documento del pedido.</p>
+        <p class="empty-state" th:if="${#lists.isEmpty(order.lineItems)}">No hay lineItems disponibles.</p>
+        <div class="table-wrap" th:if="${not #lists.isEmpty(order.lineItems)}">
+            <table>
+                <thead>
+                <tr>
+                    <th>productName</th>
+                    <th>category</th>
+                    <th>unitPrice</th>
+                    <th>quantity</th>
+                    <th>lineTotal</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="line : ${order.lineItems}">
+                    <td th:text="${line.productName != null ? line.productName : '-'}">Cafe</td>
+                    <td th:text="${line.category != null ? line.category : '-'}">Bebidas</td>
+                    <td th:text="${line.unitPrice != null ? line.unitPrice : '-'}">21.90</td>
+                    <td th:text="${line.quantity}">2</td>
+                    <td th:text="${line.lineTotal != null ? line.lineTotal : '-'}">43.80</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="section embedded-section">
+        <p class="doc-kicker">Subdocumento embebido &middot; <code>statusHistory[]</code></p>
+        <h2>statusHistory</h2>
+        <p class="lead">El historial de estados queda embebido en el pedido para explicar la evolucion del documento sin joins.</p>
+        <p class="empty-state" th:if="${#lists.isEmpty(order.statusHistory)}">No hay statusHistory disponible.</p>
+        <div class="table-wrap" th:if="${not #lists.isEmpty(order.statusHistory)}">
+            <table>
+                <thead>
+                <tr>
+                    <th>status</th>
+                    <th>changedAt</th>
+                    <th>comment</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="entry : ${order.statusHistory}">
+                    <td>
+                        <span th:if="${entry.status != null and !#strings.isEmpty(entry.status)}"
+                              class="status-pill"
+                              th:classappend="${'status-pill--' + #strings.toLowerCase(entry.status)}"
+                              th:text="${entry.status}">Pending</span>
+                        <span th:if="${entry.status == null or #strings.isEmpty(entry.status)}">-</span>
+                    </td>
+                    <td th:text="${entry.changedAt != null ? entry.changedAt : '-'}">2026-04-19T10:00:00Z</td>
+                    <td th:text="${entry.comment != null and !#strings.isEmpty(entry.comment) ? entry.comment : '-'}">Pedido creado</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <aside class="rql-panel" aria-label="Lectura documental del pedido">
+        <p class="rql-kicker">Lectura documental</p>
+        <pre><code th:text="|from Orders where id() = '${order.id}'|">from Orders where id() = 'orders/1-A'</code></pre>
+        <p class="rql-note">El detalle carga un unico documento <code>Order</code> con subdocumentos embebidos como <code>customerSnapshot</code>, <code>lineItems</code> y <code>statusHistory</code>, lo que facilita defender el enfoque documental de RavenDB.</p>
+    </aside>
 </main>
 </body>
 </html>

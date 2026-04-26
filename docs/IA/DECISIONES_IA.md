@@ -648,3 +648,28 @@ La query ya era coherente con la demo RQL, pero un pedido legacy puede completar
 ### Por que
 
 El usuario pidio un commit pequeno y defendible. La forma mas coherente de cumplirlo era conservar el backend ya existente, abrir el acceso desde el listado y recortar la vista para que solo muestre los campos nucleares del pedido sin adelantar partes no pedidas todavia.
+
+## 2026-04-26 - Detalle de pedido con lineItems y statusHistory
+
+### Que produjo la IA
+
+- Secciones de solo lectura para `lineItems[]` y `statusHistory[]` en `orders/detail.html`.
+- Tabla de lineas con `productName`, `category`, `unitPrice`, `quantity` y `lineTotal`.
+- Tabla de historial con `status`, `changedAt` y `comment`.
+- Refuerzo de la prueba MVC del detalle.
+
+### Que se acepto
+
+- Mantener la pantalla como lectura pura, sin acciones.
+- Mostrar las dos colecciones como subdocumentos embebidos separados del bloque principal.
+- Anadir un panel RQL didactico para apoyar la defensa del enfoque documental.
+
+### Que se descarto
+
+- Edicion de estados.
+- Botones de negocio adicionales.
+- Refactor del servicio o del modelo.
+
+### Por que
+
+El objetivo de esta iteracion es hacer visible en la interfaz que un pedido RavenDB puede incluir snapshots, lineas e historial dentro del mismo documento. Mostrar esas dos colecciones embebidas en tablas simples ayuda a explicar el agregado sin complicar la aplicacion.
