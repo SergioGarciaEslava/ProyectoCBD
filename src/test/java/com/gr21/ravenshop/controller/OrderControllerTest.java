@@ -64,6 +64,7 @@ class OrderControllerTest {
                 .andExpect(view().name("orders/list"))
                 .andExpect(model().attributeExists("orders"))
                 .andExpect(content().string(containsString("Listado base de pedidos")))
+                .andExpect(content().string(containsString("href=\"/orders/1-A\"")))
                 .andExpect(content().string(containsString("orders/1-A")))
                 .andExpect(content().string(containsString("Ana Lopez")))
                 .andExpect(content().string(containsString("64.65")));
@@ -159,7 +160,7 @@ class OrderControllerTest {
                 .andExpect(content().string(containsString("orders/1-A")))
                 .andExpect(content().string(containsString("Ana Lopez")))
                 .andExpect(content().string(containsString("Calle Mayor 1, Madrid")))
-                .andExpect(content().string(containsString("Cafe de especialidad 1kg")))
+                .andExpect(content().string(containsString("customerSnapshot")))
                 .andExpect(content().string(containsString("64.65")))
                 .andExpect(content().string(containsString("PAID")));
     }
