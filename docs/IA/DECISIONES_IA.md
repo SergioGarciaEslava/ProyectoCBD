@@ -602,3 +602,25 @@ WI-020 es la pieza con mejor relacion impacto/riesgo del sprint. El auto-index `
 ### Por que
 
 El objetivo de esta sesion es cubrir solo el caso de uso minimo de lectura de pedidos desde RavenDB y dejarlo facil de explicar oralmente. La solucion se apoya en las capas ya existentes, evita arquitectura adicional y mantiene un cambio pequeno, coherente con un commit medio.
+
+## 2026-04-26 - Orden descendente en listado de pedidos
+
+### Que produjo la IA
+
+- Ordenacion final por `orderedAt desc` en `OrderService.listOrders()`.
+- Prueba que verifica que el pedido mas reciente queda primero aunque otro pedido reciba `orderedAt` derivado desde `statusHistory`.
+
+### Que se acepto
+
+- Mantener la implementacion pequena y localizada en el servicio.
+- Reforzar el orden despues del enriquecimiento para no depender solo del valor persistido en RavenDB.
+- No tocar la vista ni anadir opciones nuevas de ordenacion.
+
+### Que se descarto
+
+- Crear selector de orden en la UI.
+- Refactorizar el repositorio o la query mas alla de lo necesario.
+
+### Por que
+
+La query ya era coherente con la demo RQL, pero un pedido legacy puede completar `orderedAt` durante el enriquecimiento. Ordenar al final en el servicio garantiza que los pedidos mas recientes queden primero en el resultado que realmente se pinta.

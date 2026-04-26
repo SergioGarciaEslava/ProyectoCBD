@@ -50,6 +50,7 @@ public class OrderService {
     public List<Order> listOrders() {
         return orderRepository.findAll().stream()
                 .map(this::enrichForListView)
+                .sorted(Comparator.comparing(Order::getOrderedAt, Comparator.nullsLast(Comparator.reverseOrder())))
                 .toList();
     }
 

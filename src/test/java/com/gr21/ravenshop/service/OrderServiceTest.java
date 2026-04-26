@@ -117,6 +117,32 @@ class OrderServiceTest {
     }
 
     @Test
+    void listOrdersSortsByOrderedAtDescendingAfterCompletingDerivedDates() {
+        Order older = new Order();
+        older.setId("orders/1-A");
+        older.setStatus("Pending");
+        older.setTotal(new BigDecimal("10.00"));
+        older.setStatusHistory(List.of(history("Pending", "2026-04-19T10:00:00Z")));
+
+        Order newer = new Order();
+        newer.setId("orders/2-A");
+        newer.setStatus("Pending");
+        newer.setTotal(new BigDecimal("20.00"));
+        newer.setOrderedAt(OffsetDateTime.parse("2026-04-20T10:00:00Z"));
+
+        when(orderRepository.findAll()).thenReturn(List.of(older, newer));
+
+        List<Order> result = orderService.listOrders();
+
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0).getId()).isEqualTo("orders/2-A");
+        assertThat(result.get(1).getId()).isEqualTo("orders/1-A");
+        assertThat(result.get(1).getOrderedAt()).isEqualTo(OffsetDateTime.parse("2026-04-19T10:00:00Z"));
+
+        verify(orderRepository).findAll();
+    }
+
+    @Test
     void findByIdNormalizesIdAndCompletesLegacyFieldsFromCustomerAndHistory() {
         Order order = new Order();
         order.setId("orders/1-A");
