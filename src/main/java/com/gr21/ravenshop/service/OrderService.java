@@ -59,6 +59,7 @@ public class OrderService {
                         parseMinTotal(minTotal)
                 ).stream()
                 .map(this::enrichForListView)
+                .sorted(Comparator.comparing(Order::getOrderedAt, Comparator.nullsLast(Comparator.reverseOrder())))
                 .toList();
     }
 

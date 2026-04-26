@@ -117,36 +117,29 @@ class OrderServiceTest {
     }
 
     @Test
-    void listOrdersPassesCombinedFiltersToRepository() {
-        Order order = new Order();
-        order.setId("orders/1-A");
-        order.setStatus("Paid");
-        order.setLineItems(List.of(line("products/1-A", "Cafe", "Bebidas", 3, "21.55", "0.00")));
+    void listOrdersSortsByOrderedAtDescendingAfterCompletingDerivedDates() {
+        Order older = new Order();
+        older.setId("orders/1-A");
+        older.setStatus("Pending");
+        older.setTotal(new BigDecimal("10.00"));
+        older.setStatusHistory(List.of(history("Pending", "2026-04-19T10:00:00Z")));
 
-        Order.CustomerSnapshot snapshot = new Order.CustomerSnapshot();
-        snapshot.setFullName("Ana Lopez");
-        order.setCustomerSnapshot(snapshot);
+        Order newer = new Order();
+        newer.setId("orders/2-A");
+        newer.setStatus("Pending");
+        newer.setTotal(new BigDecimal("20.00"));
+        newer.setOrderedAt(OffsetDateTime.parse("2026-04-20T10:00:00Z"));
 
-        when(orderRepository.findByFilters("Paid", "Ana Lopez", new BigDecimal("50.00"))).thenReturn(List.of(order));
+        when(orderRepository.findAll()).thenReturn(List.of(older, newer));
 
-        List<Order> result = orderService.listOrders(" Paid ", " Ana Lopez ", " 50.00 ");
+        List<Order> result = orderService.listOrders();
 
-        assertThat(result).hasSize(1);
-        assertThat(result.getFirst().getStatus()).isEqualTo("Paid");
-        assertThat(result.getFirst().getCustomerSnapshot().getFullName()).isEqualTo("Ana Lopez");
-        assertThat(result.getFirst().getTotal()).isEqualByComparingTo("64.65");
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0).getId()).isEqualTo("orders/2-A");
+        assertThat(result.get(1).getId()).isEqualTo("orders/1-A");
+        assertThat(result.get(1).getOrderedAt()).isEqualTo(OffsetDateTime.parse("2026-04-19T10:00:00Z"));
 
-        verify(orderRepository).findByFilters("Paid", "Ana Lopez", new BigDecimal("50.00"));
-    }
-
-    @Test
-    void listOrdersIgnoresBlankFilters() {
-        when(orderRepository.findByFilters(null, null, null)).thenReturn(List.of());
-
-        List<Order> result = orderService.listOrders(" ", "", null);
-
-        assertThat(result).isEmpty();
-        verify(orderRepository).findByFilters(null, null, null);
+        verify(orderRepository).findAll();
     }
 
     @Test
