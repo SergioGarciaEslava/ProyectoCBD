@@ -139,6 +139,30 @@ WI-017 es una tarea de contrato y alineacion tecnica. El objetivo es fijar una r
 
 El objetivo era ampliar una operacion de negocio ya existente con el menor cambio posible y de forma facil de defender. El comentario opcional queda integrado en el propio documento `Order` como parte de `statusHistory`, reforzando el enfoque documental sin anadir complejidad innecesaria.
 
+## 2026-04-26 - Ajuste del detalle tras cambio de estado
+
+### Que produjo la IA
+
+- Ordenacion visual de `statusHistory` por fecha descendente en el detalle.
+- Ajuste menor de la plantilla para aclarar que la entrada mas reciente aparece primero.
+- Pruebas nuevas para asegurar que el estado actual y la ultima entrada del historial quedan visibles tras el redirect.
+
+### Que se acepto
+
+- Mantener el flujo POST-redirect-GET actual para recargar el pedido desde RavenDB.
+- Reordenar solo la presentacion del historial en detalle, sin reescribir ni borrar entradas.
+- Dejar la vista sin JavaScript ni cambios estructurales grandes.
+
+### Que se descarto
+
+- Rehacer la pantalla de detalle.
+- Introducir mensajes dinamicos o comportamiento en cliente.
+- Cambiar la politica de persistencia del historial.
+
+### Por que
+
+El objetivo era hacer mas defendible la demo del cambio de estado: el estado actual debe verse de inmediato y la ultima entrada del historial no debe quedar escondida al final de la tabla. Reordenar la presentacion en el detalle resuelve eso con un cambio pequeno y claro.
+
 ## 2026-04-19 - Ejecucion de WI-003 (datos semilla)
 
 ### Que produjo la IA
